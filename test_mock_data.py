@@ -27,7 +27,7 @@ def create_mock_papers():
     
     mock_papers = []
     
-    # Paper 1: Quantum Computing
+    # Paper 1: Quantum Foundations
     paper1 = Paper(
         id="mock_quantum_001",
         title="Quantum Error Correction with Surface Codes",
@@ -36,8 +36,8 @@ def create_mock_papers():
         link="https://arxiv.org/abs/2401.12345",
         published=datetime(2024, 1, 15),
         source="arxiv",
-        category="quantum",
-        feed_name="arXiv Quantum Physics",
+        category="quantum_foundations",
+        feed_name="arXiv Quantum Physics - Foundations",
         rss_fetch_date=datetime.now(),
         tags=["quantum-error-correction", "surface-codes", "fault-tolerance", "quantum-computing"],
         raw_data={}
@@ -57,94 +57,94 @@ def create_mock_papers():
         keywords=["quantum computing", "error correction", "surface codes", "fault tolerance"]
     )
     
-    # Paper 2: Machine Learning
+    # Paper 2: Quantum Communication
     paper2 = Paper(
-        id="mock_ml_002",
-        title="Federated Learning for Privacy-Preserving Medical Diagnosis",
-        authors=["Emma AI", "David Doctor", "Lisa Data"],
-        abstract="We present a federated learning framework for medical diagnosis that preserves patient privacy while achieving state-of-the-art accuracy. The system allows multiple hospitals to collaboratively train a model without sharing sensitive patient data. Results show 95% accuracy on pneumonia detection, comparable to centralized training.",
+        id="mock_comm_002",
+        title="Secure Quantum Key Distribution with Continuous Variables",
+        authors=["Alice Quantum", "Bob Crypto", "Eve Researcher"],
+        abstract="We present a new continuous-variable quantum key distribution protocol that achieves higher key rates and improved security against collective attacks. The protocol uses squeezed states and homodyne detection to establish secure communication channels over metropolitan distances. Experimental results demonstrate key rates of 10 Mbps over 50 km of optical fiber.",
         link="https://arxiv.org/abs/2401.67890",
         published=datetime(2024, 1, 20),
         source="arxiv",
-        category="machine_learning",
-        feed_name="arXiv Computer Science - Machine Learning",
+        category="quantum_communication",
+        feed_name="arXiv Quantum Physics - Communication",
         rss_fetch_date=datetime.now() - timedelta(days=2),
-        tags=["federated-learning", "medical-ai", "privacy", "healthcare", "machine-learning"],
+        tags=["quantum-key-distribution", "continuous-variables", "quantum-communication", "security"],
         raw_data={}
     )
     
     analysis2 = PaperAnalysis(
-        paper_id="mock_ml_002",
-        relevance_score=7.2,
+        paper_id="mock_comm_002",
+        relevance_score=8.3,
         recommendation=True,
         summary={
-            "tldr": "Federated learning enables privacy-preserving medical diagnosis with 95% accuracy.",
-            "motivation": "Medical data privacy regulations limit data sharing for AI model training.",
-            "method": "Federated learning with differential privacy and secure aggregation.",
-            "result": "95% accuracy on pneumonia detection, comparable to centralized training.",
-            "conclusion": "Federated learning is a viable approach for privacy-sensitive medical applications."
+            "tldr": "Continuous-variable quantum key distribution achieves 10 Mbps over 50 km.",
+            "motivation": "Increasing key rates and security for practical quantum communication.",
+            "method": "Continuous-variable protocol using squeezed states and homodyne detection.",
+            "result": "10 Mbps key rates over 50 km optical fiber with improved security.",
+            "conclusion": "Enables practical metropolitan-scale quantum-secure communication."
         },
-        keywords=["federated learning", "medical AI", "privacy", "diagnosis"]
+        keywords=["quantum key distribution", "continuous variables", "quantum communication", "security"]
     )
     
-    # Paper 3: Condensed Matter Physics
+    # Paper 3: Hybrid Quantum Systems
     paper3 = Paper(
-        id="mock_cm_003",
-        title="Topological Insulators for Quantum Information Processing",
-        authors=["Charlie Topo", "Diana Matter"],
-        abstract="We investigate topological insulators as a platform for quantum information processing. Our experimental results show protected edge states with coherence times exceeding 100 microseconds. These materials provide a promising path toward robust quantum bits with inherent protection against certain types of noise.",
-        link="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.109.045123",
+        id="mock_hybrid_003",
+        title="Superconducting Circuits Coupled to Spin Ensembles for Quantum Transduction",
+        authors=["Charlie Super", "Diana Spin"],
+        abstract="We demonstrate efficient quantum transduction between microwave and optical frequencies using superconducting circuits coupled to spin ensembles. The system achieves conversion efficiency of 15% with high fidelity, enabling hybrid quantum networks. Experimental results show coherence times exceeding 10 microseconds at millikelvin temperatures.",
+        link="https://www.nature.com/articles/s41567-024-02456-8",
         published=datetime(2024, 2, 5),
-        source="aps",
-        category="condensed_matter",
-        feed_name="Physical Review B",
+        source="nature",
+        category="hybrid_systems",
+        feed_name="Nature Materials",
         rss_fetch_date=datetime.now() - timedelta(days=5),
-        tags=["topological-insulators", "quantum-information", "coherence", "edge-states", "condensed-matter"],
+        tags=["superconducting-circuits", "spin-ensembles", "quantum-transduction", "hybrid-systems"],
         raw_data={}
     )
     
     analysis3 = PaperAnalysis(
-        paper_id="mock_cm_003",
-        relevance_score=9.1,
+        paper_id="mock_hybrid_003",
+        relevance_score=8.9,
         recommendation=True,
         summary={
-            "tldr": "Topological insulators show promise for quantum computing with 100µs coherence times.",
-            "motivation": "Quantum bits need long coherence times and noise protection.",
-            "method": "Experimental study of topological insulator edge states using microwave spectroscopy.",
-            "result": "Coherence times >100µs, protected edge states observed.",
-            "conclusion": "Topological insulators are promising for robust quantum information processing."
+            "tldr": "Superconducting circuits coupled to spin ensembles enable 15% efficient quantum transduction.",
+            "motivation": "Connecting different quantum platforms requires efficient frequency conversion.",
+            "method": "Hybrid system using superconducting circuits and spin ensembles for microwave-to-optical conversion.",
+            "result": "15% conversion efficiency with high fidelity, 10µs coherence times.",
+            "conclusion": "Enables practical hybrid quantum networks connecting different quantum technologies."
         },
-        keywords=["topological insulators", "quantum computing", "coherence", "edge states"]
+        keywords=["superconducting circuits", "spin ensembles", "quantum transduction", "hybrid systems"]
     )
     
-    # Paper 4: Not recommended (low score)
+    # Paper 4: Thermodynamics
     paper4 = Paper(
-        id="mock_low_004",
-        title="Traditional Approaches to Classical Optimization",
-        authors=["Old School", "Traditional Researcher"],
-        abstract="This paper revisits classical optimization techniques from the 1980s with minor improvements. We show that gradient descent with momentum can sometimes outperform newer methods on certain convex problems. The improvements are marginal but statistically significant.",
-        link="https://example.com/paper4",
+        id="mock_thermo_004",
+        title="Finite-Time Thermodynamics of Quantum Information Processing",
+        authors=["Thermo Researcher", "Quantum Scientist"],
+        abstract="We investigate the thermodynamic cost of quantum information operations in finite time. Our results show a fundamental trade-off between operation speed and energy dissipation, with implications for the design of energy-efficient quantum processors. The analysis reveals optimal protocols that minimize entropy production while maintaining high fidelity.",
+        link="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.109.012345",
         published=datetime(2024, 1, 10),
-        source="springer",
-        category="optimization",
-        feed_name="Springer Optimization",
+        source="aps",
+        category="thermodynamics",
+        feed_name="Physical Review E",
         rss_fetch_date=datetime.now() - timedelta(days=10),
-        tags=["classical-optimization", "gradient-descent", "legacy-methods"],
+        tags=["finite-time-thermodynamics", "quantum-information", "energy-dissipation", "entropy-production"],
         raw_data={}
     )
     
     analysis4 = PaperAnalysis(
-        paper_id="mock_low_004",
-        relevance_score=3.5,
-        recommendation=False,
+        paper_id="mock_thermo_004",
+        relevance_score=9.5,
+        recommendation=True,
         summary={
-            "tldr": "Minor improvements to classical optimization techniques from the 1980s.",
-            "motivation": "Revisiting classical methods to understand their limitations.",
-            "method": "Gradient descent with momentum and careful hyperparameter tuning.",
-            "result": "Marginal improvements on specific convex problems.",
-            "conclusion": "Classical methods still have value but offer limited advancement."
+            "tldr": "Fundamental trade-off between speed and energy dissipation in quantum information processing.",
+            "motivation": "Understanding thermodynamic constraints on quantum operations.",
+            "method": "Finite-time thermodynamics analysis of quantum protocols.",
+            "result": "Optimal protocols that minimize entropy production while maintaining fidelity.",
+            "conclusion": "Key insights for designing energy-efficient quantum processors."
         },
-        keywords=["optimization", "gradient descent", "classical methods"]
+        keywords=["thermodynamics", "quantum information", "energy dissipation", "finite-time"]
     )
     
     mock_papers = [
@@ -158,34 +158,29 @@ def create_mock_papers():
 
 
 def create_mock_categories():
-    """Create mock category configurations."""
+    """Create mock category configurations aligned with research directions."""
     from src.models import CategoryConfig
     
     return {
-        "quantum": CategoryConfig(
-            display_name="Quantum Computing",
-            color="#4A90E2",
+        "thermodynamics": CategoryConfig(
+            display_name="Thermodynamics & Statistical Mechanics",
+            color="#FF6B6B",
             priority=1
         ),
-        "condensed_matter": CategoryConfig(
-            display_name="Condensed Matter Physics",
-            color="#7ED321",
+        "quantum_foundations": CategoryConfig(
+            display_name="Quantum Foundations",
+            color="#4A90E2",
             priority=2
         ),
-        "machine_learning": CategoryConfig(
-            display_name="Machine Learning",
-            color="#F5A623",
+        "quantum_communication": CategoryConfig(
+            display_name="Quantum Communication",
+            color="#7ED321",
             priority=3
         ),
-        "physics": CategoryConfig(
-            display_name="Physics",
-            color="#BD10E0",
+        "hybrid_systems": CategoryConfig(
+            display_name="Hybrid Quantum Systems",
+            color="#F5A623",
             priority=4
-        ),
-        "optimization": CategoryConfig(
-            display_name="Optimization",
-            color="#417505",
-            priority=5
         )
     }
 

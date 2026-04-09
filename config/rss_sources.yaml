@@ -85,71 +85,10 @@ feeds:
     update_frequency:
       type: "weekdays"
   
-  # ====== MEDIUM PRIORITY: Related Fields ======
   
-  # General quantum information and computing
-  - name: "arXiv Condensed Matter"
-    url: "http://arxiv.org/rss/cond-mat"
-    category: "condensed_matter"
-    source: "arxiv"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "daily"
-  
-  - name: "Science Magazine - Physics"
-    url: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science&category=physics"
-    category: "physics"
-    source: "science"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "Nature Communications - Physics"
-    url: "https://www.nature.com/subjects/physics/ncomms.rss"
-    category: "physics"
-    source: "nature"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # ====== LOWER PRIORITY: General & Optional ======
-  
-  # Quantum computing engineering
-  - name: "IEEE Transactions on Quantum Engineering"
-    url: "https://ieeexplore.ieee.org/rss/TOC94.XML"
-    category: "quantum"
-    source: "ieee"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "ACM Computing Surveys - Quantum Computing"
-    url: "https://dl.acm.org/action/showFeed?type=etoc&feed=rss&jc=csur&category=quantum-computing"
-    category: "quantum"
-    source: "acm"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # Machine learning and optimization (tools)
-  - name: "arXiv Computer Science - Machine Learning"
-    url: "http://arxiv.org/rss/cs.LG"
-    category: "machine_learning"
-    source: "arxiv"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "daily"
-  
-  - name: "arXiv Mathematics - Optimization and Control"
-    url: "http://arxiv.org/rss/math.OC"
-    category: "optimization"
-    source: "arxiv"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "daily"
 
 categories:
-  # High priority based on research directions
+  # Core research directions only
   thermodynamics:
     display_name: "Thermodynamics & Statistical Mechanics"
     color: "#FF6B6B"
@@ -170,40 +109,4 @@ categories:
     color: "#F5A623"
     priority: 4
   
-  # Medium priority - related fields
-  quantum_information:
-    display_name: "Quantum Information"
-    color: "#9013FE"
-    priority: 5
-  
-  condensed_matter:
-    display_name: "Condensed Matter Physics"
-    color: "#50E3C2"
-    priority: 6
-  
-  # Lower priority - general physics
-  physics:
-    display_name: "General Physics"
-    color: "#BD10E0"
-    priority: 7
-  
-  materials_science:
-    display_name: "Materials Science"
-    color: "#FFC107"
-    priority: 8
-  
-  # Optional - machine learning and optimization
-  machine_learning:
-    display_name: "Machine Learning"
-    color: "#9C27B0"
-    priority: 9
-  
-  optimization:
-    display_name: "Optimization"
-    color: "#417505"
-    priority: 10
-  
-  quantum:
-    display_name: "Quantum Computing"
-    color: "#2196F3"
-    priority: 11
+  # Note: All other categories removed - focus only on core research directions
