@@ -1,13 +1,93 @@
 feeds:
-  # arXiv categories - fast moving, fetch daily
-  - name: "arXiv Quantum Physics"
-    url: "http://arxiv.org/rss/quant-ph"
-    category: "quantum"
+  # ====== HIGH PRIORITY: Core Research Directions ======
+  
+  # 1. Information Thermodynamics
+  - name: "arXiv Statistical Mechanics"
+    url: "http://arxiv.org/rss/cond-mat.stat-mech"
+    category: "thermodynamics"
     source: "arxiv"
     max_items: -1  # Unlimited
     update_frequency:
       type: "daily"
   
+  - name: "Physical Review E (Statistical, Nonlinear, and Soft Matter Physics)"
+    url: "https://journals.aps.org/pre/rss"
+    category: "thermodynamics"
+    source: "aps"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  # 2. Quantum Foundations
+  - name: "arXiv Quantum Physics - Foundations"
+    url: "http://arxiv.org/rss/quant-ph"
+    category: "quantum_foundations"
+    source: "arxiv"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "daily"
+  
+  - name: "Physical Review Letters"
+    url: "https://journals.aps.org/prl/rss"
+    category: "quantum_foundations"
+    source: "aps"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  - name: "Nature Physics"
+    url: "https://www.nature.com/nphys.rss"
+    category: "quantum_foundations"
+    source: "nature"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  # 3. Quantum Communication
+  - name: "arXiv Quantum Physics - Communication"
+    url: "http://arxiv.org/rss/quant-ph"
+    category: "quantum_communication"
+    source: "arxiv"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "daily"
+  
+  - name: "Quantum Information Processing (Springer)"
+    url: "https://link.springer.com/search.rss?facet-content-type=Article&facet-journal-id=11128&channel-name=Quantum%20Information%20Processing"
+    category: "quantum_communication"
+    source: "springer"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  # 4. Hybrid Quantum Systems
+  - name: "Nature Materials"
+    url: "https://www.nature.com/nmat.rss"
+    category: "hybrid_systems"
+    source: "nature"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  - name: "Nature Communications - Materials Science"
+    url: "https://www.nature.com/subjects/materials-science/ncomms.rss"
+    category: "hybrid_systems"
+    source: "nature"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  - name: "Physical Review B (Condensed Matter)"
+    url: "https://journals.aps.org/prb/rss"
+    category: "hybrid_systems"
+    source: "aps"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  # ====== MEDIUM PRIORITY: Related Fields ======
+  
+  # General quantum information and computing
   - name: "arXiv Condensed Matter"
     url: "http://arxiv.org/rss/cond-mat"
     category: "condensed_matter"
@@ -16,6 +96,42 @@ feeds:
     update_frequency:
       type: "daily"
   
+  - name: "Science Magazine - Physics"
+    url: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science&category=physics"
+    category: "physics"
+    source: "science"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  - name: "Nature Communications - Physics"
+    url: "https://www.nature.com/subjects/physics/ncomms.rss"
+    category: "physics"
+    source: "nature"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  # ====== LOWER PRIORITY: General & Optional ======
+  
+  # Quantum computing engineering
+  - name: "IEEE Transactions on Quantum Engineering"
+    url: "https://ieeexplore.ieee.org/rss/TOC94.XML"
+    category: "quantum"
+    source: "ieee"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  - name: "ACM Computing Surveys - Quantum Computing"
+    url: "https://dl.acm.org/action/showFeed?type=etoc&feed=rss&jc=csur&category=quantum-computing"
+    category: "quantum"
+    source: "acm"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "weekdays"
+  
+  # Machine learning and optimization (tools)
   - name: "arXiv Computer Science - Machine Learning"
     url: "http://arxiv.org/rss/cs.LG"
     category: "machine_learning"
@@ -31,117 +147,63 @@ feeds:
     max_items: -1  # Unlimited
     update_frequency:
       type: "daily"
-  
-  # APS (American Physical Society) - fetch on weekdays
-  - name: "Physical Review Letters"
-    url: "https://journals.aps.org/prl/rss"
-    category: "physics"
-    source: "aps"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "Physical Review B"
-    url: "https://journals.aps.org/prb/rss"
-    category: "condensed_matter"
-    source: "aps"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # Nature - fetch on weekdays
-  - name: "Nature Physics"
-    url: "https://www.nature.com/nphys.rss"
-    category: "physics"
-    source: "nature"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "Nature Materials"
-    url: "https://www.nature.com/nmat.rss"
-    category: "materials_science"
-    source: "nature"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "Nature Communications - Physics"
-    url: "https://www.nature.com/subjects/physics/ncomms.rss"
-    category: "physics"
-    source: "nature"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # Science - fetch on weekdays
-  - name: "Science Magazine - Physics"
-    url: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science&category=physics"
-    category: "physics"
-    source: "science"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # IEEE - fetch on weekdays
-  - name: "IEEE Transactions on Quantum Engineering"
-    url: "https://ieeexplore.ieee.org/rss/TOC94.XML"
-    category: "quantum"
-    source: "ieee"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # ACM - fetch on weekdays
-  - name: "ACM Computing Surveys - Quantum Computing"
-    url: "https://dl.acm.org/action/showFeed?type=etoc&feed=rss&jc=csur&category=quantum-computing"
-    category: "quantum"
-    source: "acm"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # Springer - fetch on weekdays
-  - name: "Quantum Information Processing"
-    url: "https://link.springer.com/search.rss?facet-content-type=Article&facet-journal-id=11128&channel-name=Quantum%20Information%20Processing"
-    category: "quantum_information"
-    source: "springer"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
 
 categories:
-  quantum:
-    display_name: "Quantum Computing"
-    color: "#4A90E2"
+  # High priority based on research directions
+  thermodynamics:
+    display_name: "Thermodynamics & Statistical Mechanics"
+    color: "#FF6B6B"
     priority: 1
   
-  condensed_matter:
-    display_name: "Condensed Matter Physics"
-    color: "#7ED321"
+  quantum_foundations:
+    display_name: "Quantum Foundations"
+    color: "#4A90E2"
     priority: 2
   
-  machine_learning:
-    display_name: "Machine Learning"
-    color: "#F5A623"
+  quantum_communication:
+    display_name: "Quantum Communication"
+    color: "#7ED321"
     priority: 3
   
-  physics:
-    display_name: "Physics"
-    color: "#BD10E0"
+  hybrid_systems:
+    display_name: "Hybrid Quantum Systems"
+    color: "#F5A623"
     priority: 4
   
-  materials_science:
-    display_name: "Materials Science"
-    color: "#50E3C2"
-    priority: 5
-  
+  # Medium priority - related fields
   quantum_information:
     display_name: "Quantum Information"
     color: "#9013FE"
+    priority: 5
+  
+  condensed_matter:
+    display_name: "Condensed Matter Physics"
+    color: "#50E3C2"
     priority: 6
+  
+  # Lower priority - general physics
+  physics:
+    display_name: "General Physics"
+    color: "#BD10E0"
+    priority: 7
+  
+  materials_science:
+    display_name: "Materials Science"
+    color: "#FFC107"
+    priority: 8
+  
+  # Optional - machine learning and optimization
+  machine_learning:
+    display_name: "Machine Learning"
+    color: "#9C27B0"
+    priority: 9
   
   optimization:
     display_name: "Optimization"
     color: "#417505"
-    priority: 7
+    priority: 10
+  
+  quantum:
+    display_name: "Quantum Computing"
+    color: "#2196F3"
+    priority: 11
