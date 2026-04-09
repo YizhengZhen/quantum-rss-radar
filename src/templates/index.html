@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum RSS Radar - AI Research Tracker</title>
+    <!-- Theme initialization to prevent flash -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body x-data="app()">
+    <header>
+        <div class="container header-container">
+            <div class="header-left">
+                <h1><i class="fa-solid fa-satellite-dish"></i> Quantum RSS Radar</h1>
+                <p class="subtitle">AI-assisted daily academic research tracking</p>
+            </div>
+            <div class="header-right">
+                <div class="header-controls">
+                    <button class="theme-toggle" @click="toggleTheme()" :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+                        <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+                    </button>
+                    <p class="date">Last updated: {{ last_updated }}</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="papers.html"><i class="fas fa-file-alt"></i> All Papers</a></li>
+                <li><a href="recommended.html"><i class="fas fa-star"></i> Recommended</a></li>
+                <li><a href="categories.html"><i class="fas fa-tags"></i> Categories</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <section class="search-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" 
+                       placeholder="Search papers by title, author, or keyword..." 
+                       x-model="searchQuery"
+                       @input="filterPapers()">
+            </div>
+            <div class="filter-controls">
+                <select x-model="selectedCategory" @change="filterPapers()">
+                    <option value="">All Categories</option>
+                    {% for category_id, category in categories.items() %}
+                    <option value="{{ category_id }}">{{ category.display_name }}</option>
+                    {% endfor %}
+                </select>
+                <select x-model="selectedSource" @change="filterPapers()">
+                    <option value="">All Sources</option>
+                    <option value="arxiv">arXiv</option>
+                    <option value="nature">Nature</option>
+                    <option value="science">Science</option>
+                    <option value="aps">APS</option>
+                    <option value="ieee">IEEE</option>
+                    <option value="acm">ACM</option>
+                    <option value="springer">Springer</option>
+                </select>
+                <label>
+                    <input type="checkbox" x-model="showRecommendedOnly" @change="filterPapers()">
+                    Show recommended only
+                </label>
+            </div>
+        </section>
+        
+        <section class="stats">
+            <div class="stat-card">
+                <h3><i class="fas fa-file-alt"></i> Total Papers</h3>
+                <p class="stat-number">{{ total_papers }}</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-star"></i> Recommended</h3>
+                <p class="stat-number">{{ recommended_papers }}</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-tags"></i> Categories</h3>
+                <p class="stat-number">{{ total_categories }}</p>
+            </div>
+            <div class="stat-card">
+                <h3><i class="fas fa-calendar-alt"></i> Last Update</h3>
+                <p class="stat-date">{{ last_updated }}</p>
+            </div>
+        </section>
+        
+        <section class="top-papers">
+            <h2><i class="fas fa-crown"></i> Top Recommended Papers</h2>
+            <div class="papers-grid">
+                {% for paper, analysis in top_papers %}
+                <div class="paper-card" 
+                     :class="{ 'recommended': {{ 'true' if analysis.recommendation else 'false' }} }"
+                     x-show="paperVisible('{{ paper.title }}', '{{ paper.category }}', '{{ paper.source.value }}', {{ analysis.relevance_score }}, {{ 'true' if analysis.recommendation else 'false' }})">
+                    <div class="paper-header">
+                        <span class="paper-score">⭐ {{ "%.1f"|format(analysis.relevance_score) }}/10</span>
+                        {% if analysis.recommendation %}
+                        <span class="paper-badge">RECOMMENDED</span>
+                        {% endif %}
+                        <span class="paper-source">{{ paper.source.value|upper }}</span>
+                    </div>
+                    <h3 class="paper-title">
+                        <a href="paper_{{ paper.id }}.html">{{ paper.title }}</a>
+                    </h3>
+                    <p class="paper-authors">
+                        {{ paper.authors[:3]|join(', ') }}{% if paper.authors|length > 3 %} et al.{% endif %}
+                    </p>
+                    <p class="paper-tldr">{{ analysis.tldr }}</p>
+                    <div class="paper-footer">
+                        <span class="paper-category" style="background-color: {{ categories[paper.category].color }}20; color: {{ categories[paper.category].color }};">
+                            {{ categories[paper.category].display_name }}
+                        </span>
+                        <span class="paper-date">{{ paper.published.strftime('%b %d, %Y') if paper.published else 'Unknown' }}</span>
+                        <button class="bookmark-btn" @click="toggleBookmark('{{ paper.id }}')">
+                            <i class="fas fa-bookmark" x-show="!isBookmarked('{{ paper.id }}')"></i>
+                            <i class="fas fa-bookmark" style="color: #4A90E2;" x-show="isBookmarked('{{ paper.id }}')"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        
+        <section class="categories">
+            <h2><i class="fas fa-tags"></i> Papers by Category</h2>
+            <div class="categories-grid">
+                {% for category_id, category in categories.items() %}
+                {% set category_papers = papers_by_category.get(category_id, []) %}
+                {% if category_papers %}
+                <div class="category-card" style="border-left-color: {{ category.color }};">
+                    <h3 style="color: {{ category.color }};">{{ category.display_name }}</h3>
+                    <p class="category-count">{{ category_papers|length }} papers</p>
+                    <ul class="category-papers">
+                        {% for paper, analysis in category_papers[:3] %}
+                        <li>
+                            <a href="paper_{{ paper.id }}.html">{{ paper.title[:60] }}{% if paper.title|length > 60 %}...{% endif %}</a>
+                            <span class="paper-score-mini">⭐ {{ "%.1f"|format(analysis.relevance_score) }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% if category_papers|length > 3 %}
+                    <a href="category_{{ category_id }}.html" class="category-link">View all {{ category_papers|length }} papers →</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Quantum RSS Radar &copy; {{ current_year }} | AI-powered research tracking system</p>
+            <p>Data updated daily via RSS feeds from arXiv, Nature, Science, APS, IEEE, ACM, and Springer</p>
+            <p class="footer-links">
+                <a href="https://github.com/yourusername/quantum-rss-radar"><i class="fab fa-github"></i> GitHub</a> |
+                <a href="about.html"><i class="fas fa-info-circle"></i> About</a> |
+                <a href="privacy.html"><i class="fas fa-shield-alt"></i> Privacy</a>
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        function app() {
+            return {
+                searchQuery: '',
+                selectedCategory: '',
+                selectedSource: '',
+                showRecommendedOnly: false,
+                bookmarks: JSON.parse(localStorage.getItem('quantumRssBookmarks') || '[]'),
+                theme: localStorage.getItem('theme') || 'light',
+                
+                init() {
+                    // Load bookmarks from localStorage
+                    this.updateBookmarks();
+                    // Apply theme immediately
+                    document.documentElement.setAttribute('data-theme', this.theme);
+                },
+                
+                applyTheme() {
+                    document.documentElement.setAttribute('data-theme', this.theme);
+                    localStorage.setItem('theme', this.theme);
+                },
+                
+                toggleTheme() {
+                    this.theme = this.theme === 'light' ? 'dark' : 'light';
+                    this.applyTheme();
+                },
+                
+                paperVisible(title, category, source, score, recommended) {
+                    if (this.showRecommendedOnly && !recommended) return false;
+                    if (this.selectedCategory && category !== this.selectedCategory) return false;
+                    if (this.selectedSource && source !== this.selectedSource) return false;
+                    
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        const searchText = (title + ' ' + category + ' ' + source).toLowerCase();
+                        return searchText.includes(query);
+                    }
+                    
+                    return true;
+                },
+                
+                filterPapers() {
+                    // Filtering is handled by x-show in template
+                },
+                
+                isBookmarked(paperId) {
+                    return this.bookmarks.includes(paperId);
+                },
+                
+                toggleBookmark(paperId) {
+                    const index = this.bookmarks.indexOf(paperId);
+                    if (index === -1) {
+                        this.bookmarks.push(paperId);
+                    } else {
+                        this.bookmarks.splice(index, 1);
+                    }
+                    this.updateBookmarks();
+                },
+                
+                updateBookmarks() {
+                    localStorage.setItem('quantumRssBookmarks', JSON.stringify(this.bookmarks));
+                }
+            }
+        }
+    </script>
+</body>
+</html>

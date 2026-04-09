@@ -1,0 +1,130 @@
+name: Quantum RSS Radar - Daily Pipeline
+
+on:
+  schedule:
+    # Run daily at 8 AM UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch:  # Allow manual triggering
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'config/**'
+      - '.github/workflows/daily-pipeline.yml'
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Setup uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Install dependencies
+      run: |
+        uv venv
+        source .venv/bin/activate
+        uv sync
+    
+    - name: Check configuration
+      run: |
+        if [ ! -f "config/settings.yaml" ]; then
+          echo "Using example configuration"
+          cp config/settings.yaml.example config/settings.yaml
+        fi
+    
+    - name: Run Quantum RSS Radar
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      run: |
+        source .venv/bin/activate
+        python -m src.orchestrator
+    
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./web
+        publish_branch: gh-pages
+        force_orphan: true
+        keep_files: false
+    
+    - name: Create deployment summary
+      if: always()
+      run: |
+        echo "## Quantum RSS Radar Pipeline" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Run Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -f "data/processed/papers_analyzed.jsonl" ]; then
+          PAPER_COUNT=$(wc -l < data/processed/papers_analyzed.jsonl)
+          echo "**Papers Analyzed:** $PAPER_COUNT" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Papers Analyzed:** 0" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ -d "web" ]; then
+          WEB_FILES=$(find web -type f -name "*.html" | wc -l)
+          echo "**Website Files Generated:** $WEB_FILES" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Website URL:** https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "Pipeline completed successfully!" >> $GITHUB_STEP_SUMMARY
+
+  test-pipeline:
+    runs-on: ubuntu-latest
+    needs: run-pipeline
+    if: always()
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Setup uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Install dependencies
+      run: |
+        uv venv
+        source .venv/bin/activate
+        uv sync
+    
+    - name: Run tests
+      run: |
+        source .venv/bin/activate
+        python test_mock_data.py
+    
+    - name: Type checking
+      run: |
+        source .venv/bin/activate
+        python -m mypy src/ --ignore-missing-imports || true
+    
+    - name: Linting
+      run: |
+        source .venv/bin/activate
+        python -m ruff check src/ --fix || true

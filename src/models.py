@@ -1,0 +1,116 @@
+"""
+Data models for the Quantum RSS Radar system.
+"""
+
+from datetime import datetime
+from typing import List, Optional, Dict, Any
+from pydantic import BaseModel, Field
+from enum import Enum
+
+
+class PaperSource(str, Enum):
+    """Sources of research papers."""
+    ARXIV = "arxiv"
+    APS = "aps"
+    NATURE = "nature"
+    SCIENCE = "science"
+    IEEE = "ieee"
+    ACM = "acm"
+    SPRINGER = "springer"
+    OTHER = "other"
+
+
+class Paper(BaseModel):
+    """Represents a research paper from RSS feed."""
+    id: str = Field(..., description="Unique identifier for the paper")
+    title: str = Field(..., description="Paper title")
+    authors: List[str] = Field(default_factory=list, description="List of authors")
+    abstract: str = Field(..., description="Paper abstract")
+    link: str = Field(..., description="URL to paper or arXiv page")
+    published: datetime = Field(..., description="Publication date")
+    source: PaperSource = Field(..., description="Source of the paper")
+    category: str = Field(..., description="Category (quantum, physics, ml, etc.)")
+    feed_name: str = Field(..., description="Name of the RSS feed")
+    rss_fetch_date: datetime = Field(default_factory=datetime.now, description="RSS feed fetch time")
+    tags: List[str] = Field(default_factory=list, description="Keywords tags, max 5")
+    raw_data: Dict[str, Any] = Field(default_factory=dict, description="Raw RSS data")
+    
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat(),
+        }
+
+
+class PaperAnalysis(BaseModel):
+    """AI analysis results for a paper."""
+    paper_id: str = Field(..., description="ID of the analyzed paper")
+    relevance_score: float = Field(..., ge=0, le=10, description="Relevance score 0-10")
+    recommendation: bool = Field(..., description="Whether to recommend (yes/no)")
+    summary: Dict[str, str] = Field(..., description="Structured summary")
+    keywords: List[str] = Field(default_factory=list, description="Extracted keywords")
+    processing_time: datetime = Field(default_factory=datetime.now, description="When analysis was performed")
+    
+    # Structured summary fields (also included in summary dict)
+    @property
+    def tldr(self) -> str:
+        return self.summary.get("tldr", "")
+    
+    @property
+    def motivation(self) -> str:
+        return self.summary.get("motivation", "")
+    
+    @property
+    def method(self) -> str:
+        return self.summary.get("method", "")
+    
+    @property
+    def result(self) -> str:
+        return self.summary.get("result", "")
+    
+    @property
+    def conclusion(self) -> str:
+        return self.summary.get("conclusion", "")
+    
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat(),
+        }
+
+
+class Config(BaseModel):
+    """System configuration."""
+    llm_provider: str = Field("openai", description="LLM provider: openai or deepseek")
+    llm_model: str = Field("gpt-4-turbo-preview", description="LLM model name")
+    llm_api_key: Optional[str] = Field(None, description="LLM API key")
+    
+    email_enabled: bool = Field(False, description="Whether to send emails")
+    email_sender: Optional[str] = Field(None, description="Sender email address")
+    email_recipient: Optional[str] = Field(None, description="Recipient email address")
+    email_smtp_server: Optional[str] = Field(None, description="SMTP server")
+    email_smtp_port: Optional[int] = Field(587, description="SMTP port")
+    email_smtp_username: Optional[str] = Field(None, description="SMTP username")
+    email_smtp_password: Optional[str] = Field(None, description="SMTP password")
+    
+    max_papers_per_feed: int = Field(50, description="Max papers to fetch per feed")
+    min_relevance_score: float = Field(5.0, description="Minimum score for recommendation")
+    top_n_recommendations: int = Field(10, description="Number of top papers for email")
+    
+    output_dir: str = Field("data", description="Base output directory")
+    web_dir: str = Field("web", description="Website output directory")
+
+
+class FeedConfig(BaseModel):
+    """Configuration for an RSS feed."""
+    name: str = Field(..., description="Feed display name")
+    url: str = Field(..., description="RSS feed URL")
+    category: str = Field(..., description="Category for papers from this feed")
+    source: PaperSource = Field(..., description="Source type")
+    max_items: int = Field(-1, description="Maximum items to fetch (-1 for unlimited)")
+    update_frequency: Dict[str, Any] = Field(default_factory=dict, description="Update frequency configuration")
+
+
+class CategoryConfig(BaseModel):
+    """Configuration for a paper category."""
+    display_name: str = Field(..., description="Display name for UI")
+    color: str = Field(..., description="Hex color for UI")
+    priority: int = Field(1, description="Priority for sorting")

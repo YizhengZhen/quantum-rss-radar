@@ -1,0 +1,28 @@
+# Quantum RSS Radar Configuration
+# Copy this file to settings.yaml and fill in your values
+
+# LLM Configuration
+llm:
+  provider: "openai"  # or "deepseek"
+  model: "gpt-4-turbo-preview"  # or "deepseek-chat"
+  api_key: "${OPENAI_API_KEY}"  # Use environment variable, or put key directly
+
+# Email Configuration (optional)
+email:
+  enabled: false  # Set to true to enable daily email
+  sender: "research@example.com"
+  recipient: "you@example.com"
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_username: "${EMAIL_USERNAME}"  # Use environment variable
+  smtp_password: "${EMAIL_PASSWORD}"  # Use environment variable
+
+# Processing Settings
+processing:
+  max_papers_per_feed: 50  # Maximum papers to fetch from each RSS feed
+  min_relevance_score: 5.0  # Minimum score (0-10) for recommendation
+  top_n_recommendations: 10  # Number of top papers to include in email
+
+# Output Directories
+output_dir: "data"  # Base directory for data storage
+web_dir: "web"  # Directory for generated website

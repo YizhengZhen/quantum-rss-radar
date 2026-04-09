@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Papers - Quantum RSS Radar</title>
+    <!-- Theme initialization to prevent flash -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body x-data="app()">
+    <header>
+        <div class="container header-container">
+            <div class="header-left">
+                <h1><i class="fa-solid fa-satellite-dish"></i> Quantum RSS Radar</h1>
+                <p class="subtitle">AI-assisted daily academic research tracking</p>
+            </div>
+            <div class="header-right">
+                <div class="header-controls">
+                    <button class="theme-toggle" @click="toggleTheme()" :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+                        <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+                    </button>
+                    <p class="date">Last updated: {{ last_updated }}</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html" {% if active_page == 'index' %}class="active"{% endif %}><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="papers.html" {% if active_page == 'papers' %}class="active"{% endif %}><i class="fas fa-file-alt"></i> All Papers</a></li>
+                <li><a href="recommended.html" {% if active_page == 'recommended' %}class="active"{% endif %}><i class="fas fa-star"></i> Recommended</a></li>
+                <li><a href="categories.html" {% if active_page == 'categories' %}class="active"{% endif %}><i class="fas fa-tags"></i> Categories</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container">
+        <section class="search-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" 
+                       placeholder="Search {{ total_papers }} papers by title, author, or keyword..." 
+                       x-model="searchQuery"
+                       @input="filterPapers()">
+            </div>
+            <div class="filter-controls">
+                <select x-model="selectedCategory" @change="filterPapers()">
+                    <option value="">All Categories</option>
+                    {% for category_id, category in categories.items() %}
+                    <option value="{{ category_id }}">{{ category.display_name }}</option>
+                    {% endfor %}
+                </select>
+                <select x-model="selectedSource" @change="filterPapers()">
+                    <option value="">All Sources</option>
+                    <option value="arxiv">arXiv</option>
+                    <option value="nature">Nature</option>
+                    <option value="science">Science</option>
+                    <option value="aps">APS</option>
+                    <option value="ieee">IEEE</option>
+                    <option value="acm">ACM</option>
+                    <option value="springer">Springer</option>
+                </select>
+                <select x-model="selectedDateRange" @change="filterPapers()">
+                    <option value="">All RSS Dates</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="last_3_days">Last 3 days</option>
+                    <option value="last_5_days">Last 5 days</option>
+                    <option value="last_7_days">Last 7 days</option>
+                    <option value="this_week">This week</option>
+                    <option value="last_week">Last week</option>
+                </select>
+                <select x-model="sortBy" @change="filterPapers()">
+                    <option value="score">Sort by Score</option>
+                    <option value="date">Sort by Date</option>
+                    <option value="title">Sort by Title</option>
+                </select>
+                <label>
+                    <input type="checkbox" x-model="showRecommendedOnly" @change="filterPapers()">
+                    Show recommended only
+                </label>
+            </div>
+            
+            <div class="tag-filter-section">
+                <div class="tag-search">
+                    <input type="text" 
+                           placeholder="Search tags..." 
+                           x-model="tagSearch"
+                           @input="filterTags()">
+                </div>
+                <div class="tag-cloud">
+                    <template x-for="tag in filteredTags" :key="tag.name">
+                        <button class="tag-btn" 
+                                :class="{ 'active': selectedTags.includes(tag.name) }"
+                                @click="toggleTag(tag.name)">
+                            <span x-text="tag.name"></span>
+                            <span class="tag-count" x-text="tag.count"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </section>
+        
+        <section class="papers-list">
+            <div class="papers-count">
+                Showing <span x-text="visibleCount"></span> of {{ total_papers }} papers
+            </div>
+            
+            <div class="papers-container">
+                {% for paper, analysis in all_papers %}
+                <div class="paper-list-item"
+                     :class="{ 'recommended': {{ 'true' if analysis.recommendation else 'false' }} }"
+                     x-show="paperVisible('{{ paper.title }}', '{{ paper.authors|join(' ') }}', '{{ paper.category }}', '{{ paper.source.value }}', {{ analysis.relevance_score }}, {{ 'true' if analysis.recommendation else 'false' }})"
+                     x-init="visibleCount++">
+                    <div class="list-item-score">
+                        <div class="score-circle" style="background: linear-gradient(135deg, #4A90E2 {{ analysis.relevance_score * 10 }}%, #f0f0f0 {{ analysis.relevance_score * 10 }}%);">
+                            <span>{{ "%.1f"|format(analysis.relevance_score) }}</span>
+                        </div>
+                        {% if analysis.recommendation %}
+                        <div class="recommended-badge">✅</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="list-item-content">
+                        <h3><a href="paper_{{ paper.id }}.html">{{ paper.title }}</a></h3>
+                        <p class="list-authors">{{ paper.authors[:5]|join(', ') }}{% if paper.authors|length > 5 %} et al.{% endif %}</p>
+                        <p class="list-tldr">{{ analysis.tldr }}</p>
+                        
+                        <div class="list-meta">
+                            <span class="meta-category" style="background-color: {{ categories[paper.category].color }}20; color: {{ categories[paper.category].color }};">
+                                {{ categories[paper.category].display_name }}
+                            </span>
+                            <span class="meta-source">{{ paper.source.value|upper }}</span>
+                            <span class="meta-date">{{ paper.published.strftime('%b %d, %Y') if paper.published else 'Unknown' }}</span>
+                            <button class="bookmark-btn-small" @click="toggleBookmark('{{ paper.id }}')" :title="isBookmarked('{{ paper.id }}') ? 'Remove bookmark' : 'Bookmark paper'">
+                                <i class="fas fa-bookmark" x-show="!isBookmarked('{{ paper.id }}')"></i>
+                                <i class="fas fa-bookmark" style="color: #4A90E2;" x-show="isBookmarked('{{ paper.id }}')"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="no-results" x-show="visibleCount === 0">
+                <i class="fas fa-search"></i>
+                <h3>No papers found</h3>
+                <p>Try adjusting your search or filters</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>Quantum RSS Radar &copy; {{ current_year }} | AI-powered research tracking system</p>
+            <p>Data updated daily via RSS feeds from arXiv, Nature, Science, APS, IEEE, ACM, and Springer</p>
+        </div>
+    </footer>
+    
+    <script>
+        function app() {
+            return {
+                searchQuery: '',
+                selectedCategory: '',
+                selectedSource: '',
+                selectedDateRange: '',
+                sortBy: 'score',
+                showRecommendedOnly: false,
+                visibleCount: 0,
+                bookmarks: JSON.parse(localStorage.getItem('quantumRssBookmarks') || '[]'),
+                theme: localStorage.getItem('theme') || 'light',
+                
+                // Tag filtering
+                tagSearch: '',
+                selectedTags: [],
+                allTags: [],
+                filteredTags: [],
+                
+                init() {
+                    this.loadTags();
+                    this.filterTags();
+                    this.filterPapers();
+                    // Apply theme immediately
+                    document.documentElement.setAttribute('data-theme', this.theme);
+                },
+                
+                applyTheme() {
+                    document.documentElement.setAttribute('data-theme', this.theme);
+                    localStorage.setItem('theme', this.theme);
+                },
+                
+                toggleTheme() {
+                    this.theme = this.theme === 'light' ? 'dark' : 'light';
+                    this.applyTheme();
+                },
+                
+                loadTags() {
+                    // Extract tags from papers data
+                    try {
+                        const papersData = window.papersData || [];
+                        const tagCounts = {};
+                        
+                        papersData.forEach(paper => {
+                            if (paper.tags && Array.isArray(paper.tags)) {
+                                paper.tags.forEach(tag => {
+                                    if (tag) {
+                                        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                                    }
+                                });
+                            }
+                        });
+                        
+                        // Convert to array of objects
+                        this.allTags = Object.entries(tagCounts)
+                            .map(([name, count]) => ({ name, count }))
+                            .sort((a, b) => b.count - a.count); // Sort by frequency
+                    } catch (error) {
+                        console.error('Failed to load tags:', error);
+                        this.allTags = [];
+                    }
+                },
+                
+                filterTags() {
+                    if (!this.tagSearch.trim()) {
+                        this.filteredTags = this.allTags;
+                    } else {
+                        const searchTerm = this.tagSearch.toLowerCase();
+                        this.filteredTags = this.allTags.filter(tag => 
+                            tag.name.toLowerCase().includes(searchTerm)
+                        );
+                    }
+                },
+                
+                toggleTag(tagName) {
+                    const index = this.selectedTags.indexOf(tagName);
+                    if (index === -1) {
+                        this.selectedTags.push(tagName);
+                    } else {
+                        this.selectedTags.splice(index, 1);
+                    }
+                    this.filterPapers();
+                },
+                
+                paperVisible(title, authors, category, source, score, recommended, rssFetchDateStr, tags) {
+                    // Apply basic filters
+                    if (this.showRecommendedOnly && !recommended) return false;
+                    if (this.selectedCategory && category !== this.selectedCategory) return false;
+                    if (this.selectedSource && source !== this.selectedSource) return false;
+                    
+                    // Apply date range filter
+                    if (this.selectedDateRange && rssFetchDateStr) {
+                        if (!this.isInDateRange(rssFetchDateStr, this.selectedDateRange)) {
+                            return false;
+                        }
+                    }
+                    
+                    // Apply tag filter
+                    if (this.selectedTags.length > 0) {
+                        const paperTags = tags ? tags.split(',') : [];
+                        const hasSelectedTag = this.selectedTags.some(tag => 
+                            paperTags.includes(tag)
+                        );
+                        if (!hasSelectedTag) return false;
+                    }
+                    
+                    // Apply search query
+                    if (this.searchQuery) {
+                        const query = this.searchQuery.toLowerCase();
+                        const searchText = (title + ' ' + authors + ' ' + category + ' ' + source).toLowerCase();
+                        return searchText.includes(query);
+                    }
+                    
+                    return true;
+                },
+                
+                isInDateRange(dateStr, range) {
+                    try {
+                        const date = new Date(dateStr);
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        
+                        // Calculate different date ranges
+                        const yesterday = new Date(today);
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        
+                        const last3Days = new Date(today);
+                        last3Days.setDate(last3Days.getDate() - 3);
+                        
+                        const last5Days = new Date(today);
+                        last5Days.setDate(last5Days.getDate() - 5);
+                        
+                        const last7Days = new Date(today);
+                        last7Days.setDate(last7Days.getDate() - 7);
+                        
+                        const thisWeekMonday = new Date(today);
+                        thisWeekMonday.setDate(today.getDate() - today.getDay() + 1); // Monday this week
+                        
+                        const lastWeekMonday = new Date(thisWeekMonday);
+                        lastWeekMonday.setDate(lastWeekMonday.getDate() - 7);
+                        const lastWeekSunday = new Date(lastWeekMonday);
+                        lastWeekSunday.setDate(lastWeekSunday.getDate() + 6);
+                        
+                        switch (range) {
+                            case 'today':
+                                return date >= today;
+                            case 'yesterday':
+                                return date >= yesterday && date < today;
+                            case 'last_3_days':
+                                return date >= last3Days;
+                            case 'last_5_days':
+                                return date >= last5Days;
+                            case 'last_7_days':
+                                return date >= last7Days;
+                            case 'this_week':
+                                return date >= thisWeekMonday;
+                            case 'last_week':
+                                return date >= lastWeekMonday && date <= lastWeekSunday;
+                            default:
+                                return true;
+                        }
+                    } catch (error) {
+                        console.error('Date parsing error:', error);
+                        return true;
+                    }
+                },
+                
+                filterPapers() {
+                    this.visibleCount = 0;
+                    // The actual filtering is done by x-show in template
+                },
+                
+                isBookmarked(paperId) {
+                    return this.bookmarks.includes(paperId);
+                },
+                
+                toggleBookmark(paperId) {
+                    const index = this.bookmarks.indexOf(paperId);
+                    if (index === -1) {
+                        this.bookmarks.push(paperId);
+                    } else {
+                        this.bookmarks.splice(index, 1);
+                    }
+                    localStorage.setItem('quantumRssBookmarks', JSON.stringify(this.bookmarks));
+                }
+            }
+        }
+    </script>
+</body>
+</html>
