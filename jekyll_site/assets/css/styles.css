@@ -1,3 +1,4 @@
+
 /* Quantum RSS Radar - Main Stylesheet with Dark Mode */
 
 :root {
@@ -106,7 +107,8 @@ header {
     font-size: 0.8rem;
     opacity: 0.9;
     margin: 0;
-    padding-left: calc(1.5em + 8px); /* Match icon width + margin */
+    margin-left: calc(1.5em + 8px); /* Match icon width + margin */
+    padding-left: 0;
 }
 
 .header-right {
@@ -118,6 +120,15 @@ header {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    gap: 0.3rem;
+    justify-content: flex-end;
+    padding: 0.25rem 0;
+}
+
+.header-controls-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     gap: 0.5rem;
 }
 
@@ -126,6 +137,7 @@ header {
     opacity: 0.9;
     margin: 0;
     white-space: nowrap;
+    text-align: right;
 }
 
 .theme-toggle {
@@ -153,15 +165,21 @@ header {
 
 /* Combined Navigation and Search Bar */
 .nav-search-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
     background-color: var(--nav-bg);
     box-shadow: var(--box-shadow);
     position: sticky;
-    top: 70px; /* Header height */
+    top: 0; /* Stick to very top */
     z-index: 1000;
+    width: 100%;
+}
+
+.nav-search-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 20px;
+    margin: 0 auto;
+    max-width: 1200px;
 }
 
 .main-nav ul {
@@ -381,6 +399,7 @@ main {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1.2rem;
+    margin-top: 2rem; /* Match Home page banner to filter spacing */
     margin-bottom: 2.5rem;
 }
 
@@ -598,12 +617,18 @@ main {
     color: var(--primary-color);
 }
 
-/* Categories */
+/* Categories - 2x2 grid */
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-    margin-top: 1rem;
+    margin-top: 1.5rem; /* Match Home page banner to filter spacing */
+}
+
+/* All Papers and Recommended Papers containers */
+.all-papers,
+.recommended-papers {
+    margin-top: 1.5rem; /* Match Home page banner to filter spacing */
 }
 
 .category-card {
@@ -611,23 +636,81 @@ main {
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     padding: 1.5rem;
-    border-left: 4px solid;
     transition: var(--transition);
+    text-decoration: none;
+    color: var(--text-color);
+    display: block;
+    border: 2px solid var(--border-color);
 }
 
 .category-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.category-color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .category-card h3 {
     font-size: 1.3rem;
-    margin-bottom: 0.5rem;
+    margin: 0;
+    font-weight: 600;
 }
 
-.category-count {
+.category-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.metric {
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.85rem;
     color: var(--gray-color);
-    margin-bottom: 1rem;
+}
+
+.category-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.category-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.category-link:hover {
+    text-decoration: underline;
 }
 
 .category-papers {
@@ -830,15 +913,111 @@ footer {
     background-color: var(--footer-bg);
     color: var(--footer-text);
     padding: 2rem 0;
-    text-align: center;
     margin-top: 3rem;
 }
 
-footer p {
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+    text-align: left;
+}
+
+.footer-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-section p {
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+    line-height: 1.6;
+}
+
+/* Data Sources Horizontal Layout */
+.data-sources-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.source-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 140px;
+}
+
+.source-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+}
+
+.source-item i {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.source-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.source-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.source-item.disabled:hover {
+    transform: none;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Footer bottom section */
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
     margin-bottom: 0.5rem;
     opacity: 0.8;
 }
 
+.footer-note {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Legacy footer links (for backward compatibility) */
 .footer-links {
     margin-top: 1rem;
 }
@@ -1316,6 +1495,22 @@ footer p {
         width: 280px;
         right: 10px;
     }
+
+    /* Footer responsive adjustments */
+    .footer-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .data-sources-horizontal {
+        justify-content: center;
+    }
+
+    .source-item {
+        min-width: 120px;
+        flex: 1;
+        max-width: 160px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1340,4 +1535,34 @@ footer p {
     .modal-content {
         max-width: 95%;
     }
+}
+
+/* Page Header styling with proper spacing */
+.page-header {
+    margin-bottom: 2.5rem;
+    margin-top: 1.5rem;
+}
+
+.page-header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.page-header .page-subtitle {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+    color: var(--text-secondary);
+}
+
+/* Top papers section - Row layout */
+.top-papers {
+    margin: 2rem 0;
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
 }

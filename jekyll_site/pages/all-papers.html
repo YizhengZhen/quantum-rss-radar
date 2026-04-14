@@ -1,0 +1,94 @@
+---
+layout: default
+title: All Papers
+description: Complete list of all research papers
+---
+
+<!-- <div class="page-header">
+    <h1><i class="fas fa-file-alt"></i> All Papers</h1>
+    <p class="page-subtitle">Complete collection of all research papers in the database</p>
+</div> -->
+
+<section class="stats">
+    <div class="stat-card">
+        <h3><i class="fas fa-file-alt"></i> Total Papers</h3>
+        <p class="stat-number">{{ site.data.papers.stats.total_papers }}</p>
+    </div>
+    <div class="stat-card">
+        <h3><i class="fas fa-star"></i> Recommended</h3>
+        <p class="stat-number">{{ site.data.papers.stats.recommended_papers }}</p>
+    </div>
+    <div class="stat-card">
+        <h3><i class="fas fa-tags"></i> Categories</h3>
+        <p class="stat-number">{{ site.data.papers.stats.total_categories }}</p>
+    </div>
+    <div class="stat-card">
+        <h3><i class="fas fa-chart-line"></i> Avg Score</h3>
+        <p class="stat-number">{{ site.data.papers.stats.avg_score | round: 1 }}</p>
+    </div>
+</section>
+
+<div class="all-papers">
+    {% for paper in site.data.papers.papers %}
+    <div class="paper-card {% if paper.recommended %}recommended{% endif %}" onclick="openModalByIndexAll({{ forloop.index0 }})">
+        <div class="paper-score">
+            <span class="score-number">{{ paper.score | default: 0 | round: 1 }}</span>
+            <span class="score-label">Score</span>
+        </div>
+        <div class="paper-content">
+            <div class="paper-header">
+                <h3 class="paper-title">
+                    <a href="{{ paper.link }}" target="_blank" onclick="event.stopPropagation();">
+                        {{ paper.title }}
+                    </a>
+                </h3>
+                <div class="paper-badges">
+                    {% if paper.recommended %}
+                    <span class="badge recommended-badge">⭐ Recommended</span>
+                    {% endif %}
+                    <span class="badge source-badge">{{ paper.source | upcase }}</span>
+                </div>
+            </div>
+            <div class="paper-meta">
+                <span class="authors">
+                    <i class="fas fa-user"></i> {{ paper.authors | join: ', ' }}
+                </span>
+                <span class="date">
+                    <i class="fas fa-calendar"></i> {{ paper.published_date | date: "%Y-%m-%d" }}
+                </span>
+            </div>
+            <p class="paper-tldr">
+                <strong>TL;DR:</strong> {{ paper.analysis.tldr }}
+            </p>
+            <div class="paper-categories">
+                <span class="category-tag">
+                    {% for category in site.data.papers.categories %}
+                    {% if category[0] == paper.category %}
+                    <i class="fas fa-tag"></i> {{ category[1].name }}
+                    {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    {% if site.data.papers.papers.size == 0 %}
+    <div class="empty-state">
+        <i class="fas fa-file-alt fa-3x"></i>
+        <h3>No papers found</h3>
+        <p>There are no papers in the database yet. Check back later for new papers.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function openModalByIndexAll(index) {
+    // Get all papers
+    const papers = {{ site.data.papers.papers | jsonify }};
+    
+    if (index >= 0 && index < papers.length) {
+        openModal(papers[index]);
+    }
+}
+</script>

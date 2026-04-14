@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        
+            Quantum RSS Radar - Quantum RSS Radar
+        
+    </title>
+    
+    <!-- Theme initialization to prevent flash -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/category-colors.css">
+    <link rel="stylesheet" href="/assets/css/category-stats.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Alpine.js for interactivity -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Quantum RSS Radar | AI-assisted daily academic research tracking system</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Quantum RSS Radar" />
+<meta name="author" content="Quantum Researcher" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="AI-assisted daily academic research tracking system" />
+<meta property="og:description" content="AI-assisted daily academic research tracking system" />
+<link rel="canonical" href="http://localhost:4001/" />
+<meta property="og:url" content="http://localhost:4001/" />
+<meta property="og:site_name" content="Quantum RSS Radar" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Quantum RSS Radar" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"Quantum Researcher"},"description":"AI-assisted daily academic research tracking system","headline":"Quantum RSS Radar","name":"Quantum RSS Radar","url":"http://localhost:4001/"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+<body x-data="app()">
+    <!-- Header (banner) -->
+    <header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h1><i class="fa-solid fa-satellite-dish"></i> Quantum RSS Radar</h1>
+            <p class="subtitle">AI-assisted daily academic research tracking system</p>
+        </div>
+        <div class="header-right">
+            <div class="header-controls">
+                <div class="header-controls-top">
+                    <button class="theme-toggle" @click="toggleTheme()" :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+                        <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+                    </button>
+                    <button class="calendar-toggle" @click="toggleCalendar()" title="Select date to filter papers">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                </div>
+                <p class="date">Last updated: 
+                    
+                        2026-04-14 22:31:14
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</header>
+    
+    <!-- Navigation and search -->
+    <!-- Combined Navigation and Search Bar -->
+<div class="nav-search-container">
+    <div class="container nav-search-inner">
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/" class="active">
+                    <i class="fas fa-home"></i> Home
+                </a></li>
+                <li><a href="/pages/recommended/" >
+                    <i class="fas fa-star"></i> Recommended
+                </a></li>
+                <li><a href="/pages/all-papers/" >
+                    <i class="fas fa-file-alt"></i> All
+                </a></li>
+                <li><a href="/pages/categories/" >
+                    <i class="fas fa-tags"></i> Categories
+                </a></li>
+            </ul>
+        </nav>
+        
+        <div class="nav-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" 
+                   placeholder="Search papers by title, author, or keyword..." 
+                   x-model="searchQuery"
+                   @input="filterPapers()">
+        </div>
+    </div>
+</div>
+
+<!-- Calendar dropdown (hidden by default) -->
+<div class="calendar-dropdown" x-show="showCalendar" @click.away="showCalendar = false">
+    <div class="calendar-header">
+        <h3><i class="fas fa-calendar"></i> Filter by Date</h3>
+        <button class="close-calendar" @click="showCalendar = false">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="calendar-body">
+        <input type="date" x-model="selectedDate" @change="filterByDate()">
+        <div class="quick-dates">
+            <button @click="setDate('today')">Today</button>
+            <button @click="setDate('yesterday')">Yesterday</button>
+            <button @click="setDate('last_3_days')">Last 3 days</button>
+            <button @click="setDate('last_7_days')">Last 7 days</button>
+            <button @click="setDate('this_month')">This month</button>
+            <button @click="setDate('')">Clear filter</button>
+        </div>
+        <p class="calendar-note">Select a date to see papers from that day</p>
+    </div>
+</div>
+    
+    <!-- Main content -->
+    <main class="container">
+        <!-- Simplified filter controls -->
+<div class="filter-controls-simple" x-show="!showCalendar">
+    <select x-model="selectedCategory" @change="filterPapers()">
+        <option value="">All Categories</option>
+        
+        <option value="information_thermodynamics">Information Thermodynamics</option>
+        
+        <option value="quantum_foundations">Quantum Foundations</option>
+        
+        <option value="quantum_communication">Quantum Communication</option>
+        
+        <option value="hybrid_quantum_systems">Hybrid Quantum Systems</option>
+        
+    </select>
+    <select x-model="selectedSource" @change="filterPapers()">
+        <option value="">All Sources</option>
+        <option value="arxiv">arXiv</option>
+        <option value="nature">Nature</option>
+        <option value="science">Science</option>
+        <option value="aps">APS</option>
+        <option value="ieee">IEEE</option>
+        <option value="acm">ACM</option>
+        <option value="springer">Springer</option>
+    </select>
+    <label>
+        <input type="checkbox" x-model="showOnlyRecommended" @change="filterPapers()">
+        Show only recommended
+    </label>
+    <select x-model="sortBy" @change="sortPapers()">
+        <option value="score">Sort by score (high to low)</option>
+        <option value="date">Sort by date (new to old)</option>
+        <option value="title">Sort by title (A-Z)</option>
+    </select>
+</div>
+
+<!-- Top Recommended Papers -->
+<section class="top-papers">
+    <h2><i class="fas fa-crown"></i> Top Recommended Papers</h2>
+    
+    <div class="top-papers-rows" x-show="filteredPapers.length > 0">
+        <template x-for="paper in recommendedPapers" :key="paper.id">
+            <div class="top-paper-row" :class="{ 'recommended': paper.recommended }"
+                 @click="openModal(paper)">
+                <div class="row-score">
+                    <span x-text="paper.score.toFixed(1)"></span>
+                </div>
+                <div class="row-content">
+                    <div class="row-header">
+                        <h3 class="row-title">
+                            <a :href="paper.link" target="_blank" @click.stop>
+                                <span x-text="paper.title"></span>
+                            </a>
+                        </h3>
+                        <span class="row-badge" x-show="paper.recommended">⭐ Recommended</span>
+                        <span class="row-source" x-text="paper.source.toUpperCase()"></span>
+                    </div>
+                    <p class="row-authors">
+                        <span x-text="paper.authors.join(', ')"></span>
+                    </p>
+                    <p class="row-tldr" x-text="paper.analysis.tldr"></p>
+                    <div class="row-footer">
+                        <span class="row-category" :style="categoryStyle(paper.category)"
+                              x-text="getCategoryName(paper.category)"></span>
+                        <span class="row-date" x-text="formatDate(paper.published_date)"></span>
+                        <div class="row-actions">
+                            <button class="bookmark-btn-small" @click.stop="toggleBookmark(paper)">
+                                <i class="far" :class="isBookmarked(paper) ? 'fa-bookmark' : 'fa-bookmark'"></i>
+                            </button>
+                            <a href="#" class="row-link" @click.stop="openModal(paper)">
+                                <i class="fas fa-chart-bar"></i> View AI Analysis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    
+    <div class="no-results" x-show="recommendedPapers.length === 0">
+        <i class="fas fa-search"></i>
+        <h3>No recommended papers found</h3>
+        <p>Try adjusting your filters or check back later for new papers.</p>
+    </div>
+</section>
+
+<!-- All Papers -->
+<section class="top-papers">
+    <h2><i class="fas fa-file-alt"></i> All Papers</h2>
+    
+    <div class="papers-grid" x-show="filteredPapers.length > 0">
+        <template x-for="paper in filteredPapers" :key="paper.id">
+            <div class="paper-card" :class="{ 'recommended': paper.recommended }">
+                <div class="paper-header">
+                    <span class="paper-score" x-text="paper.score.toFixed(1)"></span>
+                    <span class="paper-badge" x-show="paper.recommended">Recommended</span>
+                    <span class="paper-source" x-text="paper.source.toUpperCase()"></span>
+                </div>
+                
+                <h3 class="paper-title">
+                    <a :href="paper.link" target="_blank" x-text="paper.title"></a>
+                </h3>
+                
+                <p class="paper-authors" x-text="paper.authors.join(', ')"></p>
+                
+                <p class="paper-tldr" x-text="paper.analysis.tldr"></p>
+                
+                <div class="paper-footer">
+                    <span class="paper-category" :style="categoryStyle(paper.category)"
+                          x-text="getCategoryName(paper.category)"></span>
+                    <span class="paper-date" x-text="formatDate(paper.published_date)"></span>
+                    <button class="bookmark-btn" @click="toggleBookmark(paper)">
+                        <i class="far" :class="isBookmarked(paper) ? 'fa-bookmark' : 'fa-bookmark'"></i>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+    
+    <div class="no-results" x-show="filteredPapers.length === 0">
+        <i class="fas fa-search"></i>
+        <h3>No papers found</h3>
+        <p>Try adjusting your filters or check back later for new papers.</p>
+    </div>
+</section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Data Sources</h3>
+                <p>Tracked from 4 RSS feeds:</p>
+                
+                <div class="data-sources-horizontal">
+                    
+                    
+                    <div class="source-item disabled" title="Not currently in use">
+                        <i class="fas fa-laptop-code"></i>
+                        <span class="source-name">ACM</span>
+                    </div>
+                    
+                    
+                    
+                    <a href="https://journals.aps.org/" target="_blank" class="source-item" 
+                       title="Tracked from APS">
+                        <i class="fas fa-atom"></i>
+                        <span class="source-name">APS</span>
+                    </a>
+                    
+                    
+                    
+                    <div class="source-item disabled" title="Not currently in use">
+                        <i class="fas fa-bolt"></i>
+                        <span class="source-name">IEEE</span>
+                    </div>
+                    
+                    
+                    
+                    <a href="https://www.nature.com/" target="_blank" class="source-item" 
+                       title="Tracked from Nature">
+                        <i class="fas fa-leaf"></i>
+                        <span class="source-name">Nature</span>
+                    </a>
+                    
+                    
+                    
+                    <div class="source-item disabled" title="Not currently in use">
+                        <i class="fas fa-flask"></i>
+                        <span class="source-name">Science</span>
+                    </div>
+                    
+                    
+                    
+                    <a href="https://link.springer.com/" target="_blank" class="source-item" 
+                       title="Tracked from Springer">
+                        <i class="fas fa-book-open"></i>
+                        <span class="source-name">Springer</span>
+                    </a>
+                    
+                    
+                    
+                    <a href="https://arxiv.org/" target="_blank" class="source-item" 
+                       title="Tracked from arXiv">
+                        <i class="fas fa-archive"></i>
+                        <span class="source-name">arXiv</span>
+                    </a>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>System Info</h3>
+                <ul class="footer-links">
+                    <li><a href="/pages/about.html">About the System</a></li>
+                    <li><a href="https://github.com/yourusername/quantum-rss-radar" target="_blank">GitHub Repository</a></li>
+                    <li><a href="/pages/data.html">Data Export</a></li>
+                    <li><a href="/pages/contact.html">Contact</a></li>
+                </ul>
+                <p class="footer-note" style="margin-top: 1rem;">
+                    <i class="fas fa-info-circle"></i> RSS feeds only (no PDF downloads)
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Quantum Researcher. AI-powered research tracking.</p>
+            <p class="footer-note">
+                <i class="fas fa-robot"></i> Analysis powered by LLMs (OpenAI/DeepSeek).
+                Sources: APS, Nature, Springer, arXiv
+            </p>
+            <p class="footer-note" style="font-size: 0.85rem; opacity: 0.6; margin-top: 0.5rem;">
+                Generated from <code>config/rss_sources.yaml</code> on 2026-04-12
+            </p>
+        </div>
+    </div>
+</footer>
+
+    
+    <!-- Modal for AI summary -->
+    <div class="modal-overlay" x-show="modalOpen" @click="closeModal()" x-cloak>
+    <div class="modal-content" @click.stop>
+        <button class="modal-close" @click="closeModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <template x-if="selectedPaper">
+            <div class="paper-modal">
+                <div class="modal-header">
+                    <div class="modal-score">
+                        <span x-text="selectedPaper.score.toFixed(1)"></span>
+                    </div>
+                    <h2 x-text="selectedPaper.title"></h2>
+                    <div class="modal-badges">
+                        <span class="modal-badge" x-show="selectedPaper.recommended">⭐ Recommended</span>
+                        <span class="modal-source" x-text="selectedPaper.source.toUpperCase()"></span>
+                    </div>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="modal-authors">
+                        <strong>Authors:</strong> <span x-text="selectedPaper.authors.join(', ')"></span>
+                    </div>
+                    
+                    <div class="modal-categories">
+                        <strong>Category:</strong> 
+                        <span class="modal-category" :style="categoryStyle(selectedPaper.category)" 
+                              x-text="getCategoryName(selectedPaper.category)"></span>
+                    </div>
+                    
+                    <div class="modal-pubdate">
+                        <strong>Published:</strong> <span x-text="formatDate(selectedPaper.published_date)"></span>
+                    </div>
+                    
+                    <div class="modal-link">
+                        <strong>Link:</strong> 
+                        <a :href="selectedPaper.link" target="_blank" x-text="selectedPaper.link"></a>
+                    </div>
+                    
+                    <div class="modal-abstract">
+                        <h3><i class="fas fa-file-alt"></i> Abstract</h3>
+                        <div class="abstract-text" x-text="selectedPaper.abstract"></div>
+                    </div>
+                    
+                    <div class="modal-analysis">
+                        <h3><i class="fas fa-brain"></i> AI Analysis</h3>
+                        <div class="analysis-grid">
+                            <div class="analysis-item">
+                                <h4>TL;DR</h4>
+                                <p x-text="selectedPaper.analysis.tldr"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Motivation</h4>
+                                <p x-text="selectedPaper.analysis.motivation"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Method</h4>
+                                <p x-text="selectedPaper.analysis.method"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Result</h4>
+                                <p x-text="selectedPaper.analysis.result"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Conclusion</h4>
+                                <p x-text="selectedPaper.analysis.conclusion"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-recommendation">
+                        <h3><i class="fas fa-star"></i> Recommendation</h3>
+                        <div class="recommendation-box">
+                            <div class="score-display">
+                                <strong>Relevance Score:</strong> 
+                                <span class="score-value" x-text="selectedPaper.score.toFixed(1)"></span>/10
+                            </div>
+                            <div class="recommendation-verdict">
+                                <strong>Recommendation:</strong> 
+                                <span class="verdict" :class="selectedPaper.recommended ? 'recommended' : 'not-recommended'">
+                                    <span x-text="selectedPaper.recommended ? 'YES - Read this paper' : 'NO - Lower priority'"></span>
+                                </span>
+                            </div>
+                            <div class="reasoning" x-show="selectedPaper.analysis.reasoning">
+                                <strong>Reasoning:</strong> 
+                                <p x-text="selectedPaper.analysis.reasoning"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="btn-secondary" @click="closeModal()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <a :href="selectedPaper.link" target="_blank" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i> Open Paper
+                    </a>
+                    <button class="btn-secondary" @click="toggleBookmark(selectedPaper)">
+                        <i class="far" :class="isBookmarked(selectedPaper) ? 'fa-bookmark' : 'fa-bookmark'"></i>
+                        <span x-text="isBookmarked(selectedPaper) ? 'Bookmarked' : 'Bookmark'"></span>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+    
+    <!-- JavaScript -->
+    <script src="/assets/js/app.js"></script>
+</body>
+</html>

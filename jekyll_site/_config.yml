@@ -1,0 +1,55 @@
+# Jekyll configuration for Quantum RSS Radar
+title: "Quantum RSS Radar"
+description: "AI-assisted daily academic research tracking system"
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site
+
+# Build settings
+markdown: kramdown
+permalink: pretty
+future: false
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Custom variables
+# theme: "quantum-rss-radar"  # Commented out as we don't have a theme gem
+author: "Quantum Researcher"
+email: "research@example.com"
+github_username: "yourusername"
+
+# Jekyll data settings
+data_dir: "_data"
+collections_dir: ""
+
+# Site defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .jekyll-cache
+  - .git
+  - README.md
+
+# Sass/SCSS
+sass:
+  style: compressed
+
+# Liquid settings
+liquid:
+  error_mode: warn

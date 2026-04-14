@@ -1,220 +1,402 @@
-# Quantum RSS Radar
+# Quantum RSS Radar: AI-Assisted Academic Research Tracking
 
-An AI-assisted daily academic research tracking system that aggregates RSS feeds from arXiv and major journals, uses LLMs to classify and rank papers based on semantic relevance, and generates structured summaries with recommendations.
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Static Site](https://img.shields.io/badge/Deployment-GitHub%20Pages-blueviolet.svg)](https://pages.github.com/)
 
-## Features
+An intelligent research assistant that aggregates RSS feeds from academic journals and uses LLMs (OpenAI/DeepSeek) to classify, score, and rank papers based on semantic relevance to your research interests.
 
-- **RSS Aggregation**: Fetch papers from arXiv (multiple categories), APS, Nature, Science, Springer, IEEE, ACM, etc.
-- **AI Analysis**: Use OpenAI/DeepSeek LLMs to classify, score, and rank papers based on your research directions
-- **Structured Summaries**: Generate consistent summaries for each paper including:
-  - TLDR
-  - Motivation
-  - Method
-  - Result
-  - Conclusion
-  - Score (0-10)
-  - Recommendation ("yes"/"no")
-- **Daily Automation**: Run once per day, save all processed data (JSONL + Markdown)
-- **Static Website**: Generate a responsive website with search, filtering, and bookmarking
-- **Email Digest**: Send daily email with top recommended papers
+> **Smart Research, Simplified**: Track relevant papers daily without manual effort. Perfect for researchers, PhD students, and academics who want to stay current in their field.
+
+## ✨ Features
+
+### 🔍 Intelligent Paper Discovery
+- **Comprehensive RSS Aggregation**: arXiv (all categories), APS, Nature, Science, Springer, IEEE, ACM journals
+- **Semantic Analysis**: LLM-powered classification and scoring based on your research directions
+- **Daily Updates**: Automatically fetches and analyzes new papers every day
+
+### 🤖 AI-Powered Analysis
+- **Structured Summaries**: TLDR, motivation, method, result, conclusion for each paper
+- **Relevance Scoring**: 0-10 scores based on semantic similarity to your interests
+- **Smart Recommendations**: "Yes"/"No" recommendations with reasoning
+- **Categorization**: Automatic tagging based on research topics
+
+### 🌐 Beautiful Static Website
+- **Responsive Design**: Mobile-friendly interface with dark/light modes
+- **Advanced Filtering**: Search, filter by category, score, date, recommendation
+- **Paper Details**: Complete AI analysis summaries and metadata
+- **Local Storage**: Bookmark papers for later reading
+
+### 🔧 DevOps & Deployment
 - **Local-First Development**: Test everything locally before deployment
-- **Docker Support**: Portable deployment for local → GitHub Actions → Aliyun ECS
-- **No PDF Downloads**: Use only abstracts from RSS feeds
+- **GitHub Pages**: Deploy static site for free with automatic updates
+- **Docker Support**: Portable container for any cloud (Aliyun ECS, AWS, etc.)
+- **GitHub Actions**: Fully automated daily runs with secrets protection
 
-## Architecture
+## 📁 Project Structure
 
 ```
 quantum-rss-radar/
 ├── config/                    # Configuration files
-├── src/                      # Python modules
-├── web/                      # Static website (HTML/JS/CSS)
-├── data/                     # Local data storage (gitignored)
-├── docker/                   # Docker configuration
-├── .github/workflows/        # GitHub Actions automation
-├── scripts/                  # Shell scripts for local execution
-├── pyproject.toml           # Python dependencies with uv
-└── README.md
+│   ├── research_directions.md   # Your research interests (edit this)
+│   ├── rss_sources.yaml         # RSS feed configurations (edit this)
+│   ├── settings.yaml.example    # Example configuration (copy to settings.yaml)
+│   └── settings.yaml            # Main configuration (gitignored - use secrets)
+├── src/                       # Python source code
+│   ├── __init__.py
+│   ├── config_loader.py       # Configuration loading
+│   ├── rss_fetcher.py         # RSS feed fetching
+│   ├── semantic_analyzer.py   # LLM-based paper analysis
+│   ├── website_builder.py     # Jekyll website generation
+│   └── ... (more modules)
+├── jekyll_site/               # Jekyll website templates
+│   ├── _config.yml            # Jekyll configuration
+│   ├── _layouts/              # Page layouts
+│   ├── _includes/             # Reusable components
+│   ├── assets/                # CSS, JS files
+│   └── pages/                 # Content pages
+├── scripts/                   # Utility scripts
+│   ├── run_local.sh           # Run full pipeline locally
+│   └── setup_github.sh        # Setup GitHub repository
+├── docker/                    # Docker configuration
+├── .github/workflows/         # GitHub Actions workflows
+├── pyproject.toml             # Python dependencies (uv)
+├── requirements.txt           # Python dependencies (pip)
+├── Dockerfile                 # Docker container definition
+├── docker-compose.yaml        # Docker compose configuration
+└── README.md                  # This file
 ```
 
-## Quick Start
+## 🚀 Quick Start: Local Development
 
 ### Prerequisites
-
 - Python 3.10+
-- [uv](https://github.com/astral-sh/uv) (fast Python package installer)
+- [uv](https://github.com/astral-sh/uv) (recommended) or pip
 - LLM API key (OpenAI or DeepSeek)
 
-### Installation
+### Step 1: Setup Environment
+```bash
+# Clone repository
+git clone https://github.com/yourusername/quantum-rss-radar.git
+cd quantum-rss-radar
 
-1. **Clone and setup**:
-   ```bash
-   # Create virtual environment and install dependencies
-   uv venv
-   source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-   uv sync
-   ```
+# Create virtual environment and install dependencies
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv sync
 
-2. **Configure**:
-   - Edit `config/research_directions.md` with your research interests
-   - Edit `config/rss_sources.yaml` with your RSS feed URLs
-   - Copy `config/settings.yaml.example` to `config/settings.yaml` and add your API keys
+# Or with pip
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-3. **Run locally**:
-    ```bash
-    # Full pipeline
-    ./scripts/run_local.sh
-    
-    # Or directly
-    uv run python -m src.orchestrator
-    ```
+### Step 2: Configure Your Research
+```bash
+# 1. Edit your research interests
+nano config/research_directions.md
 
-4. **View website**:
-   ```bash
-   python -m http.server -d web 8000
-   # Open http://localhost:8000
-   ```
+# 2. Configure RSS feeds (optional - default includes major journals)
+nano config/rss_sources.yaml
 
-## Configuration
+# 3. Create settings.yaml from example
+cp config/settings.yaml.example config/settings.yaml
+
+# 4. Configure API keys using environment variables
+export OPENAI_API_KEY="your-api-key-here"  # or DEEPSEEK_API_KEY
+```
+
+### Step 3: Run Locally
+```bash
+# Run full pipeline
+./scripts/run_local.sh
+
+# Or run manually
+python -m src.orchestrator_jekyll
+
+# The pipeline will:
+# 1. Fetch RSS feeds from all configured sources
+# 2. Analyze papers using LLM
+# 3. Generate website in jekyll_site/_site/
+```
+
+### Step 4: View Results
+```bash
+# Serve the generated website
+cd jekyll_site
+bundle exec jekyll serve
+
+# Open http://localhost:4001 in your browser
+```
+
+## 🔐 Security: Protecting API Keys
+
+### Local Development (Environment Variables)
+```bash
+# Method 1: Direct export
+export OPENAI_API_KEY="your-key-here"
+export EMAIL_SMTP_PASSWORD="your-password"
+
+# Method 2: Use .env file (gitignored)
+echo "OPENAI_API_KEY=your-key-here" >> config/.env
+echo "DEEPSEEK_API_KEY=your-key-here" >> config/.env
+```
+
+### GitHub Deployment (GitHub Secrets)
+1. Go to your repository → Settings → Secrets and variables → Actions
+2. Add these secrets:
+   - `OPENAI_API_KEY` or `DEEPSEEK_API_KEY`
+   - `EMAIL_SMTP_PASSWORD` (if using email)
+   - `EMAIL_SENDER`, `EMAIL_RECIPIENT`, etc.
+
+3. GitHub Actions will automatically use these secrets
+
+### Configuration File Example (`config/settings.yaml`)
+```yaml
+# IMPORTANT: This file should NOT contain actual API keys
+# Use environment variables or GitHub Secrets instead
+
+llm:
+  provider: "openai"  # or "deepseek"
+  model: "gpt-4-turbo-preview"
+  api_key: "${OPENAI_API_KEY}"  # Read from environment variable
+
+email:
+  enabled: false
+  sender: "${EMAIL_SENDER}"
+  recipient: "${EMAIL_RECIPIENT}"
+  smtp_server: "${EMAIL_SMTP_SERVER}"
+  smtp_username: "${EMAIL_SMTP_USERNAME}"
+  smtp_password: "${EMAIL_SMTP_PASSWORD}"  # From GitHub Secrets
+```
+
+## 🌍 Deploy to GitHub Pages
+
+### Option A: Automated GitHub Actions (Recommended)
+1. **Fork this repository** or create a new one from this template
+2. **Add your GitHub Secrets** as described above
+3. **Configure GitHub Pages**:
+   - Go to repository Settings → Pages
+   - Source: GitHub Actions
+   - The workflow will automatically deploy to GitHub Pages
+
+4. **The default workflow** (`daily-run.yml`) will:
+   - Run daily at 08:00 UTC
+   - Process RSS feeds and analyze papers
+   - Build the Jekyll site
+   - Deploy to GitHub Pages
+   - Keep your site updated automatically
+
+### Option B: Manual GitHub Pages Deployment
+```bash
+# 1. Push your repository to GitHub
+git remote add origin https://github.com/yourusername/quantum-rss-radar.git
+git push -u origin main
+
+# 2. Enable GitHub Pages in repository settings
+# Settings → Pages → Source: "main branch" → "/jekyll_site/_site" folder
+
+# 3. Run pipeline and deploy
+./scripts/run_local.sh
+git add jekyll_site/_site
+git commit -m "Update site"
+git push origin main
+```
+
+### Option C: Docker Deployment (Aliyun ECS, AWS, etc.)
+```bash
+# Build Docker image
+docker build -t quantum-rss-radar .
+
+# Run with environment variables
+docker run -d \
+  -e OPENAI_API_KEY="your-key" \
+  -v $(pwd)/config:/app/config \
+  -v $(pwd)/data:/app/data \
+  quantum-rss-radar
+
+# Or use docker-compose
+docker-compose up -d
+```
+
+## 📊 Customization
 
 ### Research Directions (`config/research_directions.md`)
-Define your research interests in Markdown format. This file is used by the LLM to evaluate paper relevance.
-
-Example:
 ```markdown
-# Research Interests
+# My Research Interests
 
 ## Quantum Computing
-- Quantum error correction
-- Quantum algorithms for optimization
-- NISQ devices and applications
+- Quantum error correction and fault tolerance
+- Quantum algorithms for optimization problems
+- NISQ devices and near-term applications
+- Quantum machine learning and neural networks
 
-## Machine Learning
-- Quantum machine learning
-- Federated learning
+## Artificial Intelligence
 - Large language models for scientific discovery
+- Federated learning and privacy-preserving ML
+- Reinforcement learning for control systems
+- Explainable AI in scientific domains
+
+## Materials Science
+- Quantum materials and topological insulators
+- High-temperature superconductivity
+- 2D materials and van der Waals heterostructures
+- Computational materials discovery
 ```
 
 ### RSS Sources (`config/rss_sources.yaml`)
-Define RSS feeds with categories and metadata.
-
-Example:
 ```yaml
 feeds:
   - name: "arXiv Quantum Physics"
     url: "http://arxiv.org/rss/quant-ph"
-    category: "quantum"
+    category: "quantum_computing"
+    source: "arxiv"
+  
+  - name: "arXiv Machine Learning"
+    url: "http://arxiv.org/rss/cs.LG"
+    category: "machine_learning"
     source: "arxiv"
   
   - name: "Nature Physics"
     url: "https://www.nature.com/nphys.rss"
     category: "physics"
     source: "nature"
+  
+  - name: "Science Magazine"
+    url: "https://www.science.org/rss/current.xml"
+    category: "general_science"
+    source: "science"
+
+categories:
+  quantum_computing:
+    display_name: "Quantum Computing"
+    color: "#4A90E2"
+    priority: 1
+  
+  machine_learning:
+    display_name: "Machine Learning"
+    color: "#7ED321"
+    priority: 2
 ```
 
-### Settings (`config/settings.yaml`)
-Configure LLM, email, and processing parameters.
+## 🔄 Daily Workflow
 
-Example:
-```yaml
-llm:
-  provider: "openai"  # or "deepseek"
-  model: "gpt-4-turbo-preview"
-  api_key: "${OPENAI_API_KEY}"  # Use environment variables
+The system runs daily via GitHub Actions or local cron job:
 
-email:
-  enabled: true
-  sender: "research@example.com"
-  recipient: "you@example.com"
-  smtp_server: "smtp.gmail.com"
-  smtp_port: 587
+```
+1. Fetch RSS Feeds (8:00 UTC)
+   └── Download latest papers from all configured sources
+   
+2. Normalize Metadata
+   └── Convert to unified paper schema
 
-processing:
-  max_papers_per_feed: 50
-  min_relevance_score: 5.0
-  top_n_recommendations: 10
+3. Deduplicate
+   └── Remove duplicate papers across sources
+
+4. AI Semantic Analysis
+   └── LLM evaluates each paper against research interests
+   └── Generates scores, summaries, recommendations
+
+5. Generate Outputs
+   ├── JSONL: Structured data for analysis
+   ├── Markdown: Human-readable reports
+   └── Website: Complete Jekyll site with search/filtering
+
+6. Deploy Website
+   └── GitHub Pages, Netlify, or any static hosting
+
+7. Send Email (Optional)
+   └── Daily digest with top recommended papers
 ```
 
-## Daily Workflow
+## 🌐 Website Features
 
-The system follows this pipeline daily:
+Visit your deployed site to access:
 
-1. **Fetch RSS feeds** → Download latest papers from all configured sources
-2. **Normalize metadata** → Convert to unified paper schema
-3. **Deduplicate** → Remove duplicate papers across sources
-4. **AI Analysis** → LLM evaluates each paper against research interests
-5. **Generate outputs** → Create JSONL, Markdown reports, and static website
-6. **Send email** → Deliver top recommendations via email
-7. **Deploy website** → Update GitHub Pages or other hosting
-
-## Deployment Options
-
-### Local Development
-```bash
-# Run full pipeline
-./scripts/run_local.sh
-
-# Test with mock data
-./scripts/test_local.sh
-```
-
-### GitHub Actions + Pages
-- Automated daily runs via GitHub Actions
-- Static site deployed to GitHub Pages
-- No server costs, fully automated
-
-### Docker (Aliyun ECS)
-```bash
-# Build and run
-docker build -t quantum-rss-radar -f docker/Dockerfile .
-docker run -v ./config:/app/config -v ./data:/app/data quantum-rss-radar
-
-# Or use docker-compose
-docker-compose -f docker/docker-compose.yaml up
-```
-
-## Website Features
-
-The generated static website includes:
-
+- **Home Page**: Top recommended papers, filtering controls
+- **Recommended Papers**: All AI-recommended papers with scores
+- **All Papers**: Complete database with advanced filtering
+- **Categories**: Browse by research category with statistics
 - **Search**: Client-side search across titles, abstracts, authors
-- **Filtering**: By category, score range, recommendation, source
-- **Sorting**: By score, date, relevance
-- **Bookmarks**: LocalStorage-based paper saving
-- **Responsive Design**: Works on mobile and desktop
-- **Paper Details**: Complete summaries and metadata
+- **Dark/Light Mode**: Toggle between themes
+- **Date Filtering**: Calendar picker for specific dates
+- **Paper Details**: Complete AI analysis in modal view
+- **Bookmarks**: Save papers locally for later reading
 
-## Data Storage
+## 🛠️ Development
 
-- `data/raw/`: Raw RSS XML snapshots (daily)
-- `data/processed/`: AI-enhanced JSONL with scores and summaries
-- `data/markdown/`: Daily Markdown reports for human reading
-- `web/`: Generated static website (can be deployed anywhere)
+### Adding New Features
+1. Create new module in `src/`
+2. Update orchestrator to include it
+3. Add configuration options if needed
+4. Update website templates for new features
 
-## Development
-
-### Adding a New Module
-1. Create Python file in `src/`
-2. Update `src/__init__.py` if needed
-3. Import and use in `src/pipeline.py`
-4. Add tests if applicable
-
-### Testing
+### Running Tests
 ```bash
+# Install development dependencies
+uv sync --dev
+
 # Run tests
 uv run pytest
 
 # Type checking
 uv run mypy src/
 
-# Formatting
+# Code formatting
 uv run black src/
 uv run ruff check --fix src/
 ```
 
-## License
+### Building Documentation
+```bash
+# Generate API documentation
+uv run pdoc --html src/ --output-dir docs/
+
+# Build this README with updates
+# The project structure section is auto-generated from actual files
+```
+
+## 📈 Data Flow
+
+```
+Raw RSS Feeds → Fetch → Normalize → Deduplicate → AI Analysis → Outputs
+    ↓           ↓          ↓           ↓            ↓           ↓
+arXiv/Nature/  XML/Atom  Unified     Unique       Scores     JSONL
+Science/APS     Feeds     Schema      Papers      Summaries  Markdown
+                                                           Jekyll Site
+                                                           Email Digest
+```
+
+## 📝 License
 
 MIT License - see LICENSE file for details.
 
-## Contributing
+## 🤝 Contributing
 
-This is a personal research tracking system. Feel free to fork and adapt for your own needs!
+This is a personal research tracking system designed for academic use. Feel free to:
+
+1. **Fork** for your own research needs
+2. **Customize** RSS feeds and categories
+3. **Extend** with new analysis features
+4. **Share** improvements via pull requests
+
+## 🔮 Roadmap
+
+- [ ] Add more RSS sources (bioRxiv, medRxiv, SSRN)
+- [ ] Citation graph analysis
+- [ ] Author tracking and collaboration networks
+- [ ] Conference deadline tracking
+- [ ] Mobile app with notifications
+- [ ] Plugin system for custom analyzers
+
+## 📞 Support
+
+- **Issues**: GitHub Issues for bugs and feature requests
+- **Discussions**: GitHub Discussions for questions and ideas
+- **Email**: Configure daily email digest for personal use
+
+---
+
+**Happy Researching!** 📚✨
+
+Your AI research assistant is ready to help you discover the most relevant papers in your field.

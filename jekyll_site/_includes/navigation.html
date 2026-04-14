@@ -1,0 +1,51 @@
+<!-- Combined Navigation and Search Bar -->
+<div class="nav-search-container">
+    <div class="container nav-search-inner">
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' or page.url == '/index.html' %}class="active"{% endif %}>
+                    <i class="fas fa-home"></i> Home
+                </a></li>
+                <li><a href="{{ '/pages/recommended/' | relative_url }}" {% if page.url contains '/recommended' %}class="active"{% endif %}>
+                    <i class="fas fa-star"></i> Recommended
+                </a></li>
+                <li><a href="{{ '/pages/all-papers/' | relative_url }}" {% if page.url contains '/all-papers' %}class="active"{% endif %}>
+                    <i class="fas fa-file-alt"></i> All
+                </a></li>
+                <li><a href="{{ '/pages/categories/' | relative_url }}" {% if page.url contains '/categories' %}class="active"{% endif %}>
+                    <i class="fas fa-tags"></i> Categories
+                </a></li>
+            </ul>
+        </nav>
+        
+        <div class="nav-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" 
+                   placeholder="Search papers by title, author, or keyword..." 
+                   x-model="searchQuery"
+                   @input="filterPapers()">
+        </div>
+    </div>
+</div>
+
+<!-- Calendar dropdown (hidden by default) -->
+<div class="calendar-dropdown" x-show="showCalendar" @click.away="showCalendar = false">
+    <div class="calendar-header">
+        <h3><i class="fas fa-calendar"></i> Filter by Date</h3>
+        <button class="close-calendar" @click="showCalendar = false">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="calendar-body">
+        <input type="date" x-model="selectedDate" @change="filterByDate()">
+        <div class="quick-dates">
+            <button @click="setDate('today')">Today</button>
+            <button @click="setDate('yesterday')">Yesterday</button>
+            <button @click="setDate('last_3_days')">Last 3 days</button>
+            <button @click="setDate('last_7_days')">Last 7 days</button>
+            <button @click="setDate('this_month')">This month</button>
+            <button @click="setDate('')">Clear filter</button>
+        </div>
+        <p class="calendar-note">Select a date to see papers from that day</p>
+    </div>
+</div>

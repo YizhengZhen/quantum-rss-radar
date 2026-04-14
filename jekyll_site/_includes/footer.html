@@ -1,0 +1,51 @@
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Data Sources</h3>
+                <p>Tracked from {{ site.data.rss_sources.count }} RSS feeds:</p>
+                
+                <div class="data-sources-horizontal">
+                    {% for source in site.data.rss_sources.sources %}
+                    {% if source.enabled != false %}
+                    <a href="{{ source.url }}" target="_blank" class="source-item" 
+                       title="Tracked from {{ source.name }}">
+                        <i class="{{ source.icon }}"></i>
+                        <span class="source-name">{{ source.name }}</span>
+                    </a>
+                    {% else %}
+                    <div class="source-item disabled" title="Not currently in use">
+                        <i class="{{ source.icon }}"></i>
+                        <span class="source-name">{{ source.name }}</span>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>System Info</h3>
+                <ul class="footer-links">
+                    <li><a href="/pages/about.html">About the System</a></li>
+                    <li><a href="https://github.com/yourusername/quantum-rss-radar" target="_blank">GitHub Repository</a></li>
+                    <li><a href="/pages/data.html">Data Export</a></li>
+                    <li><a href="/pages/contact.html">Contact</a></li>
+                </ul>
+                <p class="footer-note" style="margin-top: 1rem;">
+                    <i class="fas fa-info-circle"></i> RSS feeds only (no PDF downloads)
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; {{ site.time | date: "%Y" }} {{ site.author | default: "Quantum RSS Radar" }}. AI-powered research tracking.</p>
+            <p class="footer-note">
+                <i class="fas fa-robot"></i> Analysis powered by LLMs (OpenAI/DeepSeek).
+                Sources: {% for source in site.data.rss_sources.sources %}{% if source.enabled != false %}{{ source.name }}{% unless forloop.last %}, {% endunless %}{% endif %}{% endfor %}
+            </p>
+            <p class="footer-note" style="font-size: 0.85rem; opacity: 0.6; margin-top: 0.5rem;">
+                Generated from <code>config/rss_sources.yaml</code> on {{ site.data.rss_sources.generated_at | date: "%Y-%m-%d" }}
+            </p>
+        </div>
+    </div>
+</footer>

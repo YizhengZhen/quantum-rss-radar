@@ -1099,17 +1099,25 @@ footer p {
                 logger.debug(f"Created default template: {filename}")
     
     def build_website(self, 
-                     papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                     categories: Dict[str, CategoryConfig],
+                     all_papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
+                     filtered_papers_with_analyses: List[tuple[Paper, PaperAnalysis]] = None,
+                     categories: Dict[str, CategoryConfig] = None,
                      top_n: int = 10):
         """
         Build complete static website.
         
         Args:
-            papers_with_analyses: List of (paper, analysis) tuples
+            all_papers_with_analyses: All papers with analyses (unfiltered)
+            filtered_papers_with_analyses: Filtered papers with score >= min_relevance_score
             categories: Category configurations
             top_n: Number of top papers to feature on homepage
         """
+        # Backward compatibility: if filtered_papers_with_analyses not provided, use all papers
+        if filtered_papers_with_analyses is None:
+            filtered_papers_with_analyses = all_papers_with_analyses
+        
+        if categories is None:
+            categories = {}
         logger.info(f"Building website in {self.web_dir}")
         
         # Clear and create web directory
@@ -1122,17 +1130,17 @@ footer p {
         (self.web_dir / "js").mkdir()
         (self.web_dir / "assets").mkdir()
         
-        # Prepare data for templates
-        context = self._prepare_template_context(papers_with_analyses, categories, top_n)
+        # Prepare data for templates (use all papers for the website)
+        context = self._prepare_template_context(all_papers_with_analyses, categories, top_n)
         
         # Generate main pages
         self._generate_main_pages(context)
         
         # Generate individual paper pages
-        self._generate_paper_pages(papers_with_analyses, categories, context)
+        self._generate_paper_pages(all_papers_with_analyses, categories, context)
         
         # Generate category pages
-        self._generate_category_pages(papers_with_analyses, categories, context)
+        self._generate_category_pages(all_papers_with_analyses, categories, context)
         
         # Copy static assets
         self._copy_static_assets()

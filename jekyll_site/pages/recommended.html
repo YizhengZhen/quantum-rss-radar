@@ -1,0 +1,101 @@
+---
+layout: default
+title: Recommended Papers
+description: Top recommended research papers from AI analysis
+---
+
+<!-- <div class="page-header">
+    <h1><i class="fas fa-star"></i> Recommended Papers</h1>
+    <p class="page-subtitle">Papers recommended by AI analysis based on your research interests</p>
+</div> -->
+
+<section class="stats">
+    <div class="stat-card">
+        <h3><i class="fas fa-star"></i> Recommended Papers</h3>
+        <p class="stat-number">{{ site.data.papers.stats.recommended_papers }}</p>
+    </div>
+    <div class="stat-card">
+        <h3><i class="fas fa-file-alt"></i> Total Papers</h3>
+        <p class="stat-number">{{ site.data.papers.stats.total_papers }}</p>
+    </div>
+    <div class="stat-card">
+        <h3><i class="fas fa-chart-line"></i> Average Score</h3>
+        <p class="stat-number">{{ site.data.papers.stats.avg_score | round: 1 }}</p>
+    </div>
+</section>
+
+<div class="recommended-papers">
+    {% assign recommended_count = 0 %}
+    {% for paper in site.data.papers.papers %}
+    {% if paper.recommended %}
+    {% assign recommended_count = recommended_count | plus: 1 %}
+    <div class="paper-card recommended" onclick="openModalByIndex({{ forloop.index0 }})">
+        <div class="paper-score">
+            <span class="score-number">{{ paper.score | default: 0 | round: 1 }}</span>
+            <span class="score-label">Score</span>
+        </div>
+        <div class="paper-content">
+            <div class="paper-header">
+                <h3 class="paper-title">
+                    <a href="{{ paper.link }}" target="_blank" onclick="event.stopPropagation();">
+                        {{ paper.title }}
+                    </a>
+                </h3>
+                <div class="paper-badges">
+                    <span class="badge recommended-badge">⭐ Recommended</span>
+                    <span class="badge source-badge">{{ paper.source | upcase }}</span>
+                </div>
+            </div>
+            <div class="paper-meta">
+                <span class="authors">
+                    <i class="fas fa-user"></i> {{ paper.authors | join: ', ' }}
+                </span>
+                <span class="date">
+                    <i class="fas fa-calendar"></i> {{ paper.published_date | date: "%Y-%m-%d" }}
+                </span>
+            </div>
+            <p class="paper-tldr">
+                <strong>TL;DR:</strong> {{ paper.analysis.tldr }}
+            </p>
+            <div class="paper-categories">
+                <span class="category-tag">
+                    {% for category in site.data.papers.categories %}
+                    {% if category[0] == paper.category %}
+                    <i class="fas fa-tag"></i> {{ category[1].name }}
+                    {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    
+    {% if recommended_count == 0 %}
+    <div class="empty-state">
+        <i class="fas fa-star fa-3x"></i>
+        <h3>No recommended papers found</h3>
+        <p>There are no papers with AI recommendation at the moment. Check back later for new recommendations.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function openModalByIndex(index) {
+    // Get all recommended papers
+    const papers = {{ site.data.papers.papers | jsonify }};
+    const recommendedPapers = papers.filter(p => p.recommended);
+    
+    if (index >= 0 && index < recommendedPapers.length) {
+        openModal(recommendedPapers[index]);
+    }
+}
+
+// Make openModal function globally available
+if (typeof window.openModal !== 'function') {
+    window.openModal = function(paper) {
+        // Fallback modal function
+        alert('Paper details: ' + paper.title + '\n\nScore: ' + paper.score + '\n\nTL;DR: ' + paper.analysis.tldr);
+    };
+}
+</script>

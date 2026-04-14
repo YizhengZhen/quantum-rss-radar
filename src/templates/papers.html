@@ -24,6 +24,9 @@
             </div>
             <div class="header-right">
                 <div class="header-controls">
+                    <button class="calendar-toggle" @click="toggleCalendar()" title="Select date to filter papers">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
                     <button class="theme-toggle" @click="toggleTheme()" :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
                         <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
                     </button>
@@ -31,85 +34,89 @@
                 </div>
             </div>
         </div>
-    </header>
-    
-    <nav>
-        <div class="container">
-            <ul>
-                <li><a href="index.html" {% if active_page == 'index' %}class="active"{% endif %}><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="papers.html" {% if active_page == 'papers' %}class="active"{% endif %}><i class="fas fa-file-alt"></i> All Papers</a></li>
-                <li><a href="recommended.html" {% if active_page == 'recommended' %}class="active"{% endif %}><i class="fas fa-star"></i> Recommended</a></li>
-                <li><a href="categories.html" {% if active_page == 'categories' %}class="active"{% endif %}><i class="fas fa-tags"></i> Categories</a></li>
-            </ul>
-        </div>
-    </nav>
-    
-    <main class="container">
-        <section class="search-section">
-            <div class="search-box">
+        
+        <!-- Combined Navigation and Search Bar -->
+        <div class="container nav-search-container">
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" {% if active_page == 'index' %}class="active"{% endif %}><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="recommended.html" {% if active_page == 'recommended' %}class="active"{% endif %}><i class="fas fa-star"></i> Recommended</a></li>
+                    <li><a href="papers.html" {% if active_page == 'papers' %}class="active"{% endif %}><i class="fas fa-file-alt"></i> All</a></li>
+                    <li><a href="categories.html" {% if active_page == 'categories' %}class="active"{% endif %}><i class="fas fa-tags"></i> Categories</a></li>
+                </ul>
+            </nav>
+            
+            <div class="nav-search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" 
                        placeholder="Search {{ total_papers }} papers by title, author, or keyword..." 
                        x-model="searchQuery"
                        @input="filterPapers()">
             </div>
-            <div class="filter-controls">
-                <select x-model="selectedCategory" @change="filterPapers()">
-                    <option value="">All Categories</option>
-                    {% for category_id, category in categories.items() %}
-                    <option value="{{ category_id }}">{{ category.display_name }}</option>
-                    {% endfor %}
-                </select>
-                <select x-model="selectedSource" @change="filterPapers()">
-                    <option value="">All Sources</option>
-                    <option value="arxiv">arXiv</option>
-                    <option value="nature">Nature</option>
-                    <option value="science">Science</option>
-                    <option value="aps">APS</option>
-                    <option value="ieee">IEEE</option>
-                    <option value="acm">ACM</option>
-                    <option value="springer">Springer</option>
-                </select>
-                <select x-model="selectedDateRange" @change="filterPapers()">
-                    <option value="">All RSS Dates</option>
-                    <option value="today">Today</option>
-                    <option value="yesterday">Yesterday</option>
-                    <option value="last_3_days">Last 3 days</option>
-                    <option value="last_5_days">Last 5 days</option>
-                    <option value="last_7_days">Last 7 days</option>
-                    <option value="this_week">This week</option>
-                    <option value="last_week">Last week</option>
-                </select>
-                <select x-model="sortBy" @change="filterPapers()">
-                    <option value="score">Sort by Score</option>
-                    <option value="date">Sort by Date</option>
-                    <option value="title">Sort by Title</option>
-                </select>
-                <label>
-                    <input type="checkbox" x-model="showRecommendedOnly" @change="filterPapers()">
-                    Show recommended only
-                </label>
+        </div>
+    </header>
+    
+    <main class="container">
+        <!-- Calendar dropdown (hidden by default) -->
+        <div class="calendar-dropdown" x-show="showCalendar" @click.away="showCalendar = false">
+            <div class="calendar-header">
+                <h3><i class="fas fa-calendar"></i> Filter by Date</h3>
+                <button class="close-calendar" @click="showCalendar = false">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            
-            <div class="tag-filter-section">
-                <div class="tag-search">
-                    <input type="text" 
-                           placeholder="Search tags..." 
-                           x-model="tagSearch"
-                           @input="filterTags()">
+            <div class="calendar-body">
+                <input type="date" x-model="selectedDate" @change="filterByDate()">
+                <div class="quick-dates">
+                    <button @click="setDate('today')">Today</button>
+                    <button @click="setDate('yesterday')">Yesterday</button>
+                    <button @click="setDate('last_3_days')">Last 3 days</button>
+                    <button @click="setDate('last_7_days')">Last 7 days</button>
+                    <button @click="setDate('this_month')">This month</button>
+                    <button @click="setDate('')">Clear filter</button>
                 </div>
-                <div class="tag-cloud">
-                    <template x-for="tag in filteredTags" :key="tag.name">
-                        <button class="tag-btn" 
-                                :class="{ 'active': selectedTags.includes(tag.name) }"
-                                @click="toggleTag(tag.name)">
-                            <span x-text="tag.name"></span>
-                            <span class="tag-count" x-text="tag.count"></span>
-                        </button>
-                    </template>
-                </div>
+                <p class="calendar-note">Select a date to see papers from that day</p>
             </div>
-        </section>
+        </div>
+        
+        <!-- Filter controls (simplified, no tag search) -->
+        <div class="filter-controls-simple" x-show="!showCalendar">
+            <select x-model="selectedCategory" @change="filterPapers()">
+                <option value="">All Categories</option>
+                {% for category_id, category in categories.items() %}
+                <option value="{{ category_id }}">{{ category.display_name }}</option>
+                {% endfor %}
+            </select>
+            <select x-model="selectedSource" @change="filterPapers()">
+                <option value="">All Sources</option>
+                <option value="arxiv">arXiv</option>
+                <option value="nature">Nature</option>
+                <option value="science">Science</option>
+                <option value="aps">APS</option>
+                <option value="ieee">IEEE</option>
+                <option value="acm">ACM</option>
+                <option value="springer">Springer</option>
+            </select>
+            <select x-model="selectedDateRange" @change="filterPapers()">
+                <option value="">All RSS Dates</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="last_3_days">Last 3 days</option>
+                <option value="last_5_days">Last 5 days</option>
+                <option value="last_7_days">Last 7 days</option>
+                <option value="this_week">This week</option>
+                <option value="last_week">Last week</option>
+            </select>
+            <select x-model="sortBy" @change="filterPapers()">
+                <option value="score">Sort by Score</option>
+                <option value="date">Sort by Date</option>
+                <option value="title">Sort by Title</option>
+            </select>
+            <label>
+                <input type="checkbox" x-model="showRecommendedOnly" @change="filterPapers()">
+                Show recommended only
+            </label>
+        </div>
         
         <section class="papers-list">
             <div class="papers-count">

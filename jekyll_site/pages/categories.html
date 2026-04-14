@@ -1,0 +1,79 @@
+---
+layout: default
+title: Categories
+description: Browse papers by research categories
+---
+
+<!-- <div class="page-header">
+    <h1><i class="fas fa-tags"></i> Categories</h1>
+    <p class="page-subtitle">Browse research papers by category</p>
+</div> -->
+
+<section class="categories-grid">
+    {% for category in site.data.papers.categories %}
+    {% assign cat_papers = 0 %}
+    {% assign cat_recommended = 0 %}
+    {% assign total_score = 0 %}
+    {% assign paper_count = 0 %}
+    
+    {% for paper in site.data.papers.papers %}
+    {% if paper.category == category[0] %}
+    {% assign cat_papers = cat_papers | plus: 1 %}
+    {% if paper.recommended %}
+    {% assign cat_recommended = cat_recommended | plus: 1 %}
+    {% endif %}
+    {% if paper.score %}
+    {% assign total_score = total_score | plus: paper.score %}
+    {% assign paper_count = paper_count | plus: 1 %}
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    
+    {% assign avg_score = 0 %}
+    {% if paper_count > 0 %}
+    {% assign avg_score = total_score | divided_by: paper_count %}
+    {% endif %}
+    
+    <a href="{{ '/category/' | append: category[0] | append: '.html' | relative_url }}" class="category-card">
+        <div class="category-header">
+            <div class="category-color-indicator" style="background-color: {{ category[1].color }};"></div>
+            <h3>{{ category[1].name }}</h3>
+        </div>
+        
+        <div class="category-metrics">
+            <div class="metric">
+                <div class="metric-value">{{ cat_papers }}</div>
+                <div class="metric-label">Papers</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ cat_recommended }}</div>
+                <div class="metric-label">Recommended</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ avg_score | round: 1 }}</div>
+                <div class="metric-label">Avg Score</div>
+            </div>
+        </div>
+        
+        <div class="category-footer">
+            <span class="category-link">View papers →</span>
+        </div>
+    </a>
+    {% endfor %}
+</section>
+
+<script>
+function openCategoryPaper(category, index) {
+    // Get papers for this category
+    const allPapers = {{ site.data.papers.papers | jsonify }};
+    const categoryPapers = allPapers.filter(p => p.category === category);
+    
+    if (index >= 0 && index < categoryPapers.length) {
+        if (typeof openModal === 'function') {
+            openModal(categoryPapers[index]);
+        } else {
+            console.warn('openModal function not found');
+        }
+    }
+}
+</script>

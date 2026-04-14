@@ -1,0 +1,27 @@
+<header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h1><i class="fa-solid fa-satellite-dish"></i> {{ site.title }}</h1>
+            <p class="subtitle">{{ site.description }}</p>
+        </div>
+        <div class="header-right">
+            <div class="header-controls">
+                <div class="header-controls-top">
+                    <button class="theme-toggle" @click="toggleTheme()" :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+                        <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+                    </button>
+                    <button class="calendar-toggle" @click="toggleCalendar()" title="Select date to filter papers">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                </div>
+                <p class="date">Last updated: 
+                    {% if site.data.papers.last_updated %}
+                        {{ site.data.papers.last_updated }}
+                    {% else %}
+                        {{ site.time | date: "%Y-%m-%d %H:%M:%S" }}
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</header>
