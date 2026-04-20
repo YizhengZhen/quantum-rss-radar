@@ -1,112 +1,71 @@
+# Quantum RSS Radar - RSS Sources Configuration
+# For testing, only arXiv Quantum Physics (quant-ph) is enabled
+# Add more sources after initial testing is successful
+
 feeds:
-  # ====== HIGH PRIORITY: Core Research Directions ======
-  
-  # 1. Information Thermodynamics
-  - name: "arXiv Statistical Mechanics"
-    url: "http://arxiv.org/rss/cond-mat.stat-mech"
-    category: "thermodynamics"
-    source: "arxiv"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "daily"
-  
-  - name: "Physical Review E (Statistical, Nonlinear, and Soft Matter Physics)"
-    url: "https://journals.aps.org/pre/rss"
-    category: "thermodynamics"
-    source: "aps"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # 2. Quantum Foundations
-  - name: "arXiv Quantum Physics - Foundations"
+  # ====== PRIMARY TEST SOURCE ======
+  # arXiv Quantum Physics - Primary source for testing
+  - name: "arXiv Quantum Physics"
     url: "http://arxiv.org/rss/quant-ph"
-    category: "quantum_foundations"
+    category: "quantum_physics"
     source: "arxiv"
-    max_items: -1  # Unlimited
+    max_items: 50  # Limit to 50 papers for testing
     update_frequency:
       type: "daily"
-  
-  - name: "Physical Review Letters"
-    url: "https://journals.aps.org/prl/rss"
-    category: "quantum_foundations"
-    source: "aps"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "Nature Physics"
-    url: "https://www.nature.com/nphys.rss"
-    category: "quantum_foundations"
-    source: "nature"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # 3. Quantum Communication
-  - name: "arXiv Quantum Physics - Communication"
-    url: "http://arxiv.org/rss/quant-ph"
-    category: "quantum_communication"
-    source: "arxiv"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "daily"
-  
-  - name: "Quantum Information Processing (Springer)"
-    url: "https://link.springer.com/search.rss?facet-content-type=Article&facet-journal-id=11128&channel-name=Quantum%20Information%20Processing"
-    category: "quantum_communication"
-    source: "springer"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  # 4. Hybrid Quantum Systems
-  - name: "Nature Materials"
-    url: "https://www.nature.com/nmat.rss"
-    category: "hybrid_systems"
-    source: "nature"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "Nature Communications - Materials Science"
-    url: "https://www.nature.com/subjects/materials-science/ncomms.rss"
-    category: "hybrid_systems"
-    source: "nature"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  - name: "Physical Review B (Condensed Matter)"
-    url: "https://journals.aps.org/prb/rss"
-    category: "hybrid_systems"
-    source: "aps"
-    max_items: -1  # Unlimited
-    update_frequency:
-      type: "weekdays"
-  
-  
+
+# ====== COMMENTED OUT FOR INITIAL TESTING ======
+# Uncomment these after successful quant-ph testing:
+#
+#   # Nature Physics
+#   - name: "Nature Physics"
+#     url: "https://www.nature.com/nphys.rss"
+#     category: "quantum_physics"
+#     source: "nature"
+#     max_items: -1  # Unlimited
+#     update_frequency:
+#       type: "weekdays"
+#
+#   # Physical Review Letters
+#   - name: "Physical Review Letters"
+#     url: "https://journals.aps.org/prl/rss"
+#     category: "quantum_physics"
+#     source: "aps"
+#     max_items: -1  # Unlimited
+#     update_frequency:
+#       type: "weekdays"
+#
+#   # Science Magazine
+#   - name: "Science Magazine"
+#     url: "https://www.science.org/rss/current.xml"
+#     category: "quantum_physics"
+#     source: "science"
+#     max_items: -1  # Unlimited
+#     update_frequency:
+#       type: "weekdays"
+#
+#   # IEEE Transactions on Quantum Engineering
+#   - name: "IEEE Transactions on Quantum Engineering"
+#     url: "https://ieeexplore.ieee.org/rss/TOC94.XML"
+#     category: "quantum_engineering"
+#     source: "ieee"
+#     max_items: -1  # Unlimited
+#     update_frequency:
+#       type: "weekdays"
 
 categories:
-  # Core research directions only
-  thermodynamics:
-    display_name: "Thermodynamics & Statistical Mechanics"
-    color: "#FF6B6B"
+  # Primary category for quantum physics papers
+  quantum_physics:
+    display_name: "Quantum Physics"
+    color: "#4A90E2"
     priority: 1
   
-  quantum_foundations:
-    display_name: "Quantum Foundations"
-    color: "#4A90E2"
-    priority: 2
-  
-  quantum_communication:
-    display_name: "Quantum Communication"
-    color: "#7ED321"
-    priority: 3
-  
-  hybrid_systems:
-    display_name: "Hybrid Quantum Systems"
-    color: "#F5A623"
-    priority: 4
-  
-  # Note: All other categories removed - focus only on core research directions
+  # Additional categories (commented out for now)
+  # quantum_engineering:
+  #   display_name: "Quantum Engineering"
+  #   color: "#7ED321"
+  #   priority: 2
+  # 
+  # quantum_computing:
+  #   display_name: "Quantum Computing"
+  #   color: "#F5A623"
+  #   priority: 3

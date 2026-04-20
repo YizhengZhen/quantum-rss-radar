@@ -41,17 +41,34 @@ def load_config(config_dir: str = "config") -> Config:
         
         # Get LLM configuration with env var resolution
         llm_config = config_data.get("llm", {})
-        llm_api_key = resolve_env_var(llm_config.get("api_key"))
-        llm_base_url = resolve_env_var(llm_config.get("base_url"))
+        
+        # Environment variables have highest priority
+        llm_api_key = os.getenv("LLM_API_KEY") or resolve_env_var(llm_config.get("api_key"))
+        llm_base_url = os.getenv("LLM_BASE_URL") or resolve_env_var(llm_config.get("base_url"))
+        llm_model = os.getenv("LLM_MODEL") or llm_config.get("model", "deepseek-chat")
+        
+        # Determine provider based on base_url or configuration
+        llm_provider = llm_config.get("provider", "generic")
+        
+        # If base_url is set, try to detect provider
+        if llm_base_url:
+            if "deepseek" in llm_base_url:
+                llm_provider = "deepseek"
+            elif "openai" in llm_base_url:
+                llm_provider = "openai"
+            elif "azure" in llm_base_url:
+                llm_provider = "azure"
+            elif "localhost" in llm_base_url or "127.0.0.1" in llm_base_url:
+                llm_provider = "local"
         
         # Get email configuration with env var resolution
         email_config = config_data.get("email", {})
         
         config = Config(
-            llm_provider=llm_config.get("provider", "openai"),
-            llm_model=llm_config.get("model", "gpt-4-turbo-preview"),
-            llm_api_key=llm_api_key or os.getenv("OPENAI_API_KEY") or os.getenv("DEEPSEEK_API_KEY"),
-            llm_base_url=llm_base_url or os.getenv("LLM_BASE_URL"),
+            llm_provider=llm_provider,
+            llm_model=llm_model,
+            llm_api_key=llm_api_key,
+            llm_base_url=llm_base_url,
             
             email_enabled=email_config.get("enabled", False),
             email_sender=resolve_env_var(email_config.get("sender")),
@@ -66,7 +83,7 @@ def load_config(config_dir: str = "config") -> Config:
             top_n_recommendations=config_data.get("processing", {}).get("top_n_recommendations", 10),
             
             output_dir=config_data.get("output_dir", "data"),
-            web_dir=config_data.get("web_dir", "web_output"),
+            web_dir=config_data.get("web_dir", "jekyll_site/_site"),
         )
     
     return config
