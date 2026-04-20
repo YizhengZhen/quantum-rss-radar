@@ -32,31 +32,39 @@ def load_config(config_dir: str = "config") -> Config:
         with open(config_path, "r", encoding="utf-8") as f:
             config_data = yaml.safe_load(f) or {}
         
-        # Get LLM API key from environment variable if not in config
-        llm_api_key = config_data.get("llm", {}).get("api_key")
-        if llm_api_key and llm_api_key.startswith("${") and llm_api_key.endswith("}"):
-            env_var = llm_api_key[2:-1]
-            llm_api_key = os.getenv(env_var)
+        # Helper function to resolve environment variables
+        def resolve_env_var(value):
+            if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
+                env_var = value[2:-1]
+                return os.getenv(env_var)
+            return value
+        
+        # Get LLM configuration with env var resolution
+        llm_config = config_data.get("llm", {})
+        llm_api_key = resolve_env_var(llm_config.get("api_key"))
+        
+        # Get email configuration with env var resolution
+        email_config = config_data.get("email", {})
         
         config = Config(
-            llm_provider=config_data.get("llm", {}).get("provider", "openai"),
-            llm_model=config_data.get("llm", {}).get("model", "gpt-4-turbo-preview"),
-            llm_api_key=llm_api_key or os.getenv("LLM_API_KEY"),
+            llm_provider=llm_config.get("provider", "openai"),
+            llm_model=llm_config.get("model", "gpt-4-turbo-preview"),
+            llm_api_key=llm_api_key or os.getenv("OPENAI_API_KEY") or os.getenv("DEEPSEEK_API_KEY"),
             
-            email_enabled=config_data.get("email", {}).get("enabled", False),
-            email_sender=config_data.get("email", {}).get("sender"),
-            email_recipient=config_data.get("email", {}).get("recipient"),
-            email_smtp_server=config_data.get("email", {}).get("smtp_server"),
-            email_smtp_port=config_data.get("email", {}).get("smtp_port", 587),
-            email_smtp_username=config_data.get("email", {}).get("smtp_username"),
-            email_smtp_password=config_data.get("email", {}).get("smtp_password"),
+            email_enabled=email_config.get("enabled", False),
+            email_sender=resolve_env_var(email_config.get("sender")),
+            email_recipient=resolve_env_var(email_config.get("recipient")),
+            email_smtp_server=resolve_env_var(email_config.get("smtp_server")),
+            email_smtp_port=email_config.get("smtp_port", 587),
+            email_smtp_username=resolve_env_var(email_config.get("smtp_username")),
+            email_smtp_password=resolve_env_var(email_config.get("smtp_password")),
             
             max_papers_per_feed=config_data.get("processing", {}).get("max_papers_per_feed", 50),
             min_relevance_score=config_data.get("processing", {}).get("min_relevance_score", 5.0),
             top_n_recommendations=config_data.get("processing", {}).get("top_n_recommendations", 10),
             
             output_dir=config_data.get("output_dir", "data"),
-            web_dir=config_data.get("web_dir", "web"),
+            web_dir=config_data.get("web_dir", "web_output"),
         )
     
     return config
