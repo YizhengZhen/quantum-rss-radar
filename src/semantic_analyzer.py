@@ -38,16 +38,30 @@ class SemanticAnalyzer:
         if not self.config.llm_api_key:
             raise ValueError("LLM API key not configured")
         
+        client_kwargs = {
+            "api_key": self.config.llm_api_key,
+        }
+        
+        # Add base_url if provided (for custom providers)
+        if self.config.llm_base_url:
+            client_kwargs["base_url"] = self.config.llm_base_url
+        
         if self.config.llm_provider == "openai":
-            self.llm_client = OpenAI(api_key=self.config.llm_api_key)
+            # Standard OpenAI API
+            self.llm_client = OpenAI(**client_kwargs)
         elif self.config.llm_provider == "deepseek":
-            # DeepSeek uses OpenAI-compatible API
-            self.llm_client = OpenAI(
-                api_key=self.config.llm_api_key,
-                base_url="https://api.deepseek.com"
-            )
+            # DeepSeek uses OpenAI-compatible API with custom base URL
+            if not self.config.llm_base_url:
+                client_kwargs["base_url"] = "https://api.deepseek.com"
+            self.llm_client = OpenAI(**client_kwargs)
+        elif self.config.llm_provider == "custom":
+            # Custom OpenAI-compatible API
+            if not self.config.llm_base_url:
+                raise ValueError("Custom provider requires base_url configuration")
+            self.llm_client = OpenAI(**client_kwargs)
         else:
-            raise ValueError(f"Unsupported LLM provider: {self.config.llm_provider}")
+            # Generic provider - try to initialize with whatever base_url is provided
+            self.llm_client = OpenAI(**client_kwargs)
     
     def load_research_directions(self, research_directions: str):
         """Load research directions for context."""

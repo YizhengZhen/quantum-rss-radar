@@ -42,6 +42,7 @@ def load_config(config_dir: str = "config") -> Config:
         # Get LLM configuration with env var resolution
         llm_config = config_data.get("llm", {})
         llm_api_key = resolve_env_var(llm_config.get("api_key"))
+        llm_base_url = resolve_env_var(llm_config.get("base_url"))
         
         # Get email configuration with env var resolution
         email_config = config_data.get("email", {})
@@ -50,6 +51,7 @@ def load_config(config_dir: str = "config") -> Config:
             llm_provider=llm_config.get("provider", "openai"),
             llm_model=llm_config.get("model", "gpt-4-turbo-preview"),
             llm_api_key=llm_api_key or os.getenv("OPENAI_API_KEY") or os.getenv("DEEPSEEK_API_KEY"),
+            llm_base_url=llm_base_url or os.getenv("LLM_BASE_URL"),
             
             email_enabled=email_config.get("enabled", False),
             email_sender=resolve_env_var(email_config.get("sender")),

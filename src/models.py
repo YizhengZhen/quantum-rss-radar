@@ -79,9 +79,10 @@ class PaperAnalysis(BaseModel):
 
 class Config(BaseModel):
     """System configuration."""
-    llm_provider: str = Field("openai", description="LLM provider: openai or deepseek")
+    llm_provider: str = Field("openai", description="LLM provider: openai, deepseek, or custom")
     llm_model: str = Field("gpt-4-turbo-preview", description="LLM model name")
     llm_api_key: Optional[str] = Field(None, description="LLM API key")
+    llm_base_url: Optional[str] = Field(None, description="Custom API base URL for OpenAI-compatible providers")
     
     email_enabled: bool = Field(False, description="Whether to send emails")
     email_sender: Optional[str] = Field(None, description="Sender email address")
@@ -96,7 +97,7 @@ class Config(BaseModel):
     top_n_recommendations: int = Field(10, description="Number of top papers for email")
     
     output_dir: str = Field("data", description="Base output directory")
-    web_dir: str = Field("web", description="Website output directory")
+    web_dir: str = Field("web_output", description="Website output directory")
 
 
 class FeedConfig(BaseModel):
