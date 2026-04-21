@@ -2,8 +2,9 @@
 
 > **"您的个人AI研究助手，每天追踪、分析并推荐学术论文"**
 
-🚧 **Work in Progress** — This project is under active development.
-❗ **Issues and PRs are currently NOT accepted.**
+🚧 **Work in Progress** — This project is under active development and is currently experimental.
+❗ **This project is not ready for external contributions. Issues and PRs are currently NOT accepted.**
+⚠️ **No Support Provided** — This is an experimental project with no support or maintenance guarantees.
 
 [![GitHub Pages](https://img.shields.io/badge/部署于-GitHub%20Pages-blue?logo=github)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -335,6 +336,8 @@ ruff check --fix src/
 ## 📄 许可证
 
 **MIT License**
+
+This project is released under the MIT License.
 
 Copyright (c) 2026 Yizheng Zhen
 
