@@ -2,6 +2,9 @@
 
 > **"您的个人AI研究助手，每天追踪、分析并推荐学术论文"**
 
+🚧 **Work in Progress** — This project is under active development.
+❗ **Issues and PRs are currently NOT accepted.**
+
 [![GitHub Pages](https://img.shields.io/badge/部署于-GitHub%20Pages-blue?logo=github)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
