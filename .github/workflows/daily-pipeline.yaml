@@ -91,15 +91,29 @@ jobs:
           echo "No Gemfile found, skipping Jekyll build"
         fi
     
-    - name: Deploy to GitHub Pages
+    - name: Deploy to Public Repository
       if: success()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./jekyll_site/_site
-        publish_branch: gh-pages
-        force_orphan: true
-        keep_files: false
+      env:
+        PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+      run: |
+        source .venv/bin/activate
+        echo "Deploying to public repository..."
+        
+        # Check if public repository configuration is set
+        if [ -z "$PUBLIC_REPO_TOKEN" ]; then
+          echo "Warning: PUBLIC_REPO_TOKEN not set. Skipping public repository deployment."
+          echo "To enable public repository deployment, set PUBLIC_REPO_TOKEN GitHub Secret."
+          exit 0
+        fi
+        
+        # Run deployment script
+        python scripts/deploy_to_public_repo.py \
+          --source-dir jekyll_site/_site \
+          --public-repo-url "https://github.com/${{ github.repository_owner }}/quantum-research-portal.git" \
+          --branch main \
+          --token "$PUBLIC_REPO_TOKEN"
+        
+        echo "✅ Public repository deployment completed"
     
     - name: Create deployment summary
       if: always()
@@ -124,12 +138,22 @@ jobs:
         fi
         
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Website URL:** https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for public repository deployment
+        if [ -n "${{ secrets.PUBLIC_REPO_TOKEN }}" ]; then
+          echo "**Public Repository:** Deployed to quantum-research-portal" >> $GITHUB_STEP_SUMMARY
+          echo "**Public Website:** https://${{ github.repository_owner }}.github.io/quantum-research-portal/" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Public Repository:** Not configured (set PUBLIC_REPO_TOKEN to enable)" >> $GITHUB_STEP_SUMMARY
+        fi
+        
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "---" >> $GITHUB_STEP_SUMMARY
         echo "**Configuration:**" >> $GITHUB_STEP_SUMMARY
         echo "- LLM Provider: Generic OpenAI-compatible API" >> $GITHUB_STEP_SUMMARY
         echo "- RSS Sources: arXiv Quantum Physics (quant-ph)" >> $GITHUB_STEP_SUMMARY
-        echo "- GitHub Secrets used: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL" >> $GITHUB_STEP_SUMMARY
+        echo "- GitHub Secrets used: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, PUBLIC_REPO_TOKEN" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Architecture:** Dual-repository (private dev + public static site)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "Pipeline completed successfully!" >> $GITHUB_STEP_SUMMARY
