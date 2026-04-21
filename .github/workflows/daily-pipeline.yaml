@@ -10,7 +10,7 @@ on:
     paths:
       - 'src/**'
       - 'config/**'
-      - '.github/workflows/daily-pipeline.yml'
+      - '.github/workflows/daily-pipeline.yaml'
 
 jobs:
   run-pipeline:
@@ -38,35 +38,44 @@ jobs:
     
     - name: Check configuration
       run: |
-        # Always use example config for GitHub Actions
-        cp config/settings.yaml.example config/settings.yaml
-        echo "Using example configuration with environment variables"
+        echo "Using environment-only configuration"
+        echo "All configuration is set via environment variables/GitHub Secrets"
         
         # Verify required environment variables are set
-        if [ -z "$LLM_API_KEY" ]; then
-          echo "Warning: LLM_API_KEY environment variable not set"
-          echo "You need to set LLM_API_KEY as a GitHub Secret"
+        if [ -z "${{ secrets.LLM_API_KEY }}" ]; then
+          echo "Error: LLM_API_KEY environment variable not set"
+          echo "You must set LLM_API_KEY as a GitHub Secret"
+          echo "See .env.example for available environment variables"
+          exit 1
         fi
     
     - name: Run Quantum RSS Radar
       env:
+        # LLM Configuration (required)
         LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        
+        # Optional LLM settings
         LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
         LLM_MODEL: ${{ secrets.LLM_MODEL }}
+        
+        # Optional Email Configuration
+        EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
         EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
         EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
         EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
+        EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
         EMAIL_SMTP_USERNAME: ${{ secrets.EMAIL_SMTP_USERNAME }}
         EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
       run: |
         source .venv/bin/activate
-        echo "Running Quantum RSS Radar with configuration:"
+        echo "Running Quantum RSS Radar with environment variable configuration:"
         echo "  LLM_BASE_URL: ${LLM_BASE_URL:-Not set (using default)}"
-        echo "  LLM_MODEL: ${LLM_MODEL:-Not set (using default)}"
+        echo "  LLM_MODEL: ${LLM_MODEL:-Not set (using default: deepseek-chat)}"
         echo "  LLM_API_KEY: ${LLM_API_KEY:0:10}... (first 10 chars)"
+        echo "  EMAIL_ENABLED: ${EMAIL_ENABLED:-false}"
         
         # Run the orchestrator (Jekyll version)
-        python -m src.orchestrator_jekyll
+        python -m src.orchestrator_jekyll --format all
     
     - name: Build Jekyll Site
       if: success()

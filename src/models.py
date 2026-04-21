@@ -101,6 +101,49 @@ class Config(BaseModel):
     
     output_dir: str = Field("data", description="Base output directory")
     web_dir: str = Field("web_output", description="Website output directory")
+    
+    class Config:
+        extra = "allow"  # Allow dynamic attributes
+        
+    def __init__(self, **data):
+        super().__init__(**data)
+        # Initialize dynamic attributes
+        self._raw_config = {}
+        self._jekyll_site_dir = "jekyll_site/_site"
+        self._rss_timeout = 30
+        self._llm_timeout = 60
+        self._llm_temperature = 0.1
+        self._debug = False
+        
+    @property
+    def jekyll_site_dir(self) -> str:
+        """Get Jekyll site directory."""
+        return getattr(self, "_jekyll_site_dir", "jekyll_site/_site")
+    
+    @property
+    def rss_timeout(self) -> int:
+        """Get RSS fetch timeout."""
+        return getattr(self, "_rss_timeout", 30)
+    
+    @property
+    def llm_timeout(self) -> int:
+        """Get LLM API timeout."""
+        return getattr(self, "_llm_timeout", 60)
+    
+    @property
+    def llm_temperature(self) -> float:
+        """Get LLM temperature."""
+        return getattr(self, "_llm_temperature", 0.1)
+    
+    @property
+    def debug(self) -> bool:
+        """Get debug mode."""
+        return getattr(self, "_debug", False)
+    
+    @property
+    def raw_config(self) -> dict:
+        """Get raw configuration data."""
+        return getattr(self, "_raw_config", {})
 
 
 class FeedConfig(BaseModel):

@@ -23,11 +23,14 @@ python --version | grep -q "3.10\|3.11" || {
 
 # Check for required configuration files
 echo "Checking configuration files..."
-if [ ! -f "config/settings.yaml" ]; then
-    echo "Warning: config/settings.yaml not found"
-    echo "Creating from example configuration..."
-    cp config/settings.yaml.example config/settings.yaml
-    echo "Please edit config/settings.yaml with your API keys and settings"
+# Check for .env file
+if [ ! -f ".env" ]; then
+    echo "Warning: .env file not found"
+    echo "Copying from example configuration..."
+    cp .env.example .env
+    echo "Please edit .env file with your API keys and settings"
+    echo "Required: LLM_API_KEY"
+    echo "Optional: LLM_BASE_URL, LLM_MODEL, and other settings"
     exit 1
 fi
 

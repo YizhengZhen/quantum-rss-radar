@@ -68,7 +68,7 @@ class QuantumRSSRadar:
         logger.info("Loading system configuration...")
         
         try:
-            self.config = load_config(self.config_dir)
+            self.config = load_config()
             self.feeds = load_feeds(self.config_dir)
             self.categories = load_categories(self.config_dir)
             self.research_directions = load_research_directions(self.config_dir)
