@@ -1,6 +1,9 @@
 """
 Jekyll-compatible orchestrator for the Quantum RSS Radar system.
 This version exports data to Jekyll format instead of building the website directly.
+
+Copyright (c) 2026 Yizheng Zhen
+Licensed under the MIT License
 """
 
 import logging

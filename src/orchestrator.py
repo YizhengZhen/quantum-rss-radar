@@ -1,5 +1,8 @@
 """
 Main orchestrator for the Quantum RSS Radar system.
+
+Copyright (c) 2026 Yizheng Zhen
+Licensed under the MIT License
 """
 
 import logging
@@ -23,6 +26,7 @@ from .md_generator import (
     generate_markdown_report
 )
 from .data_exporter import DataExporter, export_papers_to_jekyll
+from .website_builder import WebsiteBuilder
 from .models import Paper, PaperAnalysis
 
 logger = logging.getLogger(__name__)

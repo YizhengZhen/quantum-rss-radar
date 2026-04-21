@@ -1,5 +1,8 @@
 """
 Data models for the Quantum RSS Radar system.
+
+Copyright (c) 2026 Yizheng Zhen
+Licensed under the MIT License
 """
 
 from datetime import datetime

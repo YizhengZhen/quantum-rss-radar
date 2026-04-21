@@ -1,6 +1,9 @@
 """
 Data exporter for the Quantum RSS Radar system.
 Supports multiple output formats: JSONL, Markdown, and Jekyll data files.
+
+Copyright (c) 2026 Yizheng Zhen
+Licensed under the MIT License
 """
 
 import json
