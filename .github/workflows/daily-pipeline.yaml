@@ -77,6 +77,14 @@ jobs:
         # Run the orchestrator (Jekyll version)
         python -m src.orchestrator_jekyll --format all
     
+    - name: Setup Ruby and Bundler
+      if: success()
+      run: |
+        echo "Setting up Ruby and Bundler for Jekyll..."
+        sudo apt-get update
+        sudo apt-get install -y ruby-full build-essential
+        sudo gem install bundler
+        
     - name: Build Jekyll Site
       if: success()
       run: |
