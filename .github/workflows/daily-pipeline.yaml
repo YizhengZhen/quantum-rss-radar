@@ -85,10 +85,10 @@ jobs:
         sudo apt-get install -y ruby-full build-essential
         sudo gem install bundler
         
-    - name: Prepare Jekyll Dependencies
+    - name: Install Jekyll Dependencies
       if: success()
       run: |
-        echo "Preparing Jekyll dependencies..."
+        echo "Installing Jekyll dependencies..."
         cd jekyll_site
         
         # Check if Gemfile exists
@@ -96,15 +96,6 @@ jobs:
           echo "No Gemfile found, skipping Jekyll build"
           exit 0
         fi
-        
-        # Backup original Gemfile.lock if it exists
-        if [ -f "Gemfile.lock" ]; then
-          cp Gemfile.lock Gemfile.lock.backup
-        fi
-        
-        # Add Linux platform to Gemfile.lock
-        echo "Configuring Gemfile for Ubuntu..."
-        bundle lock --add-platform x86_64-linux
         
         # Clean install of gems
         echo "Installing Jekyll dependencies..."
