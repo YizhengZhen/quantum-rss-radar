@@ -3,185 +3,185 @@ name: Quantum RSS Radar - Daily Pipeline
 on:
   schedule:
     # Run daily at 8 AM UTC
-    - cron: '0 8 * * *'
-  workflow_dispatch:  # Allow manual triggering
+    - cron: "0 8 * * *"
+  workflow_dispatch: # Allow manual triggering
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'src/**'
-      - 'config/**'
-      - '.github/workflows/daily-pipeline.yaml'
+      - "src/**"
+      - "config/**"
+      - ".github/workflows/daily-pipeline.yaml"
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    
-    - name: Setup uv
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-    
-    - name: Install dependencies
-      run: |
-        uv venv
-        source .venv/bin/activate
-        uv sync
-    
-    - name: Check configuration
-      run: |
-        echo "Using environment-only configuration"
-        echo "All configuration is set via environment variables/GitHub Secrets"
-        
-        # Verify required environment variables are set
-        if [ -z "${{ secrets.LLM_API_KEY }}" ]; then
-          echo "Error: LLM_API_KEY environment variable not set"
-          echo "You must set LLM_API_KEY as a GitHub Secret"
-          echo "See .env.example for available environment variables"
-          exit 1
-        fi
-    
-    - name: Run Quantum RSS Radar
-      env:
-        # LLM Configuration (required)
-        LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-        
-        # Optional LLM settings
-        LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
-        LLM_MODEL: ${{ secrets.LLM_MODEL }}
-        
-        # Optional Email Configuration
-        EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
-        EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
-        EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
-        EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
-        EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
-        EMAIL_SMTP_USERNAME: ${{ secrets.EMAIL_SMTP_USERNAME }}
-        EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
-      run: |
-        source .venv/bin/activate
-        echo "Running Quantum RSS Radar with environment variable configuration:"
-        echo "  LLM_BASE_URL: ${LLM_BASE_URL:-Not set (using default)}"
-        echo "  LLM_MODEL: ${LLM_MODEL:-Not set (using default: deepseek-chat)}"
-        echo "  LLM_API_KEY: ${LLM_API_KEY:0:10}... (first 10 chars)"
-        echo "  EMAIL_ENABLED: ${EMAIL_ENABLED:-false}"
-        
-        # Run the orchestrator (Jekyll version)
-        python -m src.orchestrator_jekyll --format all
-    
-    - name: Setup Ruby and Bundler
-      if: success()
-      run: |
-        echo "Setting up Ruby and Bundler for Jekyll..."
-        sudo apt-get update
-        sudo apt-get install -y ruby-full build-essential
-        sudo gem install bundler
-        
-    - name: Install Jekyll Dependencies
-      if: success()
-      run: |
-        echo "Installing Jekyll dependencies..."
-        cd jekyll_site
-        
-        # Check if Gemfile exists
-        if [ ! -f "Gemfile" ]; then
-          echo "No Gemfile found, skipping Jekyll build"
-          exit 0
-        fi
-        
-        # Clean install of gems
-        echo "Installing Jekyll dependencies..."
-        bundle install --jobs 4 --retry 3
-        
-    - name: Build Jekyll Site
-      if: success()
-      run: |
-        echo "Building Jekyll site..."
-        cd jekyll_site
-        
-        # Build Jekyll site
-        bundle exec jekyll build --trace
-        
-        # Verify build output
-        if [ -d "_site" ]; then
-          echo "Jekyll site built successfully in _site directory"
-          ls -la _site/
-        else
-          echo "Error: Jekyll site not built properly"
-          exit 1
-        fi
-    
-    - name: Deploy to Public Repository
-      if: success()
-      env:
-        PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
-      run: |
-        source .venv/bin/activate
-        echo "Deploying to public repository..."
-        
-        # Check if public repository configuration is set
-        if [ -z "$PUBLIC_REPO_TOKEN" ]; then
-          echo "Warning: PUBLIC_REPO_TOKEN not set. Skipping public repository deployment."
-          echo "To enable public repository deployment, set PUBLIC_REPO_TOKEN GitHub Secret."
-          exit 0
-        fi
-        
-        # Run deployment script
-        python scripts/deploy_to_public_repo.py \
-          --source-dir jekyll_site/_site \
-          --public-repo-url "https://github.com/${{ github.repository_owner }}/quantum-research-portal.git" \
-          --branch main \
-          --token "$PUBLIC_REPO_TOKEN"
-        
-        echo "✅ Public repository deployment completed"
-    
-    - name: Create deployment summary
-      if: always()
-      run: |
-        echo "## Quantum RSS Radar Pipeline" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Run Time:** $(date)" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        
-        # Check for processed papers
-        if [ -f "data/processed/papers_analyzed.jsonl" ]; then
-          PAPER_COUNT=$(wc -l < data/processed/papers_analyzed.jsonl)
-          echo "**Papers Analyzed:** $PAPER_COUNT" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "**Papers Analyzed:** 0" >> $GITHUB_STEP_SUMMARY
-        fi
-        
-        # Check for generated website files
-        if [ -d "jekyll_site/_site" ]; then
-          WEB_FILES=$(find jekyll_site/_site -type f -name "*.html" | wc -l)
-          echo "**Website Files Generated:** $WEB_FILES" >> $GITHUB_STEP_SUMMARY
-        fi
-        
-        echo "" >> $GITHUB_STEP_SUMMARY
-        
-        # Check for public repository deployment
-        if [ -n "${{ secrets.PUBLIC_REPO_TOKEN }}" ]; then
-          echo "**Public Repository:** Deployed to quantum-research-portal" >> $GITHUB_STEP_SUMMARY
-          echo "**Public Website:** https://${{ github.repository_owner }}.github.io/quantum-research-portal/" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "**Public Repository:** Not configured (set PUBLIC_REPO_TOKEN to enable)" >> $GITHUB_STEP_SUMMARY
-        fi
-        
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "---" >> $GITHUB_STEP_SUMMARY
-        echo "**Configuration:**" >> $GITHUB_STEP_SUMMARY
-        echo "- LLM Provider: Generic OpenAI-compatible API" >> $GITHUB_STEP_SUMMARY
-        echo "- RSS Sources: arXiv Quantum Physics (quant-ph)" >> $GITHUB_STEP_SUMMARY
-        echo "- GitHub Secrets used: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, PUBLIC_REPO_TOKEN" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Architecture:** Dual-repository (private dev + public static site)" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "Pipeline completed successfully!" >> $GITHUB_STEP_SUMMARY
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv sync
+
+      - name: Check configuration
+        run: |
+          echo "Using environment-only configuration"
+          echo "All configuration is set via environment variables/GitHub Secrets"
+
+          # Verify required environment variables are set
+          if [ -z "${{ secrets.LLM_API_KEY }}" ]; then
+            echo "Error: LLM_API_KEY environment variable not set"
+            echo "You must set LLM_API_KEY as a GitHub Secret"
+            echo "See .env.example for available environment variables"
+            exit 1
+          fi
+
+      - name: Run Quantum RSS Radar
+        env:
+          # LLM Configuration (required)
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+
+          # Optional LLM settings
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+
+          # Optional Email Configuration
+          EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
+          EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
+          EMAIL_SMTP_USERNAME: ${{ secrets.EMAIL_SMTP_USERNAME }}
+          EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
+        run: |
+          source .venv/bin/activate
+          echo "Running Quantum RSS Radar with environment variable configuration:"
+          echo "  LLM_BASE_URL: ${LLM_BASE_URL:-Not set (using default)}"
+          echo "  LLM_MODEL: ${LLM_MODEL:-Not set (using default: deepseek-chat)}"
+          echo "  LLM_API_KEY: ${LLM_API_KEY:0:10}... (first 10 chars)"
+          echo "  EMAIL_ENABLED: ${EMAIL_ENABLED:-false}"
+
+          # Run the orchestrator (Jekyll version)
+          python -m src.orchestrator_jekyll --format all
+
+      - name: Setup Ruby and Bundler
+        if: success()
+        run: |
+          echo "Setting up Ruby and Bundler for Jekyll..."
+          sudo apt-get update
+          sudo apt-get install -y ruby-full build-essential
+          sudo gem install bundler
+
+      - name: Install Jekyll Dependencies
+        if: success()
+        run: |
+          echo "Installing Jekyll dependencies..."
+          cd jekyll_site
+
+          # Check if Gemfile exists
+          if [ ! -f "Gemfile" ]; then
+            echo "No Gemfile found, skipping Jekyll build"
+            exit 0
+          fi
+
+          # Clean install of gems (install locally)
+          echo "Installing Jekyll dependencies..."
+          bundle install --jobs 4 --retry 3 --path vendor/bundle
+
+      - name: Build Jekyll Site
+        if: success()
+        run: |
+          echo "Building Jekyll site..."
+          cd jekyll_site
+
+          # Build Jekyll site
+          bundle exec jekyll build --trace
+
+          # Verify build output
+          if [ -d "_site" ]; then
+            echo "Jekyll site built successfully in _site directory"
+            ls -la _site/
+          else
+            echo "Error: Jekyll site not built properly"
+            exit 1
+          fi
+
+      - name: Deploy to Public Repository
+        if: success()
+        env:
+          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        run: |
+          source .venv/bin/activate
+          echo "Deploying to public repository..."
+
+          # Check if public repository configuration is set
+          if [ -z "$PUBLIC_REPO_TOKEN" ]; then
+            echo "Warning: PUBLIC_REPO_TOKEN not set. Skipping public repository deployment."
+            echo "To enable public repository deployment, set PUBLIC_REPO_TOKEN GitHub Secret."
+            exit 0
+          fi
+
+          # Run deployment script
+          python scripts/deploy_to_public_repo.py \
+            --source-dir jekyll_site/_site \
+            --public-repo-url "https://github.com/${{ github.repository_owner }}/quantum-research-portal.git" \
+            --branch main \
+            --token "$PUBLIC_REPO_TOKEN"
+
+          echo "✅ Public repository deployment completed"
+
+      - name: Create deployment summary
+        if: always()
+        run: |
+          echo "## Quantum RSS Radar Pipeline" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Run Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check for processed papers
+          if [ -f "data/processed/papers_analyzed.jsonl" ]; then
+            PAPER_COUNT=$(wc -l < data/processed/papers_analyzed.jsonl)
+            echo "**Papers Analyzed:** $PAPER_COUNT" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Papers Analyzed:** 0" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Check for generated website files
+          if [ -d "jekyll_site/_site" ]; then
+            WEB_FILES=$(find jekyll_site/_site -type f -name "*.html" | wc -l)
+            echo "**Website Files Generated:** $WEB_FILES" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check for public repository deployment
+          if [ -n "${{ secrets.PUBLIC_REPO_TOKEN }}" ]; then
+            echo "**Public Repository:** Deployed to quantum-research-portal" >> $GITHUB_STEP_SUMMARY
+            echo "**Public Website:** https://${{ github.repository_owner }}.github.io/quantum-research-portal/" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Public Repository:** Not configured (set PUBLIC_REPO_TOKEN to enable)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "**Configuration:**" >> $GITHUB_STEP_SUMMARY
+          echo "- LLM Provider: Generic OpenAI-compatible API" >> $GITHUB_STEP_SUMMARY
+          echo "- RSS Sources: arXiv Quantum Physics (quant-ph)" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub Secrets used: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, PUBLIC_REPO_TOKEN" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Architecture:** Dual-repository (private dev + public static site)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Pipeline completed successfully!" >> $GITHUB_STEP_SUMMARY
