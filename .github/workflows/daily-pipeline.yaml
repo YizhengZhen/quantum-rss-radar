@@ -99,7 +99,8 @@ jobs:
 
           # Clean install of gems (install locally)
           echo "Installing Jekyll dependencies..."
-          bundle install --jobs 4 --retry 3 --path vendor/bundle
+          bundle config set path 'vendor/bundle'
+          bundle install --jobs 4 --retry 3
 
       - name: Build Jekyll Site
         if: success()
