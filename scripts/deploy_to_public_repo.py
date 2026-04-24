@@ -8,7 +8,7 @@ GitHub repository, keeping only the static website files.
 Usage:
     python scripts/deploy_to_public_repo.py \
         --source-dir jekyll_site/_site \
-        --public-repo-url https://github.com/YOUR_USERNAME/quantum-research-portal.git \
+        --public-repo-url https://github.com/YOUR_USERNAME/qfqe-new-papers.git \
         --branch main \
         --token $PUBLIC_REPO_TOKEN
 """
