@@ -110,6 +110,12 @@ def deploy_to_public_repo(source_dir, public_repo_url, branch, token):
             else:
                 shutil.copy2(item, dest)
         
+        # Add .nojekyll file to disable Jekyll processing on GitHub Pages
+        # This ensures static HTML files are served directly
+        logger.info("Adding .nojekyll file")
+        nojekyll_path = repo_path / ".nojekyll"
+        nojekyll_path.touch()
+        
         # Check if there are any changes
         status_output = run_command("git status --porcelain", cwd=repo_path).strip()
         if not status_output:

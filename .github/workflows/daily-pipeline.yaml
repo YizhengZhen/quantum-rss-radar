@@ -104,12 +104,19 @@ jobs:
 
       - name: Build Jekyll Site
         if: success()
+        env:
+          JEKYLL_BASEURL: ${{ secrets.PUBLIC_REPO_NAME }}
         run: |
           echo "Building Jekyll site..."
           cd jekyll_site
 
-          # Build Jekyll site
-          bundle exec jekyll build --trace
+          # Set baseurl for GitHub Pages deployment (e.g., /qfqe-new-papers)
+          # If PUBLIC_REPO_NAME is not set, default to /qfqe-new-papers
+          BASEURL="${JEKYLL_BASEURL:-/qfqe-new-papers}"
+          echo "Using baseurl: $BASEURL"
+
+          # Build Jekyll site with proper baseurl for sub-path deployment
+          bundle exec jekyll build --trace --baseurl "$BASEURL"
 
           # Verify build output
           if [ -d "_site" ]; then
