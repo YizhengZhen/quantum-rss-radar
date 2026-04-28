@@ -245,18 +245,10 @@ function app() {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Load papers data from Jekyll if available
-    if (typeof siteData === 'undefined') {
-        // Try to load from Jekyll data file
-        fetch('/assets/js/data.json')
-            .then(response => response.json())
-            .then(data => {
-                window.siteData = data;
-            })
-            .catch(error => {
-                console.log('Could not load papers data:', error);
-                window.siteData = { papers: { papers: [], categories: {}, stats: {} } };
-            });
+    // Data is embedded directly in the HTML page via Jekyll Liquid tags
+    // If for some reason data isn't available, initialize empty
+    if (!window.siteData) {
+        window.siteData = { papers: { papers: [], categories: {}, stats: {} } };
     }
     
     // Bookmark initialization

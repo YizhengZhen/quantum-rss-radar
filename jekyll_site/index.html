@@ -4,6 +4,14 @@ title: Quantum RSS Radar
 description: AI-assisted daily academic research tracking system
 ---
 
+<!-- Embed Jekyll data directly as JavaScript variable -->
+<script>
+window.siteData = {
+    papers: {{ site.data.papers | jsonify }},
+    stats: {{ site.data.stats | default: nil | jsonify }}
+};
+</script>
+
 <!-- Simplified filter controls -->
 <div class="filter-controls-simple" x-show="!showCalendar">
     <select x-model="selectedCategory" @change="filterPapers()">
