@@ -75,7 +75,7 @@ jobs:
           sudo gem install bundler
 
       - name: Install Jekyll Dependencies
-        if: success()
+        if: always()
         run: |
           echo "Installing Jekyll dependencies..."
           cd jekyll_site
