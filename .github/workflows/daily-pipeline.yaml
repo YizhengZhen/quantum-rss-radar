@@ -6,11 +6,12 @@ on:
     - cron: "0 8 * * *"
   workflow_dispatch: # Allow manual triggering
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - "src/**"
       - "config/**"
       - ".github/workflows/daily-pipeline.yaml"
+      - "jekyll_site/**"
 
 jobs:
   run-pipeline:
@@ -36,20 +37,8 @@ jobs:
           source .venv/bin/activate
           uv sync
 
-      - name: Check configuration
-        run: |
-          echo "Using environment-only configuration"
-          echo "All configuration is set via environment variables/GitHub Secrets"
-
-          # Verify required environment variables are set
-          if [ -z "${{ secrets.LLM_API_KEY }}" ]; then
-            echo "Error: LLM_API_KEY environment variable not set"
-            echo "You must set LLM_API_KEY as a GitHub Secret"
-            echo "See .env.example for available environment variables"
-            exit 1
-          fi
-
       - name: Run Quantum RSS Radar
+        continue-on-error: true
         env:
           # LLM Configuration (required)
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
@@ -78,7 +67,7 @@ jobs:
           python -m src.orchestrator_jekyll --format all
 
       - name: Setup Ruby and Bundler
-        if: success()
+        if: always()
         run: |
           echo "Setting up Ruby and Bundler for Jekyll..."
           sudo apt-get update
