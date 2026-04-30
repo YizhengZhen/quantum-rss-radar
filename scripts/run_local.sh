@@ -48,7 +48,7 @@ fi
 
 # Create data directories if they don't exist
 echo "Setting up data directories..."
-mkdir -p data/raw data/papers data/reports
+mkdir -p data/raw data/all data/reports
 
 # Install dependencies if needed
 echo "Checking dependencies..."
@@ -83,16 +83,16 @@ echo "✅ Pipeline completed successfully!"
 # Show output locations
 echo ""
 echo "📁 Outputs:"
-echo "  - Data: data/papers/papers_YYYY-MM-DD.json (all papers + AI analysis)"
-echo "  - Reports: data/reports/recommendations_YYYY-MM-DD.md (recommended papers)"
-echo "  - Latest: data/papers/latest.json (symlink for Jekyll)"
+echo "  - JSONL: data/all/quantum_rss_radar_YYYY-MM-DD_HHMMSS.jsonl (every paper = 1 line)"
+echo "  - Report: data/reports/report_YYYY-MM-DD_HHMMSS.md (all papers, sorted by score)"
+echo "  - Jekyll: jekyll_site/_data/papers.json (auto-copied from latest JSONL)"
 echo ""
-echo "To view the Jekyll website locally:"
+echo "To preview the Jekyll website:"
 echo "  cd jekyll_site"
 echo "  bundle exec jekyll serve"
 echo "  Then open http://localhost:4000"
 echo ""
-echo "To run in test mode (limited papers):"
+echo "To run in test mode (limited papers, no API cost):"
 echo "  python -m src.orchestrator_jekyll --test"
 echo ""
 

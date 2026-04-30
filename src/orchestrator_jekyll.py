@@ -38,6 +38,7 @@ class QuantumRSSRadarJekyll:
         Args:
             config_dir: Path to configuration directory
             output_format: Output format ("all", "jsonl", "markdown", "jekyll")
+                          Note: "all" now exports JSONL (data/all/) + MD report (data/reports/) + Jekyll copy.
         """
         self.config_dir = config_dir
         self.output_format = output_format
@@ -160,9 +161,12 @@ class QuantumRSSRadarJekyll:
             results = self._export_data(all_papers_with_analyses, date_str)
             
             # Step 9: Copy to Jekyll site if applicable
+            # Note: export_all() already calls copy_to_jekyll_site() internally.
+            # This extra call is for formats that don't go through export_all().
             if self.output_format in ["all", "jekyll"]:
-                logger.info("Copying data to Jekyll site...")
-                self._copy_to_jekyll_site(results)
+                if self.output_format != "all":  # export_all() already did this
+                    logger.info("Copying data to Jekyll site...")
+                    self._copy_to_jekyll_site(results)
             
             # Calculate execution time
             execution_time = datetime.now() - start_time
@@ -184,27 +188,20 @@ class QuantumRSSRadarJekyll:
         """
         Export data to requested format(s).
         
+        Outputs:
+          - data/all/quantum_rss_radar_YYYY-MM-DD_HHMMSS.jsonl  (all papers, one JSON per line)
+          - data/reports/report_YYYY-MM-DD_HHMMSS.md             (all papers, sorted by score)
+          - jekyll_site/_data/papers.json                        (latest data for Jekyll)
+        
         Args:
             papers_with_analyses: List of (paper, analysis) tuples
-            date_str: Date string for output files
+            date_str: Date string for output files (unused, timestamp is used for filenames)
             
         Returns:
             Dictionary with export results
         """
-        if date_str is None:
-            date_str = datetime.now().strftime("%Y-%m-%d")
-        
         exporter = DataExporter(self.config.output_dir if self.config else "data")
-        results = {}
-        
-        if self.output_format in ["all", "jsonl", "jekyll"]:
-            json_path = exporter.export_json(papers_with_analyses, self.categories, date_str)
-            results["json"] = str(json_path)
-        
-        if self.output_format in ["all", "markdown"]:
-            md_path = exporter.export_markdown(papers_with_analyses, self.categories, date_str)
-            results["markdown"] = str(md_path)
-        
+        results = exporter.export_all(papers_with_analyses, self.categories)
         return results
     
     def _copy_to_jekyll_site(self, results: Dict[str, Any]):
@@ -220,24 +217,22 @@ class QuantumRSSRadarJekyll:
     def _print_summary(self, results: Dict[str, Any]):
         """Print summary of pipeline execution."""
         print("\n" + "="*60)
-        print("QUANTUM RSS RADAR JEKYLL - EXECUTION SUMMARY")
+        print("QUANTUM RSS RADAR - EXECUTION SUMMARY")
         print("="*60)
         print(f"Output format: {self.output_format}")
         
         if results:
-            print("\nOutput files created:")
+            print("\n📄 Output files created:")
             for format_name, file_path in results.items():
                 if file_path:
-                    print(f"  - {format_name.upper()}: {file_path}")
+                    label = {"jsonl": "JSONL (all papers)", "markdown": "MD report (all papers)"}.get(format_name, format_name.upper())
+                    print(f"  • {label}: {file_path}")
         
-        # Copy to Jekyll site info
-        if self.output_format in ["all", "jekyll"]:
-            jekyll_site_dir = Path("jekyll_site")
-            if jekyll_site_dir.exists():
-                print(f"\nJekyll site data directory: {jekyll_site_dir / '_data'}")
-                print(f"To build Jekyll site, run:")
-                print(f"  cd jekyll_site")
-                print(f"  bundle exec jekyll serve")
+        # Jekyll site info
+        jekyll_site_dir = Path("jekyll_site")
+        if jekyll_site_dir.exists():
+            print(f"\n🌐 Jekyll site data: {jekyll_site_dir / '_data' / 'papers.json'}")
+            print(f"   To preview: cd jekyll_site && bundle exec jekyll serve")
         
         print("="*60)
     

@@ -49,8 +49,8 @@ ENV PATH=/home/quantum/.local/bin:$PATH
 COPY --chown=quantum:quantum . .
 
 # Create necessary directories
-RUN mkdir -p data/markdown data/processed data/raw web && \
-    chown -R quantum:quantum data web
+RUN mkdir -p data/raw data/all data/reports && \
+    chown -R quantum:quantum data
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
