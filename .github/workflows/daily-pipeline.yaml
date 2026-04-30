@@ -149,8 +149,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Check for processed papers
-          if [ -f "data/processed/papers_analyzed.jsonl" ]; then
-            PAPER_COUNT=$(wc -l < data/processed/papers_analyzed.jsonl)
+          if [ -f "data/papers/latest.json" ]; then
+            PAPER_COUNT=$(python -c "import json; print(len(json.load(open('data/papers/latest.json'))['papers']))" 2>/dev/null || echo "?")
             echo "**Papers Analyzed:** $PAPER_COUNT" >> $GITHUB_STEP_SUMMARY
           else
             echo "**Papers Analyzed:** 0" >> $GITHUB_STEP_SUMMARY

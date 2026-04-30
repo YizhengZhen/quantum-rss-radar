@@ -15,86 +15,23 @@ services:
       - ./config:/app/config:ro
       # Mount data directories for persistence
       - ./data:/app/data
-      # Mount web output for local inspection
-      - ./web:/app/web
     environment:
-      # LLM API Keys (use environment variables or .env file)
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
-      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      # LLM API Key (Generic OpenAI-compatible)
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      # Optional LLM settings
+      - LLM_BASE_URL=${LLM_BASE_URL:-}
+      - LLM_MODEL=${LLM_MODEL:-}
       # Email configuration
-      - EMAIL_USERNAME=${EMAIL_USERNAME:-}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
-      # Processing settings
-      - MAX_PAPERS_PER_FEED=${MAX_PAPERS_PER_FEED:-50}
-      - MIN_RELEVANCE_SCORE=${MIN_RELEVANCE_SCORE:-5.0}
-    # Run the pipeline on a schedule (daily at 8 AM UTC)
+      - EMAIL_ENABLED=${EMAIL_ENABLED:-false}
+      - EMAIL_SENDER=${EMAIL_SENDER:-}
+      - EMAIL_RECIPIENT=${EMAIL_RECIPIENT:-}
+      - EMAIL_SMTP_SERVER=${EMAIL_SMTP_SERVER:-}
+      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:-587}
+      - EMAIL_SMTP_USERNAME=${EMAIL_SMTP_USERNAME:-}
+      - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD:-}
+    # Run the pipeline daily
     command: >
       sh -c "
-        echo 'Quantum RSS Radar starting...' &&
-        # Run initial pipeline
-        python -m src.orchestrator &&
-        # Schedule daily runs (optional)
-        echo '0 8 * * * python -m src.orchestrator >> /app/data/cron.log 2>&1' > /etc/cron.d/quantum-rss-radar &&
-        crontab /etc/cron.d/quantum-rss-radar &&
-        # Keep container running (for cron)
-        crond -f
+        python -m src.orchestrator_jekyll --format all &&
+        echo 'Pipeline completed. Container will restart on next schedule.'
       "
-    # For one-time execution instead of cron:
-    # command: python -m src.orchestrator
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    # Uncomment for development with port exposure
-    # ports:
-    #   - "8000:8000"
-
-  # Optional: Nginx proxy for serving static website
-  nginx:
-    image: nginx:alpine
-    container_name: quantum-rss-radar-nginx
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    volumes:
-      - ./web:/usr/share/nginx/html:ro
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - quantum-rss-radar
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-# Optional: PostgreSQL database for storing historical data (future feature)
-# postgres:
-#   image: postgres:15-alpine
-#   container_name: quantum-rss-radar-db
-#   restart: unless-stopped
-#   environment:
-#     POSTGRES_DB: quantum_rss_radar
-#     POSTGRES_USER: quantum
-#     POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme123}
-#   volumes:
-#     - postgres_data:/var/lib/postgresql/data
-#   ports:
-#     - "5432:5432"
-
-# Optional: Redis cache for faster processing (future feature)
-# redis:
-#   image: redis:7-alpine
-#   container_name: quantum-rss-radar-cache
-#   restart: unless-stopped
-#   ports:
-#     - "6379:6379"
-
-volumes:
-  postgres_data:

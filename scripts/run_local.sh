@@ -48,7 +48,7 @@ fi
 
 # Create data directories if they don't exist
 echo "Setting up data directories..."
-mkdir -p data/raw data/processed data/markdown web
+mkdir -p data/raw data/papers data/reports
 
 # Install dependencies if needed
 echo "Checking dependencies..."
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 echo "Starting Quantum RSS Radar pipeline..."
 echo "--------------------------------------"
 
-python -m src.orchestrator
+python -m src.orchestrator_jekyll --format all
 
 echo "--------------------------------------"
 echo "✅ Pipeline completed successfully!"
@@ -83,16 +83,17 @@ echo "✅ Pipeline completed successfully!"
 # Show output locations
 echo ""
 echo "📁 Outputs:"
-echo "  - Data: data/processed/papers_analyzed.jsonl"
-echo "  - Reports: data/markdown/"
-echo "  - Website: web/"
+echo "  - Data: data/papers/papers_YYYY-MM-DD.json (all papers + AI analysis)"
+echo "  - Reports: data/reports/recommendations_YYYY-MM-DD.md (recommended papers)"
+echo "  - Latest: data/papers/latest.json (symlink for Jekyll)"
 echo ""
-echo "To view the website locally:"
-echo "  python -m http.server -d web 8000"
-echo "  Then open http://localhost:8000"
+echo "To view the Jekyll website locally:"
+echo "  cd jekyll_site"
+echo "  bundle exec jekyll serve"
+echo "  Then open http://localhost:4000"
 echo ""
 echo "To run in test mode (limited papers):"
-echo "  python -m src.orchestrator --test"
+echo "  python -m src.orchestrator_jekyll --test"
 echo ""
 
 # Deactivate virtual environment

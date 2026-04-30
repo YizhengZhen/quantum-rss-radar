@@ -197,17 +197,13 @@ class QuantumRSSRadarJekyll:
         exporter = DataExporter(self.config.output_dir if self.config else "data")
         results = {}
         
-        if self.output_format in ["all", "jsonl"]:
-            jsonl_path = exporter.export_jsonl(papers_with_analyses, date_str)
-            results["jsonl"] = str(jsonl_path)
+        if self.output_format in ["all", "jsonl", "jekyll"]:
+            json_path = exporter.export_json(papers_with_analyses, self.categories, date_str)
+            results["json"] = str(json_path)
         
         if self.output_format in ["all", "markdown"]:
-            markdown_path = exporter.export_markdown(papers_with_analyses, self.categories, date_str)
-            results["markdown"] = str(markdown_path)
-        
-        if self.output_format in ["all", "jekyll"]:
-            jekyll_path = exporter.export_jekyll_data(papers_with_analyses, self.categories, date_str)
-            results["jekyll"] = str(jekyll_path)
+            md_path = exporter.export_markdown(papers_with_analyses, self.categories, date_str)
+            results["markdown"] = str(md_path)
         
         return results
     
@@ -216,11 +212,7 @@ class QuantumRSSRadarJekyll:
         try:
             exporter = DataExporter(self.config.output_dir if self.config else "data")
             exporter.copy_to_jekyll_site()
-            
-            if "jekyll" in results:
-                logger.info(f"Data copied to Jekyll site from: {results['jekyll']}")
-            else:
-                logger.info("Jekyll data copied to site")
+            logger.info("Copied latest papers data to Jekyll site")
                 
         except Exception as e:
             logger.error(f"Failed to copy data to Jekyll site: {e}")
@@ -270,7 +262,7 @@ def main():
     parser.add_argument(
         "--format",
         default="all",
-        choices=["all", "jsonl", "markdown", "jekyll"],
+        choices=["all", "json", "markdown", "jekyll"],
         help="Output format (default: all)"
     )
     parser.add_argument(
