@@ -3,23 +3,35 @@
 # Add more sources after initial testing is successful
 
 feeds:
-  # ====== PRIMARY TEST SOURCE ======
-  # arXiv Quantum Physics - Primary source for testing
-  - name: "arXiv Quantum Physics"
-    url: "http://arxiv.org/rss/quant-ph"
-    category: "quantum_physics"
+
+  - name: "arXiv Physics"
+    url: "https://rss.arxiv.org/rss/quant-ph+cond-mat.stat-mech+math-ph+physics.soc-ph+physics.pop-ph+physics.optics+physics.comp-ph+physics.atom-ph+physics.atm-clus"
     source: "arxiv"
-    max_items: 50  # Limit to 50 papers for testing
+    max_items: -1  # Unlimited
     update_frequency:
       type: "daily"
 
+  - name: "arXiv Math"
+    url: "https://rss.arxiv.org/rss/math.DS+math.FA+math.GM+math.HO+math.IT+math.NA+math.OC+math.QA+math.ST+stat.TH"
+    source: "arxiv"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "daily"
+
+  - name: "arXiv Computer Science"
+    url: "https://rss.arxiv.org/rss/cs.CC+cs.CR+cs.ET+cs.GT+cs.IT+cs.LO"
+    source: "arxiv"
+    max_items: -1  # Unlimited
+    update_frequency:
+      type: "daily"  
+
+
 # ====== COMMENTED OUT FOR INITIAL TESTING ======
-# Uncomment these after successful quant-ph testing:
+# Uncomment these after successful testing:
 #
 #   # Nature Physics
 #   - name: "Nature Physics"
 #     url: "https://www.nature.com/nphys.rss"
-#     category: "quantum_physics"
 #     source: "nature"
 #     max_items: -1  # Unlimited
 #     update_frequency:
@@ -28,7 +40,6 @@ feeds:
 #   # Physical Review Letters
 #   - name: "Physical Review Letters"
 #     url: "https://journals.aps.org/prl/rss"
-#     category: "quantum_physics"
 #     source: "aps"
 #     max_items: -1  # Unlimited
 #     update_frequency:
@@ -37,7 +48,6 @@ feeds:
 #   # Science Magazine
 #   - name: "Science Magazine"
 #     url: "https://www.science.org/rss/current.xml"
-#     category: "quantum_physics"
 #     source: "science"
 #     max_items: -1  # Unlimited
 #     update_frequency:
@@ -46,26 +56,34 @@ feeds:
 #   # IEEE Transactions on Quantum Engineering
 #   - name: "IEEE Transactions on Quantum Engineering"
 #     url: "https://ieeexplore.ieee.org/rss/TOC94.XML"
-#     category: "quantum_engineering"
 #     source: "ieee"
 #     max_items: -1  # Unlimited
 #     update_frequency:
 #       type: "weekdays"
 
-categories:
-  # Primary category for quantum physics papers
-  quantum_physics:
-    display_name: "Quantum Physics"
-    color: "#4A90E2"
-    priority: 1
-  
-  # Additional categories (commented out for now)
-  # quantum_engineering:
-  #   display_name: "Quantum Engineering"
-  #   color: "#7ED321"
-  #   priority: 2
-  # 
-  # quantum_computing:
-  #   display_name: "Quantum Computing"
-  #   color: "#F5A623"
-  #   priority: 3
+sources:
+  # Each source maps to a color tag on the website
+  arxiv:
+    display_name: "arXiv"
+    color: "#B31B1B"
+  nature:
+    display_name: "Nature"
+    color: "#009688"
+  science:
+    display_name: "Science"
+    color: "#1565C0"
+  aps:
+    display_name: "APS"
+    color: "#7B1FA2"
+  ieee:
+    display_name: "IEEE"
+    color: "#F57C00"
+  acm:
+    display_name: "ACM"
+    color: "#00897B"
+  springer:
+    display_name: "Springer"
+    color: "#5D4037"
+  other:
+    display_name: "Other"
+    color: "#757575"

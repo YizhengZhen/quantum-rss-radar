@@ -5,18 +5,20 @@ Outputs:
   2. data/reports/report_YYYY-MM-DD_HHMMSS.md             ← all papers sorted by score desc, human‑readable
   3. jekyll_site/_data/papers.json                        ← latest data for Jekyll compilation
 
+Note: 'category' has been removed.  Research direction is assigned by LLM
+(analysis.direction).  Source colour tags come from SourceConfig.
+
 Copyright (c) 2026 Yizheng Zhen
 Licensed under the MIT License
 """
 
 import json
-import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
 
-from .models import Paper, PaperAnalysis, CategoryConfig
+from .models import Paper, PaperAnalysis, SourceConfig
 
 logger = logging.getLogger(__name__)
 
@@ -44,18 +46,17 @@ class DataExporter:
 
     def export_jsonl(self,
                      papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                     categories: Dict[str, CategoryConfig],
+                     sources: Dict[str, SourceConfig],
                      timestamp: Optional[datetime] = None) -> Path:
         """
         Export **all** papers to a JSONL file under data/all/.
 
         Every line is a complete JSON object containing the original paper
-        metadata *and* the AI analysis fields (score, recommendation, tldr, …),
-        together with an rss_source wrapper so the structure is self‑contained.
+        metadata *and* the AI analysis fields (score, recommendation, tldr, …).
 
         Args:
             papers_with_analyses: List of (paper, analysis) tuples
-            categories: Category configurations (used for category display name)
+            sources: Source configs (for display name + colour)
             timestamp: Datetime used for the filename.  Defaults to now.
 
         Returns:
@@ -77,7 +78,7 @@ class DataExporter:
         written = 0
         with open(output_path, "w", encoding="utf-8") as f:
             for paper, analysis in sorted_pairs:
-                record = self._paper_to_flat_dict(paper, analysis, categories, timestamp)
+                record = self._paper_to_flat_dict(paper, analysis, sources, timestamp)
                 f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
                 written += 1
 
@@ -90,7 +91,7 @@ class DataExporter:
 
     def export_markdown(self,
                         papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                        categories: Dict[str, CategoryConfig],
+                        sources: Dict[str, SourceConfig],
                         timestamp: Optional[datetime] = None) -> Path:
         """
         Export **all** papers as a single Markdown file under data/reports/.
@@ -113,7 +114,7 @@ class DataExporter:
         )
 
         lines: List[str] = []
-        lines.append(f"# Quantum RSS Radar — Daily Report")
+        lines.append("# Quantum RSS Radar — Daily Report")
         lines.append("")
         lines.append(f"**Date**: {date_only}  |  **Generated**: {timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
         lines.append("")
@@ -123,15 +124,15 @@ class DataExporter:
         lines.append("")
 
         for idx, (paper, analysis) in enumerate(sorted_pairs, 1):
-            cat_display = categories.get(paper.category)
-            cat_name = cat_display.display_name if cat_display else paper.category
+            src_cfg = sources.get(paper.source.value)
+            src_display = src_cfg.display_name if src_cfg else paper.source.value
 
             lines.append(f"## {idx}. {paper.title}")
             lines.append("")
             lines.append(f"- **Score**: {analysis.relevance_score:.1f} / 10  |  "
                          f"**Recommended**: {'✅ Yes' if analysis.recommendation else '❌ No'}")
-            lines.append(f"- **Source**: {paper.source.value}  |  **Feed**: {paper.feed_name}")
-            lines.append(f"- **Category**: {cat_name}")
+            lines.append(f"- **Source**: {src_display}  |  **Feed**: {paper.feed_name}")
+            lines.append(f"- **Direction**: {analysis.direction}")
             lines.append(f"- **Published**: {paper.published.strftime('%Y-%m-%d')}")
             lines.append(f"- **Authors**: {', '.join(paper.authors)}")
             lines.append(f"- **Link**: [{paper.link}]({paper.link})")
@@ -225,10 +226,13 @@ class DataExporter:
     @staticmethod
     def _paper_to_flat_dict(paper: Paper,
                             analysis: PaperAnalysis,
-                            categories: Dict[str, CategoryConfig],
+                            sources: Dict[str, SourceConfig],
                             run_timestamp: datetime) -> Dict[str, Any]:
         """Flatten a Paper + PaperAnalysis into a single dict for JSONL."""
-        cat_cfg = categories.get(paper.category)
+        src_cfg = sources.get(paper.source.value)
+        src_display = src_cfg.display_name if src_cfg else paper.source.value
+        src_color = src_cfg.color if src_cfg else "#757575"
+
         return {
             # — paper metadata —
             "id": paper.id,
@@ -238,8 +242,8 @@ class DataExporter:
             "link": paper.link,
             "published_date": paper.published.isoformat(),
             "source": paper.source.value,
-            "category": paper.category,
-            "category_display_name": cat_cfg.display_name if cat_cfg else paper.category,
+            "source_display_name": src_display,
+            "source_color": src_color,
             "feed_name": paper.feed_name,
             "tags": paper.tags,
             "rss_fetch_date": paper.rss_fetch_date.isoformat(),
@@ -247,6 +251,7 @@ class DataExporter:
             # — AI analysis —
             "score": analysis.relevance_score,
             "recommended": analysis.recommendation,
+            "direction": analysis.direction,
             "tldr": analysis.tldr,
             "motivation": analysis.motivation,
             "method": analysis.method,
@@ -263,13 +268,23 @@ class DataExporter:
     def _records_to_jekyll_data(records: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Convert a list of flat dicts (from JSONL) into Jekyll‑compatible structure."""
         papers = []
-        cat_stats: Dict[str, Dict[str, Any]] = {}
+        sources_data: Dict[str, Dict[str, Any]] = {}
+        directions_data: Dict[str, Dict[str, Any]] = {}
 
         for rec in records:
-            cat_id = rec.get("category", "unknown")
-            if cat_id not in cat_stats:
-                cat_stats[cat_id] = {
-                    "name": rec.get("category_display_name", cat_id),
+            src_id = rec.get("source", "other")
+            if src_id not in sources_data:
+                sources_data[src_id] = {
+                    "name": rec.get("source_display_name", src_id),
+                    "color": rec.get("source_color", "#757575"),
+                    "count": 0,
+                    "recommended_count": 0,
+                }
+
+            direction = rec.get("direction", "General / Other") or "General / Other"
+            if direction not in directions_data:
+                directions_data[direction] = {
+                    "name": direction,
                     "count": 0,
                     "recommended_count": 0,
                 }
@@ -282,8 +297,10 @@ class DataExporter:
                 "link": rec.get("link", ""),
                 "date": rec.get("published_date", ""),
                 "published_date": rec.get("published_date", "")[:10] if rec.get("published_date") else "",
-                "source": rec.get("source", ""),
-                "category": cat_id,
+                "source": src_id,
+                "source_display_name": rec.get("source_display_name", src_id),
+                "source_color": rec.get("source_color", "#757575"),
+                "direction": direction,
                 "feed_name": rec.get("feed_name", ""),
                 "tags": rec.get("tags", []),
                 "score": rec.get("score", 0),
@@ -295,13 +312,16 @@ class DataExporter:
                     "result": rec.get("result", ""),
                     "conclusion": rec.get("conclusion", ""),
                     "keywords": rec.get("keywords", []),
+                    "direction": direction,
                     "processing_time": rec.get("analysis_timestamp", ""),
                 },
             }
             papers.append(paper_entry)
-            cat_stats[cat_id]["count"] += 1
+            sources_data[src_id]["count"] += 1
+            directions_data[direction]["count"] += 1
             if rec.get("recommended"):
-                cat_stats[cat_id]["recommended_count"] += 1
+                sources_data[src_id]["recommended_count"] += 1
+                directions_data[direction]["recommended_count"] += 1
 
         all_dates = sorted(
             set(p["published_date"] for p in papers if p["published_date"]),
@@ -311,12 +331,14 @@ class DataExporter:
 
         return {
             "papers": papers,
-            "categories": cat_stats,
+            "sources": sources_data,
+            "directions": directions_data,
             "dates": all_dates,
             "stats": {
                 "total_papers": len(papers),
                 "recommended_papers": recommended_count,
-                "total_categories": len(cat_stats),
+                "total_sources": len(sources_data),
+                "total_directions": len(directions_data),
                 "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             },
         }
@@ -327,7 +349,7 @@ class DataExporter:
 
     def export_all(self,
                    papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                   categories: Dict[str, CategoryConfig],
+                   sources: Dict[str, SourceConfig],
                    timestamp: Optional[datetime] = None) -> Dict[str, str]:
         """
         Run JSONL export + Markdown export + Jekyll copy in one call.
@@ -338,8 +360,8 @@ class DataExporter:
         if timestamp is None:
             timestamp = datetime.now()
 
-        jsonl_path = self.export_jsonl(papers_with_analyses, categories, timestamp)
-        md_path = self.export_markdown(papers_with_analyses, categories, timestamp)
+        jsonl_path = self.export_jsonl(papers_with_analyses, sources, timestamp)
+        md_path = self.export_markdown(papers_with_analyses, sources, timestamp)
         self.copy_to_jekyll_site()
 
         return {"jsonl": str(jsonl_path), "markdown": str(md_path)}

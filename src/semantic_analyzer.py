@@ -137,18 +137,20 @@ Source: {paper.source.value}
 Link: {paper.link}
 
 INSTRUCTIONS:
-1. Relevance Score (0-10): Score how relevant this paper is to the research interests above. Consider both direct and indirect relevance.
-2. Recommendation (yes/no): Should the researcher read this paper? Consider novelty, importance, and alignment with research interests.
-3. Structured Summary: Provide a concise summary in the following format:
+1. Direction: Identify which one of the user's research directions this paper belongs to (use the exact name or a short phrase from RESEARCH INTERESTS). If it doesn't fit any, use "General / Other".
+2. Relevance Score (0-10): Score how relevant this paper is to the research interests above. Consider both direct and indirect relevance.
+3. Recommendation (yes/no): Should the researcher read this paper? Consider novelty, importance, and alignment with research interests.
+4. Structured Summary: Provide a concise summary in the following format:
    - TLDR: One-sentence summary
    - Motivation: Why was this research conducted?
    - Method: What approach/methodology was used?
    - Result: What were the key findings?
    - Conclusion: What are the implications and future directions?
-4. Keywords: Extract 3-5 key technical keywords from the paper.
+5. Keywords: Extract 3-5 key technical keywords from the paper.
 
 OUTPUT FORMAT (JSON only):
 {{
+  "direction": "<research direction name>",
   "relevance_score": <float 0-10>,
   "recommendation": <"yes" or "no">,
   "summary": {{
@@ -220,13 +222,19 @@ Your analysis:"""
             keywords = data.get("keywords", [])
             if not isinstance(keywords, list):
                 keywords = []
-            
+
+            # Get direction
+            direction = data.get("direction", "")
+            if not direction:
+                direction = "General / Other"
+
             return PaperAnalysis(
                 paper_id=paper_id,
                 relevance_score=float(data["relevance_score"]),
                 recommendation=recommendation,
                 summary=summary,
-                keywords=keywords
+                keywords=keywords,
+                direction=direction
             )
             
         except (json.JSONDecodeError, ValueError, KeyError) as e:

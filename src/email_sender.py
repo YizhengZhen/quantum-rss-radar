@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import List, Dict, Any
 import logging
 
-from .models import Paper, PaperAnalysis, Config
+from .models import Paper, PaperAnalysis, PaperSource, Config
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +46,7 @@ def format_paper_for_email(paper: Paper, analysis: PaperAnalysis) -> str:
         </p>
         
         <div style="margin: 10px 0;">
+            <p style="margin: 5px 0;"><strong>Direction:</strong> {analysis.direction or 'General / Other'}</p>
             <p style="margin: 5px 0;"><strong>TL;DR:</strong> {analysis.tldr}</p>
             <p style="margin: 5px 0;"><strong>Key Finding:</strong> {analysis.result}</p>
         </div>
@@ -212,7 +213,8 @@ TOP {top_n} RECOMMENDED PAPERS:
 {i}. {paper.title}
    Score: {analysis.relevance_score:.1f}/10 {'[RECOMMENDED]' if analysis.recommendation else ''}
    Authors: {', '.join(paper.authors[:3])}{' et al.' if len(paper.authors) > 3 else ''}
-   Source: {paper.source.value.upper()} | Published: {paper.published.strftime('%b %d, %Y') if paper.published else 'Unknown'}
+   Source: {paper.source.value.upper()} | Direction: {analysis.direction or 'General / Other'}
+   Published: {paper.published.strftime('%b %d, %Y') if paper.published else 'Unknown'}
    TL;DR: {analysis.tldr}
    Key Finding: {analysis.result}
    Link: {paper.link}
@@ -331,8 +333,7 @@ def test_email_config(config: Config) -> bool:
         abstract="This is a test abstract for email functionality testing.",
         link="https://arxiv.org/abs/1234.56789",
         published=datetime.now(),
-        source="arxiv",
-        category="quantum",
+        source=PaperSource.ARXIV,
         feed_name="Test Feed",
         raw_data={}
     )

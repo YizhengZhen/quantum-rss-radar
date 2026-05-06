@@ -4,42 +4,43 @@
             <i class="fas fa-times"></i>
         </button>
         
-        <template x-if="selectedPaper">
+        <template x-if="modalPaper">
             <div class="paper-modal">
                 <div class="modal-header">
                     <div class="modal-score">
-                        <span x-text="selectedPaper.score.toFixed(1)"></span>
+                        <span x-text="modalPaper.score.toFixed(1)"></span>
                     </div>
-                    <h2 x-text="selectedPaper.title"></h2>
+                    <h2 x-text="modalPaper.title"></h2>
                     <div class="modal-badges">
-                        <span class="modal-badge" x-show="selectedPaper.recommended">⭐ Recommended</span>
-                        <span class="modal-source" x-text="selectedPaper.source.toUpperCase()"></span>
+                        <span class="modal-badge" x-show="modalPaper.recommended">⭐ Recommended</span>
+                        <span class="modal-source" :style="sourceStyle(modalPaper.source)"
+                              x-text="getSourceName(modalPaper.source)"></span>
                     </div>
                 </div>
                 
                 <div class="modal-body">
                     <div class="modal-authors">
-                        <strong>Authors:</strong> <span x-text="selectedPaper.authors.join(', ')"></span>
+                        <strong>Authors:</strong> <span x-text="modalPaper.authors.join(', ')"></span>
                     </div>
                     
                     <div class="modal-categories">
-                        <strong>Category:</strong> 
-                        <span class="modal-category" :style="categoryStyle(selectedPaper.category)" 
-                              x-text="getCategoryName(selectedPaper.category)"></span>
+                        <strong>Direction:</strong> 
+                        <span class="modal-direction-tag"
+                              x-text="modalPaper.direction || 'General / Other'"></span>
                     </div>
                     
                     <div class="modal-pubdate">
-                        <strong>Published:</strong> <span x-text="formatDate(selectedPaper.published_date)"></span>
+                        <strong>Published:</strong> <span x-text="formatDate(modalPaper.published_date)"></span>
                     </div>
                     
                     <div class="modal-link">
                         <strong>Link:</strong> 
-                        <a :href="selectedPaper.link" target="_blank" x-text="selectedPaper.link"></a>
+                        <a :href="modalPaper.link" target="_blank" x-text="modalPaper.link"></a>
                     </div>
                     
                     <div class="modal-abstract">
                         <h3><i class="fas fa-file-alt"></i> Abstract</h3>
-                        <div class="abstract-text" x-text="selectedPaper.abstract"></div>
+                        <div class="abstract-text" x-text="modalPaper.abstract"></div>
                     </div>
                     
                     <div class="modal-analysis">
@@ -47,25 +48,32 @@
                         <div class="analysis-grid">
                             <div class="analysis-item">
                                 <h4>TL;DR</h4>
-                                <p x-text="selectedPaper.analysis.tldr"></p>
+                                <p x-text="modalPaper.analysis.tldr"></p>
                             </div>
                             <div class="analysis-item">
                                 <h4>Motivation</h4>
-                                <p x-text="selectedPaper.analysis.motivation"></p>
+                                <p x-text="modalPaper.analysis.motivation"></p>
                             </div>
                             <div class="analysis-item">
                                 <h4>Method</h4>
-                                <p x-text="selectedPaper.analysis.method"></p>
+                                <p x-text="modalPaper.analysis.method"></p>
                             </div>
                             <div class="analysis-item">
                                 <h4>Result</h4>
-                                <p x-text="selectedPaper.analysis.result"></p>
+                                <p x-text="modalPaper.analysis.result"></p>
                             </div>
                             <div class="analysis-item">
                                 <h4>Conclusion</h4>
-                                <p x-text="selectedPaper.analysis.conclusion"></p>
+                                <p x-text="modalPaper.analysis.conclusion"></p>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="modal-tags" x-show="modalPaper.tags && modalPaper.tags.length > 0">
+                        <strong>Tags:</strong>
+                        <template x-for="tag in modalPaper.tags" :key="tag">
+                            <span class="tag-badge" x-text="tag"></span>
+                        </template>
                     </div>
                     
                     <div class="modal-recommendation">
@@ -73,17 +81,17 @@
                         <div class="recommendation-box">
                             <div class="score-display">
                                 <strong>Relevance Score:</strong> 
-                                <span class="score-value" x-text="selectedPaper.score.toFixed(1)"></span>/10
+                                <span class="score-value" x-text="modalPaper.score.toFixed(1)"></span>/10
                             </div>
                             <div class="recommendation-verdict">
                                 <strong>Recommendation:</strong> 
-                                <span class="verdict" :class="selectedPaper.recommended ? 'recommended' : 'not-recommended'">
-                                    <span x-text="selectedPaper.recommended ? 'YES - Read this paper' : 'NO - Lower priority'"></span>
+                                <span class="verdict" :class="modalPaper.recommended ? 'recommended' : 'not-recommended'">
+                                    <span x-text="modalPaper.recommended ? 'YES - Read this paper' : 'NO - Lower priority'"></span>
                                 </span>
                             </div>
-                            <div class="reasoning" x-show="selectedPaper.analysis.reasoning">
+                            <div class="reasoning" x-show="modalPaper.analysis.reasoning">
                                 <strong>Reasoning:</strong> 
-                                <p x-text="selectedPaper.analysis.reasoning"></p>
+                                <p x-text="modalPaper.analysis.reasoning"></p>
                             </div>
                         </div>
                     </div>
@@ -93,12 +101,12 @@
                     <button class="btn-secondary" @click="closeModal()">
                         <i class="fas fa-times"></i> Close
                     </button>
-                    <a :href="selectedPaper.link" target="_blank" class="btn-primary">
+                    <a :href="modalPaper.link" target="_blank" class="btn-primary">
                         <i class="fas fa-external-link-alt"></i> Open Paper
                     </a>
-                    <button class="btn-secondary" @click="toggleBookmark(selectedPaper)">
-                        <i class="far" :class="isBookmarked(selectedPaper) ? 'fa-bookmark' : 'fa-bookmark'"></i>
-                        <span x-text="isBookmarked(selectedPaper) ? 'Bookmarked' : 'Bookmark'"></span>
+                    <button class="btn-secondary" @click="toggleBookmark(modalPaper)">
+                        <i class="far fa-bookmark" :class="isBookmarked(modalPaper) ? 'fas' : 'far'"></i>
+                        <span x-text="isBookmarked(modalPaper) ? 'Bookmarked' : 'Bookmark'"></span>
                     </button>
                 </div>
             </div>

@@ -14,21 +14,17 @@ window.siteData = {
 
 <!-- Simplified filter controls -->
 <div class="filter-controls-simple" x-show="!showCalendar">
-    <select x-model="selectedCategory" @change="filterPapers()">
-        <option value="">All Categories</option>
-        {% for category in site.data.papers.categories %}
-        <option value="{{ category[0] }}">{{ category[1].name }}</option>
-        {% endfor %}
-    </select>
     <select x-model="selectedSource" @change="filterPapers()">
         <option value="">All Sources</option>
-        <option value="arxiv">arXiv</option>
-        <option value="nature">Nature</option>
-        <option value="science">Science</option>
-        <option value="aps">APS</option>
-        <option value="ieee">IEEE</option>
-        <option value="acm">ACM</option>
-        <option value="springer">Springer</option>
+        <template x-for="(src, key) in sources" :key="key">
+            <option :value="key" x-text="src.name"></option>
+        </template>
+    </select>
+    <select x-model="selectedDirection" @change="filterPapers()">
+        <option value="">All Directions</option>
+        <template x-for="(dir, key) in directions" :key="key">
+            <option :value="key" x-text="dir.name"></option>
+        </template>
     </select>
     <label>
         <input type="checkbox" x-model="showOnlyRecommended" @change="filterPapers()">
@@ -60,19 +56,20 @@ window.siteData = {
                             </a>
                         </h3>
                         <span class="row-badge" x-show="paper.recommended">⭐ Recommended</span>
-                        <span class="row-source" x-text="paper.source.toUpperCase()"></span>
+                        <span class="row-source" :style="sourceStyle(paper.source)"
+                              x-text="getSourceName(paper.source)"></span>
                     </div>
                     <p class="row-authors">
                         <span x-text="paper.authors.join(', ')"></span>
                     </p>
                     <p class="row-tldr" x-text="paper.analysis.tldr"></p>
                     <div class="row-footer">
-                        <span class="row-category" :style="categoryStyle(paper.category)"
-                              x-text="getCategoryName(paper.category)"></span>
+                        <span class="row-direction-tag"
+                              x-text="paper.direction || 'General / Other'"></span>
                         <span class="row-date" x-text="formatDate(paper.published_date)"></span>
                         <div class="row-actions">
                             <button class="bookmark-btn-small" @click.stop="toggleBookmark(paper)">
-                                <i class="far" :class="isBookmarked(paper) ? 'fa-bookmark' : 'fa-bookmark'"></i>
+                                <i class="far fa-bookmark" :class="isBookmarked(paper) ? 'fas' : 'far'"></i>
                             </button>
                             <a href="#" class="row-link" @click.stop="openModal(paper)">
                                 <i class="fas fa-chart-bar"></i> View AI Analysis
@@ -101,7 +98,8 @@ window.siteData = {
                 <div class="paper-header">
                     <span class="paper-score" x-text="paper.score.toFixed(1)"></span>
                     <span class="paper-badge" x-show="paper.recommended">Recommended</span>
-                    <span class="paper-source" x-text="paper.source.toUpperCase()"></span>
+                    <span class="paper-source" :style="sourceStyle(paper.source)"
+                          x-text="getSourceName(paper.source)"></span>
                 </div>
                 
                 <h3 class="paper-title">
@@ -113,11 +111,11 @@ window.siteData = {
                 <p class="paper-tldr" x-text="paper.analysis.tldr"></p>
                 
                 <div class="paper-footer">
-                    <span class="paper-category" :style="categoryStyle(paper.category)"
-                          x-text="getCategoryName(paper.category)"></span>
+                    <span class="paper-direction-tag"
+                          x-text="paper.direction || 'General / Other'"></span>
                     <span class="paper-date" x-text="formatDate(paper.published_date)"></span>
                     <button class="bookmark-btn" @click="toggleBookmark(paper)">
-                        <i class="far" :class="isBookmarked(paper) ? 'fa-bookmark' : 'fa-bookmark'"></i>
+                        <i class="far fa-bookmark" :class="isBookmarked(paper) ? 'fas' : 'far'"></i>
                     </button>
                 </div>
             </div>

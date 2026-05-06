@@ -1,79 +1,64 @@
 ---
 layout: default
-title: Categories
-description: Browse papers by research categories
+title: Sources & Directions
+description: Browse papers by source and research direction
 ---
 
-<!-- <div class="page-header">
-    <h1><i class="fas fa-tags"></i> Categories</h1>
-    <p class="page-subtitle">Browse research papers by category</p>
-</div> -->
+<div class="page-header">
+    <h1><i class="fas fa-tags"></i> Sources & Directions</h1>
+    <p class="page-subtitle">Browse research papers by publisher source and AI-classified research direction</p>
+</div>
 
-<section class="categories-grid">
-    {% for category in site.data.papers.categories %}
-    {% assign cat_papers = 0 %}
-    {% assign cat_recommended = 0 %}
-    {% assign total_score = 0 %}
-    {% assign paper_count = 0 %}
+<!-- Sources Section -->
+<section class="stats-section">
+    <h2><i class="fas fa-globe"></i> Sources <small>(Publisher colour tags)</small></h2>
     
-    {% for paper in site.data.papers.papers %}
-    {% if paper.category == category[0] %}
-    {% assign cat_papers = cat_papers | plus: 1 %}
-    {% if paper.recommended %}
-    {% assign cat_recommended = cat_recommended | plus: 1 %}
-    {% endif %}
-    {% if paper.score %}
-    {% assign total_score = total_score | plus: paper.score %}
-    {% assign paper_count = paper_count | plus: 1 %}
-    {% endif %}
-    {% endif %}
-    {% endfor %}
-    
-    {% assign avg_score = 0 %}
-    {% if paper_count > 0 %}
-    {% assign avg_score = total_score | divided_by: paper_count %}
-    {% endif %}
-    
-    <a href="{{ '/category/' | append: category[0] | append: '.html' | relative_url }}" class="category-card">
-        <div class="category-header">
-            <div class="category-color-indicator" style="background-color: {{ category[1].color }};"></div>
-            <h3>{{ category[1].name }}</h3>
-        </div>
+    <div class="stats-cards-grid">
+        {% for source in site.data.papers.sources %}
+        {% assign src_key = source[0] %}
+        {% assign src_data = source[1] %}
         
-        <div class="category-metrics">
-            <div class="metric">
-                <div class="metric-value">{{ cat_papers }}</div>
-                <div class="metric-label">Papers</div>
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-color-dot" style="background-color: {{ src_data.color }};"></div>
+                <h4>{{ src_data.name }}</h4>
             </div>
-            <div class="metric">
-                <div class="metric-value">{{ cat_recommended }}</div>
-                <div class="metric-label">Recommended</div>
+            <div class="stat-main">
+                <div class="stat-main-number">{{ src_data.count }}</div>
+                <div class="stat-main-label">Papers</div>
             </div>
-            <div class="metric">
-                <div class="metric-value">{{ avg_score | round: 1 }}</div>
-                <div class="metric-label">Avg Score</div>
+            <div class="stat-details-grid">
+                <div class="stat-detail-item">
+                    <span class="stat-icon"><i class="fas fa-star"></i></span>
+                    <div class="stat-detail-content">
+                        <div class="stat-detail-value">{{ src_data.recommended_count }}</div>
+                        <div class="stat-detail-label">Recommended</div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="category-footer">
-            <span class="category-link">View papers →</span>
-        </div>
-    </a>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </section>
 
-<script>
-function openCategoryPaper(category, index) {
-    // Get papers for this category
-    const allPapers = {{ site.data.papers.papers | jsonify }};
-    const categoryPapers = allPapers.filter(p => p.category === category);
+<!-- Research Directions Section -->
+<section class="stats-section">
+    <h2><i class="fas fa-code-branch"></i> Research Directions <small>(AI-classified from your research interests)</small></h2>
     
-    if (index >= 0 && index < categoryPapers.length) {
-        if (typeof openModal === 'function') {
-            openModal(categoryPapers[index]);
-        } else {
-            console.warn('openModal function not found');
-        }
-    }
-}
-</script>
+    <div class="stats-cards-grid">
+        {% for direction in site.data.papers.directions %}
+        {% assign dir_key = direction[0] %}
+        {% assign dir_data = direction[1] %}
+        
+        <a href="{{ '/pages/all-papers/' | relative_url }}" class="category-card">
+            <div class="category-icon">
+                <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="category-info">
+                <h3>{{ dir_data.name }}</h3>
+                <p class="category-count">{{ dir_data.count }} papers, {{ dir_data.recommended_count }} recommended</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
