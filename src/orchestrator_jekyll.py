@@ -26,6 +26,7 @@ from .normalizer import normalize_papers, enrich_paper_metadata
 from .deduplicate import deduplicate_papers
 from .semantic_analyzer import SemanticAnalyzer
 from .data_exporter import DataExporter
+from .email_sender import send_daily_email
 from .models import Paper, PaperAnalysis
 
 logger = logging.getLogger(__name__)
@@ -168,6 +169,21 @@ class QuantumRSSRadarJekyll:
                 if self.output_format != "all":  # export_all() already did this
                     logger.info("Copying data to Jekyll site...")
                     self._copy_to_jekyll_site(results)
+
+            # Step 10: Send daily email (if enabled)
+            if self.config.email_enabled:
+                logger.info("Sending daily email digest...")
+                email_success = send_daily_email(all_papers_with_analyses, self.sources, self.config)
+                if email_success:
+                    logger.info("Daily email sent successfully")
+                    if results:
+                        results["email_sent"] = "sent"
+                else:
+                    logger.warning("Daily email failed to send")
+                    if results:
+                        results["email_sent"] = "failed"
+            else:
+                logger.info("Email sending disabled, skipping")
 
             # Calculate execution time
             execution_time = datetime.now() - start_time

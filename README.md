@@ -93,9 +93,10 @@ python -m src.orchestrator_jekyll
 
 ### 4. 查看结果
 
-- **数据输出**：`data/processed/papers_analyzed.jsonl`
+- **数据输出 (JSONL)**：`data/all/data_YYYY-MM-DD_HHMMSS.jsonl`
+- **数据报告 (MD)**：`data/reports/report_YYYY-MM-DD_HHMMSS.md`
 - **网站文件**：`jekyll_site/_site/index.html`
-- **日志文件**：`data/logs/quantum_rss_radar.log`
+- **日志文件**：`quantum_rss_radar_jekyll.log`
 
 ## 🎯 GitHub部署（推荐）
 
@@ -136,6 +137,27 @@ git push origin main
 
 您的研究门户网站将在以下地址可用：  
 `https://YOUR_USERNAME.github.io/quantum-rss-radar/`
+
+### 配置邮件推送（可选）
+
+每日邮件摘要由 pipeline 自动发送。在 GitHub Secrets 中添加以下配置：
+
+| Secret名称 | 值示例 | 说明 |
+|-----------|--------|------|
+| `EMAIL_ENABLED` | `true` | 启用邮件推送 |
+| `EMAIL_SENDER` | `your-email@gmail.com` | 发件邮箱 |
+| `EMAIL_RECIPIENT` | `your-email@gmail.com` | 收件邮箱 |
+| `EMAIL_SMTP_SERVER` | `smtp.gmail.com` | SMTP服务器 |
+| `EMAIL_SMTP_PORT` | `587` | SMTP端口（587=STARTTLS） |
+| `EMAIL_SMTP_USERNAME` | `your-email@gmail.com` | SMTP用户名（通常是邮箱） |
+| `EMAIL_SMTP_PASSWORD` | `your-app-password` | SMTP密码（Gmail需使用应用专用密码） |
+
+> **💡 常用SMTP配置：**
+> - **Gmail**: `smtp.gmail.com:587` — 使用 [Google App Password](https://support.google.com/accounts/answer/185833) (两因素验证后生成)
+> - **QQ邮箱**: `smtp.qq.com:587` — 使用 SMTP 授权码
+> - **163邮箱**: `smtp.163.com:465` — 使用 SMTP 授权码
+> - **Outlook**: `smtp.office365.com:587` — 使用邮箱密码或应用密码
+> - **SendGrid**: `smtp.sendgrid.net:587` — 使用 API Key 作为密码
 
 ## 📡 支持的LLM服务
 
@@ -198,6 +220,42 @@ docker run --env LLM_API_KEY=sk-... quantum-rss-radar
 
 # 或使用docker-compose
 docker-compose up
+```
+
+### 本地每日自动运行（Docker + 系统定时任务）
+
+以下是在本地服务器/开发机上实现每日自动运行的推荐方案：
+
+**1. 准备 .env 文件**
+```bash
+cp .env.example .env
+# 编辑 .env：填入 LLM_API_KEY，可选 EMAIL_* 等
+```
+
+**2. 使用 cron（Linux/macOS）**
+```bash
+# 每天 UTC 8:00 运行 pipeline
+crontab -e
+# 添加一行：
+0 8 * * * cd /path/to/quantum-rss-radar && docker-compose up 2>&1 >> cron.log
+```
+
+**3. 使用 Windows 任务计划程序**
+
+创建一个每天运行 `docker-compose up` 的基本任务：
+```
+触发器：每天 08:00
+操作：启动程序 → docker-compose up
+起始于：C:\path\to\quantum-rss-radar
+```
+
+**4. 数据持久化**
+
+`docker-compose.yaml` 已配置 `data/` 目录挂载，所有 JSONL / MD 报告和原始数据会保留在宿主机上：
+```
+data/
+├── all/        # JSONL（每日论文全量数据，文件名 data_YYYY-MM-DD_HHMMSS.jsonl）
+└── reports/    # MD 报告（按评分排序，文件名 report_YYYY-MM-DD_HHMMSS.md）
 ```
 
 ### 云平台部署（阿里云ECS）
@@ -266,8 +324,11 @@ quantum-rss-radar/
 │   ├── rss_fetcher.py            # RSS采集器
 │   ├── semantic_analyzer.py      # 语义分析器
 │   ├── data_exporter.py          # 数据导出器
-│   ├── website_builder.py        # 网站构建器
-│   └── email_sender.py           # 邮件发送器
+│   ├── normalizer.py             # 元数据标准化
+│   ├── deduplicate.py            # 论文去重
+│   ├── email_sender.py           # 邮件发送器
+│   ├── tag_manager.py            # 标签管理
+│   └── scheduler.py              # 调度器
 │
 ├── config/                 # 配置文件
 │   ├── rss_sources.yaml          # RSS源配置
@@ -280,9 +341,32 @@ quantum-rss-radar/
 │   └── _site/             # 生成的网站（自动）
 │
 ├── data/                  # 处理后的数据
-│   ├── raw/              # 原始RSS数据
-│   ├── processed/        # 分析后的论文（JSONL）
-│   └── logs/             # 系统日志
+│   ├── all/              # 分析后的论文（JSONL，每日一份）
+│   └── reports/          # MD 分析报告（每日一份，按评分排序）
+│
+├── .github/workflows/    # GitHub Actions
+│   └── daily-pipeline.yaml # 每日自动化工作流
+│
+├── scripts/              # 辅助脚本
+│   ├── run_local.sh      # 本地运行脚本
+│   └── deploy_to_public_repo.py  # 部署到公开仓库
+│
+└── docker/               # Docker 补充配置
+│
+├── config/                 # 配置文件
+│   ├── rss_sources.yaml          # RSS源配置
+│   └── research_directions.md    # 研究方向
+│
+├── jekyll_site/           # Jekyll静态网站
+│   ├── _config.yml        # Jekyll配置
+│   ├── _layouts/          # HTML模板
+│   ├── _includes/         # 可复用组件
+│   └── _site/             # 生成的网站（自动）
+│
+├── data/                  # 处理后的数据
+│   ├── raw/              # 原始RSS数据（JSON）
+│   ├── all/              # 分析后的论文（JSONL，每日一份）
+│   └── reports/          # MD 分析报告（每日一份，按评分排序）
 │
 ├── .github/workflows/    # GitHub Actions
 │   └── daily-pipeline.yaml # 每日自动化工作流

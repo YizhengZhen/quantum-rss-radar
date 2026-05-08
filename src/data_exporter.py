@@ -1,7 +1,7 @@
 """
 Data exporter for the Quantum RSS Radar system.
 Outputs:
-  1. data/all/quantum_rss_radar_YYYY-MM-DD_HHMMSS.jsonl  ← each line = 1 paper with ALL fields
+  1. data/all/data_YYYY-MM-DD_HHMMSS.jsonl  ← each line = 1 paper with ALL fields
   2. data/reports/report_YYYY-MM-DD_HHMMSS.md             ← all papers sorted by score desc, human‑readable
   3. jekyll_site/_data/papers.json                        ← latest data for Jekyll compilation
 
@@ -66,7 +66,7 @@ class DataExporter:
             timestamp = datetime.now()
         ts = timestamp.strftime("%Y-%m-%d_%H%M%S")
         output_dir = self.base_output_dir / "all"
-        output_path = output_dir / f"quantum_rss_radar_{ts}.jsonl"
+        output_path = output_dir / f"data_{ts}.jsonl"
 
         # Sort by score descending first
         sorted_pairs = sorted(
@@ -192,7 +192,7 @@ class DataExporter:
 
         # Find the latest JSONL
         all_dir = self.base_output_dir / "all"
-        jsonl_files = sorted(all_dir.glob("quantum_rss_radar_*.jsonl"), reverse=True)
+        jsonl_files = sorted(all_dir.glob("data_*.jsonl"), reverse=True)
         if not jsonl_files:
             logger.warning("No JSONL files found under data/all/, cannot copy to Jekyll")
             return
