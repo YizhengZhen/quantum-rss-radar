@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        
+            Sources & Directions - Quantum RSS Radar
+        
+    </title>
+    
+    <!-- Theme initialization to prevent flash -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/qfqe-new-papers/assets/css/styles.css">
+    <link rel="stylesheet" href="/qfqe-new-papers/assets/css/source-colors.css">
+    <link rel="stylesheet" href="/qfqe-new-papers/assets/css/category-stats.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Alpine.js for interactivity -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Sources &amp; Directions | Quantum RSS Radar</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Sources &amp; Directions" />
+<meta name="author" content="Quantum Researcher" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Browse papers by source and research direction" />
+<meta name="twitter:description" property="og:description" content="Browse papers by source and research direction" />
+<link rel="canonical" href="/qfqe-new-papers/pages/categories/" />
+<meta property="og:url" content="/qfqe-new-papers/pages/categories/" />
+<meta property="og:site_name" content="Quantum RSS Radar" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Sources &amp; Directions" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Quantum Researcher"},"description":"Browse papers by source and research direction","headline":"Sources &amp; Directions","url":"/qfqe-new-papers/pages/categories/"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+<body x-data="app()">
+    <!-- Header (banner) -->
+    <header>
+    <div class="container header-container">
+        <div class="header-left">
+            <h1><i class="fa-solid fa-satellite-dish"></i> Quantum RSS Radar</h1>
+            <p class="subtitle">AI-assisted daily academic research tracking system</p>
+        </div>
+        <div class="header-right">
+            <div class="header-controls">
+                <div class="header-controls-top">
+                    <button class="theme-toggle" @click="toggleTheme()" :title="theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'">
+                        <i class="fas" :class="theme === 'light' ? 'fa-moon' : 'fa-sun'"></i>
+                    </button>
+                    <button class="calendar-toggle" @click="toggleCalendar()" title="Select date to filter papers">
+                        <i class="fas fa-calendar-alt"></i>
+                    </button>
+                </div>
+                <p class="date">Last updated: 
+                    
+                        2026-05-14 10:19:01
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+</header>
+    
+    <!-- Navigation and search -->
+    <!-- Combined Navigation and Search Bar -->
+<div class="nav-search-container">
+    <div class="container nav-search-inner">
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/qfqe-new-papers/" >
+                    <i class="fas fa-home"></i> Home
+                </a></li>
+                <li><a href="/qfqe-new-papers/pages/recommended/" >
+                    <i class="fas fa-star"></i> Recommended
+                </a></li>
+                <li><a href="/qfqe-new-papers/pages/all-papers/" >
+                    <i class="fas fa-file-alt"></i> All
+                </a></li>
+                <li><a href="/qfqe-new-papers/pages/categories/" class="active">
+                    <i class="fas fa-tags"></i> Sources & Directions
+                </a></li>
+            </ul>
+        </nav>
+        
+        <div class="nav-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" 
+                   placeholder="Search papers by title, author, or keyword..." 
+                   x-model="searchQuery"
+                   @input="filterPapers()">
+        </div>
+    </div>
+</div>
+
+<!-- Calendar dropdown (hidden by default) -->
+<div class="calendar-dropdown" x-show="showCalendar" @click.away="showCalendar = false">
+    <div class="calendar-header">
+        <h3><i class="fas fa-calendar"></i> Filter by Date</h3>
+        <button class="close-calendar" @click="showCalendar = false">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="calendar-body">
+        <input type="date" x-model="selectedDate" @change="filterByDate()">
+        <div class="quick-dates">
+            <button @click="setDate('today')">Today</button>
+            <button @click="setDate('yesterday')">Yesterday</button>
+            <button @click="setDate('last_3_days')">Last 3 days</button>
+            <button @click="setDate('last_7_days')">Last 7 days</button>
+            <button @click="setDate('this_month')">This month</button>
+            <button @click="setDate('')">Clear filter</button>
+        </div>
+        <p class="calendar-note">Select a date to see papers from that day</p>
+    </div>
+</div>
+
+    
+    <!-- Main content -->
+    <main class="container">
+        <div class="page-header">
+    <h1><i class="fas fa-tags"></i> Sources & Directions</h1>
+    <p class="page-subtitle">Browse research papers by publisher source and AI-classified research direction</p>
+</div>
+
+<!-- Sources Section -->
+<section class="stats-section">
+    <h2><i class="fas fa-globe"></i> Sources <small>(Publisher colour tags)</small></h2>
+    
+    <div class="stats-cards-grid">
+        
+        
+        
+        
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-color-dot" style="background-color: #B31B1B;"></div>
+                <h4>arXiv</h4>
+            </div>
+            <div class="stat-main">
+                <div class="stat-main-number">142</div>
+                <div class="stat-main-label">Papers</div>
+            </div>
+            <div class="stat-details-grid">
+                <div class="stat-detail-item">
+                    <span class="stat-icon"><i class="fas fa-star"></i></span>
+                    <div class="stat-detail-content">
+                        <div class="stat-detail-value">18</div>
+                        <div class="stat-detail-label">Recommended</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+<!-- Research Directions Section -->
+<section class="stats-section">
+    <h2><i class="fas fa-code-branch"></i> Research Directions <small>(AI-classified from your research interests)</small></h2>
+    
+    <div class="stats-cards-grid">
+        
+        
+        
+        
+        <a href="/qfqe-new-papers/pages/all-papers/" class="category-card">
+            <div class="category-icon">
+                <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="category-info">
+                <h3>Information Thermodynamics</h3>
+                <p class="category-count">2 papers, 2 recommended</p>
+            </div>
+        </a>
+        
+        
+        
+        
+        <a href="/qfqe-new-papers/pages/all-papers/" class="category-card">
+            <div class="category-icon">
+                <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="category-info">
+                <h3>Hybrid Quantum Systems</h3>
+                <p class="category-count">5 papers, 5 recommended</p>
+            </div>
+        </a>
+        
+        
+        
+        
+        <a href="/qfqe-new-papers/pages/all-papers/" class="category-card">
+            <div class="category-icon">
+                <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="category-info">
+                <h3>Quantum Foundations</h3>
+                <p class="category-count">6 papers, 5 recommended</p>
+            </div>
+        </a>
+        
+        
+        
+        
+        <a href="/qfqe-new-papers/pages/all-papers/" class="category-card">
+            <div class="category-icon">
+                <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="category-info">
+                <h3>Quantum Communication</h3>
+                <p class="category-count">7 papers, 6 recommended</p>
+            </div>
+        </a>
+        
+        
+        
+        
+        <a href="/qfqe-new-papers/pages/all-papers/" class="category-card">
+            <div class="category-icon">
+                <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="category-info">
+                <h3>General / Other</h3>
+                <p class="category-count">122 papers, 0 recommended</p>
+            </div>
+        </a>
+        
+    </div>
+</section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Data Sources</h3>
+                <p>Tracked from 4 RSS feeds:</p>
+                
+                <div class="data-sources-horizontal">
+                    
+                    
+                    <div class="source-item disabled" title="Not currently in use">
+                        <i class="fas fa-laptop-code"></i>
+                        <span class="source-name">ACM</span>
+                    </div>
+                    
+                    
+                    
+                    <a href="https://journals.aps.org/" target="_blank" class="source-item" 
+                       title="Tracked from APS">
+                        <i class="fas fa-atom"></i>
+                        <span class="source-name">APS</span>
+                    </a>
+                    
+                    
+                    
+                    <div class="source-item disabled" title="Not currently in use">
+                        <i class="fas fa-bolt"></i>
+                        <span class="source-name">IEEE</span>
+                    </div>
+                    
+                    
+                    
+                    <a href="https://www.nature.com/" target="_blank" class="source-item" 
+                       title="Tracked from Nature">
+                        <i class="fas fa-leaf"></i>
+                        <span class="source-name">Nature</span>
+                    </a>
+                    
+                    
+                    
+                    <div class="source-item disabled" title="Not currently in use">
+                        <i class="fas fa-flask"></i>
+                        <span class="source-name">Science</span>
+                    </div>
+                    
+                    
+                    
+                    <a href="https://link.springer.com/" target="_blank" class="source-item" 
+                       title="Tracked from Springer">
+                        <i class="fas fa-book-open"></i>
+                        <span class="source-name">Springer</span>
+                    </a>
+                    
+                    
+                    
+                    <a href="https://arxiv.org/" target="_blank" class="source-item" 
+                       title="Tracked from arXiv">
+                        <i class="fas fa-archive"></i>
+                        <span class="source-name">arXiv</span>
+                    </a>
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>System Info</h3>
+                <ul class="footer-links">
+                    <li><a href="/pages/about.html">About the System</a></li>
+                    <li><a href="https://github.com/yourusername/quantum-rss-radar" target="_blank">GitHub Repository</a></li>
+                    <li><a href="/pages/data.html">Data Export</a></li>
+                    <li><a href="/pages/contact.html">Contact</a></li>
+                </ul>
+                <p class="footer-note" style="margin-top: 1rem;">
+                    <i class="fas fa-info-circle"></i> RSS feeds only (no PDF downloads)
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Quantum Researcher. AI-powered research tracking.</p>
+            <p class="footer-note">
+                <i class="fas fa-robot"></i> Analysis powered by LLMs (OpenAI/DeepSeek).
+                Sources: APS, Nature, Springer, arXiv
+            </p>
+            <p class="footer-note" style="font-size: 0.85rem; opacity: 0.6; margin-top: 0.5rem;">
+                Generated from <code>config/rss_sources.yaml</code> on 2026-04-12
+            </p>
+        </div>
+    </div>
+</footer>
+
+    
+    <!-- Modal for AI summary -->
+    <div class="modal-overlay" x-show="modalOpen" @click="closeModal()" x-cloak>
+    <div class="modal-content" @click.stop>
+        <button class="modal-close" @click="closeModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <template x-if="modalPaper">
+            <div class="paper-modal">
+                <div class="modal-header">
+                    <div class="modal-score">
+                        <span x-text="modalPaper.score.toFixed(1)"></span>
+                    </div>
+                    <h2 x-text="modalPaper.title"></h2>
+                    <div class="modal-badges">
+                        <span class="modal-badge" x-show="modalPaper.recommended">⭐ Recommended</span>
+                        <span class="modal-source" :style="sourceStyle(modalPaper.source)"
+                              x-text="getSourceName(modalPaper.source)"></span>
+                    </div>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="modal-authors">
+                        <strong>Authors:</strong> <span x-text="modalPaper.authors.join(', ')"></span>
+                    </div>
+                    
+                    <div class="modal-categories">
+                        <strong>Direction:</strong> 
+                        <span class="modal-direction-tag"
+                              x-text="modalPaper.direction || 'General / Other'"></span>
+                    </div>
+                    
+                    <div class="modal-pubdate">
+                        <strong>Published:</strong> <span x-text="formatDate(modalPaper.published_date)"></span>
+                    </div>
+                    
+                    <div class="modal-link">
+                        <strong>Link:</strong> 
+                        <a :href="modalPaper.link" target="_blank" x-text="modalPaper.link"></a>
+                    </div>
+                    
+                    <div class="modal-abstract">
+                        <h3><i class="fas fa-file-alt"></i> Abstract</h3>
+                        <div class="abstract-text" x-text="modalPaper.abstract"></div>
+                    </div>
+                    
+                    <div class="modal-analysis">
+                        <h3><i class="fas fa-brain"></i> AI Analysis</h3>
+                        <div class="analysis-grid">
+                            <div class="analysis-item">
+                                <h4>TL;DR</h4>
+                                <p x-text="modalPaper.analysis.tldr"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Motivation</h4>
+                                <p x-text="modalPaper.analysis.motivation"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Method</h4>
+                                <p x-text="modalPaper.analysis.method"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Result</h4>
+                                <p x-text="modalPaper.analysis.result"></p>
+                            </div>
+                            <div class="analysis-item">
+                                <h4>Conclusion</h4>
+                                <p x-text="modalPaper.analysis.conclusion"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-tags" x-show="modalPaper.tags && modalPaper.tags.length > 0">
+                        <strong>Tags:</strong>
+                        <template x-for="tag in modalPaper.tags" :key="tag">
+                            <span class="tag-badge" x-text="tag"></span>
+                        </template>
+                    </div>
+                    
+                    <div class="modal-recommendation">
+                        <h3><i class="fas fa-star"></i> Recommendation</h3>
+                        <div class="recommendation-box">
+                            <div class="score-display">
+                                <strong>Relevance Score:</strong> 
+                                <span class="score-value" x-text="modalPaper.score.toFixed(1)"></span>/10
+                            </div>
+                            <div class="recommendation-verdict">
+                                <strong>Recommendation:</strong> 
+                                <span class="verdict" :class="modalPaper.recommended ? 'recommended' : 'not-recommended'">
+                                    <span x-text="modalPaper.recommended ? 'YES - Read this paper' : 'NO - Lower priority'"></span>
+                                </span>
+                            </div>
+                            <div class="reasoning" x-show="modalPaper.analysis.reasoning">
+                                <strong>Reasoning:</strong> 
+                                <p x-text="modalPaper.analysis.reasoning"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button class="btn-secondary" @click="closeModal()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                    <a :href="modalPaper.link" target="_blank" class="btn-primary">
+                        <i class="fas fa-external-link-alt"></i> Open Paper
+                    </a>
+                    <button class="btn-secondary" @click="toggleBookmark(modalPaper)">
+                        <i class="far fa-bookmark" :class="isBookmarked(modalPaper) ? 'fas' : 'far'"></i>
+                        <span x-text="isBookmarked(modalPaper) ? 'Bookmarked' : 'Bookmark'"></span>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+
+    
+    <!-- JavaScript -->
+    <script src="/qfqe-new-papers/assets/js/app.js"></script>
+</body>
+</html>

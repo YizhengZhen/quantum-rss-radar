@@ -1,0 +1,509 @@
+2026-05-14 10:07:55,665 - __main__ - INFO - Starting Quantum RSS Radar Jekyll pipeline (output: all)...
+2026-05-14 10:07:55,665 - __main__ - INFO - Loading system configuration...
+2026-05-14 10:07:55,718 - __main__ - INFO - Loaded 3 RSS feeds
+2026-05-14 10:07:55,718 - __main__ - INFO - Loaded 8 source configurations
+2026-05-14 10:07:55,719 - __main__ - INFO - Research directions loaded: 682 characters
+2026-05-14 10:07:55,811 - __main__ - INFO - Fetching RSS feeds...
+2026-05-14 10:07:55,814 - src.scheduler - INFO - Feed scheduled for fetch today: arXiv Physics
+2026-05-14 10:07:55,814 - src.scheduler - INFO - Feed scheduled for fetch today: arXiv Math
+2026-05-14 10:07:55,815 - src.scheduler - INFO - Feed scheduled for fetch today: arXiv Computer Science
+2026-05-14 10:07:55,815 - src.scheduler - INFO - Filtered 3 feeds to 3 for today
+2026-05-14 10:07:55,815 - src.rss_fetcher - INFO - Using scheduler: 3 of 3 feeds to fetch today
+2026-05-14 10:07:55,815 - src.rss_fetcher - INFO - Fetching feed: arXiv Physics (https://rss.arxiv.org/rss/quant-ph+cond-mat.stat-mech+math-ph+physics.soc-ph+physics.pop-ph+physics.optics+physics.comp-ph+physics.atom-ph+physics.atm-clus)
+2026-05-14 10:07:56,073 - src.rss_fetcher - INFO - Fetched 50 papers from arXiv Physics
+2026-05-14 10:07:57,079 - src.rss_fetcher - INFO - Fetching feed: arXiv Math (https://rss.arxiv.org/rss/math.DS+math.FA+math.GM+math.HO+math.IT+math.NA+math.OC+math.QA+math.ST+stat.TH)
+2026-05-14 10:07:57,263 - src.rss_fetcher - INFO - Fetched 50 papers from arXiv Math
+2026-05-14 10:07:58,269 - src.rss_fetcher - INFO - Fetching feed: arXiv Computer Science (https://rss.arxiv.org/rss/cs.CC+cs.CR+cs.ET+cs.GT+cs.IT+cs.LO)
+2026-05-14 10:07:58,413 - src.rss_fetcher - INFO - Fetched 50 papers from arXiv Computer Science
+2026-05-14 10:07:59,419 - src.rss_fetcher - INFO - Total papers fetched: 150
+2026-05-14 10:07:59,420 - src.rss_fetcher - INFO - Scheduler stats: 3 total fetches, 150 total papers
+2026-05-14 10:07:59,420 - __main__ - INFO - Fetched 150 papers from RSS feeds
+2026-05-14 10:07:59,420 - __main__ - INFO - Normalizing paper metadata...
+2026-05-14 10:07:59,420 - src.normalizer - INFO - Normalizing 150 papers
+2026-05-14 10:07:59,443 - src.normalizer - INFO - Normalized 150 papers
+2026-05-14 10:07:59,443 - __main__ - INFO - Enriching paper metadata...
+2026-05-14 10:07:59,446 - __main__ - INFO - Deduplicating papers...
+2026-05-14 10:07:59,447 - src.deduplicate - INFO - Deduplicating 150 papers
+2026-05-14 10:07:59,447 - src.deduplicate - INFO - Looking for duplicates among 150 papers
+2026-05-14 10:07:59,473 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,473 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,476 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,479 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,479 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,480 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,481 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,482 - src.deduplicate - INFO - Found duplicate group of size 2
+2026-05-14 10:07:59,486 - src.deduplicate - INFO - Found 8 duplicate groups
+2026-05-14 10:07:59,486 - src.deduplicate - INFO - Removed 8 duplicate papers, kept 142 unique papers
+2026-05-14 10:07:59,486 - __main__ - INFO - After deduplication: 142 unique papers
+2026-05-14 10:07:59,486 - __main__ - INFO - Analyzing papers with LLM...
+2026-05-14 10:07:59,486 - src.semantic_analyzer - INFO - Analyzing 142 papers with LLM
+2026-05-14 10:07:59,486 - src.semantic_analyzer - INFO - Analyzing paper: Quantum Chaos With Graphs: A Silicon Photonics Pla...
+2026-05-14 10:08:00,479 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:02,948 - src.tag_manager - INFO - Created new tag database at data/tags.json
+2026-05-14 10:08:02,950 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['quantum chaos', 'quantum graphs', 'random matrix theory', 'silicon photonics', 'wave-particle duality']
+2026-05-14 10:08:03,950 - src.semantic_analyzer - INFO - Analyzing paper: Quantum Field-Theoretic Predictions Of {\Psi}-Epis...
+2026-05-14 10:08:04,275 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:07,718 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.0, recommend=True, tags=['ψ-epistemic models', 'quantum foundations', 'Lorentz symmetry', 'scattering cross sections', 'particle phenomenology']
+2026-05-14 10:08:08,718 - src.semantic_analyzer - INFO - Analyzing paper: QuPort: Topology-, Port-, And Congestion-Aware Com...
+2026-05-14 10:08:09,047 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:12,332 - src.semantic_analyzer - INFO - Paper analysis complete: score=4.0, recommend=False, tags=['modular quantum computing', 'compilation', 'partitioning', 'routing', 'congestion']
+2026-05-14 10:08:13,332 - src.semantic_analyzer - INFO - Analyzing paper: Fermion Lattices Can Be Simulated By Same-size Qub...
+2026-05-14 10:08:13,659 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:17,565 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.0, recommend=True, tags=['routing', 'Jordan-Wigner transformation', 'fermion simulation', 'qubit lattice', 'circuit depth']
+2026-05-14 10:08:18,565 - src.semantic_analyzer - INFO - Analyzing paper: Visible-NIR-Frequency Hyperbolic Response In Nodal...
+2026-05-14 10:08:18,887 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:21,473 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['hyperbolic material', 'nodal-line semimetal', 'PbTaSe2', 'plasmonic', 'anisotropic optical response']
+2026-05-14 10:08:21,473 - src.semantic_analyzer - INFO - Progress: 5/142 papers analyzed
+2026-05-14 10:08:22,473 - src.semantic_analyzer - INFO - Analyzing paper: A Quantum Multi-Programming Framework To Maximize ...
+2026-05-14 10:08:22,792 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:25,743 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['quantum multi-programming', 'LUCJ ansatz', 'sample-based quantum diagonalization', 'cross-talk mitigation', 'quantum chemistry']
+2026-05-14 10:08:26,744 - src.semantic_analyzer - INFO - Analyzing paper: Quantum State Isomorphism Problems For Groups...
+2026-05-14 10:08:27,079 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:30,851 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.0, recommend=True, tags=['quantum state isomorphism', 'hidden subgroup problem', 'QSZK', 'graph isomorphism', 'group actions']
+2026-05-14 10:08:31,851 - src.semantic_analyzer - INFO - Analyzing paper: Dissipative Dynamics And Active Stabilization Of L...
+2026-05-14 10:08:32,167 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:34,305 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['non-Hermitian potentials', 'dissipative dynamics', 'nonlinear waves', 'harmonic traps', 'Bose-Einstein condensates']
+2026-05-14 10:08:35,305 - src.semantic_analyzer - INFO - Analyzing paper: Scaling Symmetry In Symplectic Thermodynamics...
+2026-05-14 10:08:35,621 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:38,220 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['scaling symmetry', 'symplectic thermodynamics', 'contact geometry', 'Lagrangian submanifold', 'Schwarzschild black hole']
+2026-05-14 10:08:39,220 - src.semantic_analyzer - INFO - Analyzing paper: Optimal Bounds, Barriers, And Extensions For Non-H...
+2026-05-14 10:08:39,539 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:43,435 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['multivariate quantum signal processing', 'non-Hermitian Hamiltonian simulation', 'query complexity', 'Chebyshev approximation', 'block-encoding']
+2026-05-14 10:08:43,435 - src.semantic_analyzer - INFO - Progress: 10/142 papers analyzed
+2026-05-14 10:08:44,435 - src.semantic_analyzer - INFO - Analyzing paper: Insights Into The Nature Of Quantum Emitters In El...
+2026-05-14 10:08:44,794 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:47,226 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['hexagonal boron nitride', 'quantum emitters', 'electron irradiation', 'single-photon sources', 'hyperspectral imaging']
+2026-05-14 10:08:48,226 - src.semantic_analyzer - INFO - Analyzing paper: Low Rank Structure Of The Reduced Transition Matri...
+2026-05-14 10:08:48,531 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:51,124 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['influence matrix', 'reduced transition matrix', 'dual-unitary circuits', 'low-rank approximation', 'entropy growth']
+2026-05-14 10:08:52,124 - src.semantic_analyzer - INFO - Analyzing paper: The Physical And Contextual Limits Of Quantum Spee...
+2026-05-14 10:08:52,438 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:55,725 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.5, recommend=True, tags=['quantum speedup', 'contextuality', 'interference', 'unitary universality', 'halting problem']
+2026-05-14 10:08:56,725 - src.semantic_analyzer - INFO - Analyzing paper: Loss-induced Nonreciprocal Quantum Battery...
+2026-05-14 10:08:57,056 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:08:59,597 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.5, recommend=True, tags=['nonreciprocal quantum battery', 'cavity loss engineering', 'directional energy flow', 'optical cavities', 'charging efficiency']
+2026-05-14 10:09:00,597 - src.semantic_analyzer - INFO - Analyzing paper: Controllable Quantum Memory Capacity In Quantum Re...
+2026-05-14 10:09:00,909 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:03,169 - src.semantic_analyzer - INFO - Paper analysis complete: score=3.0, recommend=False, tags=['quantum reservoir computing', 'memory capacity', 'partial-SWAP', 'amplitude-damping channel', 'NISQ']
+2026-05-14 10:09:03,169 - src.semantic_analyzer - INFO - Progress: 15/142 papers analyzed
+2026-05-14 10:09:04,170 - src.semantic_analyzer - INFO - Analyzing paper: Reduction Of Finite-size Effects For Second-order ...
+2026-05-14 10:09:04,491 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:07,166 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['MP2', 'finite-size error', 'singularity subtraction', 'periodic systems', 'correlation energy']
+2026-05-14 10:09:08,166 - src.semantic_analyzer - INFO - Analyzing paper: Quantifying Multidimensional Transport Effects On ...
+2026-05-14 10:09:08,468 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:11,540 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['permeability', 'molten salt', 'hydrogen isotope transport', 'multi-dimensional modeling', 'FESTIM']
+2026-05-14 10:09:12,541 - src.semantic_analyzer - INFO - Analyzing paper: Radioactive Molecules As Laboratories Of Fundament...
+2026-05-14 10:09:12,900 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:15,382 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['radioactive molecules', 'fundamental physics', 'beyond Standard Model', 'nuclear physics', 'molecular spectroscopy']
+2026-05-14 10:09:16,382 - src.semantic_analyzer - INFO - Analyzing paper: Explicitly Correlated Gaussian Basis Approach To P...
+2026-05-14 10:09:16,733 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:19,128 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['explicitly correlated Gaussians', 'periodic systems', 'electronic structure', 'variational method', 'hydrogen chain']
+2026-05-14 10:09:20,128 - src.semantic_analyzer - INFO - Analyzing paper: Purification Of A Monitored Qubit: Exact Path-inte...
+2026-05-14 10:09:20,441 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:22,885 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.5, recommend=True, tags=['purification dynamics', 'monitored qubit', 'path integral', 'stochastic master equation', 'Langevin equation']
+2026-05-14 10:09:22,885 - src.semantic_analyzer - INFO - Progress: 20/142 papers analyzed
+2026-05-14 10:09:23,885 - src.semantic_analyzer - INFO - Analyzing paper: The Quad-$C_5$ Graph: Maximum Contextuality Gap On...
+2026-05-14 10:09:24,225 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:27,687 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.5, recommend=True, tags=['contextuality', 'quantum contextuality', 'Lovász theta function', 'Cabello-Severini-Winter framework', 'KCBS inequality']
+2026-05-14 10:09:28,688 - src.semantic_analyzer - INFO - Analyzing paper: Optimal Excitation And Measurement Patterns For Ne...
+2026-05-14 10:09:28,991 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:31,762 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['excitation and measurement patterns', 'tree topology', 'dynamic networks', 'information matrix', 'parameter estimation']
+2026-05-14 10:09:32,762 - src.semantic_analyzer - INFO - Analyzing paper: A Practical Investigation On Time Integration In T...
+2026-05-14 10:09:33,079 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:35,855 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['quantized tensor train', 'time integration', 'advection-dominated PDEs', 'low-rank approximation', 'numerical dissipation']
+2026-05-14 10:09:36,855 - src.semantic_analyzer - INFO - Analyzing paper: Empirical Confirmation Of Bosonic Wealth Statistic...
+2026-05-14 10:09:37,177 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:40,100 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['bosonic statistics', 'Bitcoin UTXO', 'wealth distribution', 'geometric distribution', 'inequality']
+2026-05-14 10:09:41,101 - src.semantic_analyzer - INFO - Analyzing paper: Simulation Of Vibrational Dynamics Using Qubits An...
+2026-05-14 10:09:41,401 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:44,010 - src.semantic_analyzer - INFO - Paper analysis complete: score=3.0, recommend=False, tags=['vibrational dynamics', 'qubit encoding', 'qudit encoding', 'quantum simulation', 'noise']
+2026-05-14 10:09:44,011 - src.semantic_analyzer - INFO - Progress: 25/142 papers analyzed
+2026-05-14 10:09:45,011 - src.semantic_analyzer - INFO - Analyzing paper: Liouvillian Spectral Control For Fast Charging Of ...
+2026-05-14 10:09:45,392 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:48,154 - src.semantic_analyzer - INFO - Paper analysis complete: score=8.5, recommend=True, tags=['quantum battery', 'Liouvillian spectrum', 'exceptional point', 'open quantum system', 'charging power']
+2026-05-14 10:09:49,154 - src.semantic_analyzer - INFO - Analyzing paper: Ultrafast Wide-field 3d Topography With Extended D...
+2026-05-14 10:09:49,475 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:52,167 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['ultrafast imaging', 'pump-probe microscopy', 'depth of field', '3D topography', 'interferometric microscopy']
+2026-05-14 10:09:53,167 - src.semantic_analyzer - INFO - Analyzing paper: Competing Effect Of Biquadratic And Heisenberg Cou...
+2026-05-14 10:09:53,488 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:09:55,993 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['Heisenberg exchange coupling', 'biquadratic exchange coupling', 'magnetic tunnel junction', 'molecular spintronics', 'Monte Carlo simulation']
+2026-05-14 10:09:56,994 - src.semantic_analyzer - INFO - Analyzing paper: Microscopic Origins Of Collapse Models: Decoherenc...
+2026-05-14 10:09:57,326 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:00,732 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.0, recommend=True, tags=['decoherence', 'graviton bremsstrahlung', 'collapse models', 'quantum Boltzmann equation', 'gravity-induced decoherence']
+2026-05-14 10:10:01,732 - src.semantic_analyzer - INFO - Analyzing paper: Matrix-noise Jacobians In Stochastic-calculus Infe...
+2026-05-14 10:10:02,043 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:04,866 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['noise', 'multiplicative noise', 'stochastic calculus', 'path likelihood', 'Onsager-Machlup']
+2026-05-14 10:10:04,866 - src.semantic_analyzer - INFO - Progress: 30/142 papers analyzed
+2026-05-14 10:10:05,866 - src.semantic_analyzer - INFO - Analyzing paper: Numerical Security Analysis For Practical Quantum ...
+2026-05-14 10:10:06,210 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:10,052 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.0, recommend=True, tags=['quantum key distribution', 'finite-key security', 'entropy accumulation theorem', 'decoy-state protocol', 'coherent attacks']
+2026-05-14 10:10:11,052 - src.semantic_analyzer - INFO - Analyzing paper: Quantum Dynamics Of Two $xx$ Interacting PT-symmet...
+2026-05-14 10:10:11,491 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:14,649 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.5, recommend=True, tags=['PT-symmetry', 'non-Hermitian qubits', 'quantum annealing', 'XX coupling', 'quantum dynamics']
+2026-05-14 10:10:15,649 - src.semantic_analyzer - INFO - Analyzing paper: Unitary Invariance Of Connes Spectral Distances Of...
+2026-05-14 10:10:15,972 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:18,924 - src.semantic_analyzer - INFO - Paper analysis complete: score=4.0, recommend=False, tags=['Connes spectral distance', 'finite spectral triple', 'Lipschitz seminorm', 'quantum trace distance', 'noncommutative geometry']
+2026-05-14 10:10:19,924 - src.semantic_analyzer - INFO - Analyzing paper: Measurement-based Quantum State Transfer And Resto...
+2026-05-14 10:10:20,256 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:23,491 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.5, recommend=True, tags=['quantum state transfer', 'spin chain', 'Lindblad equation', 'Kraus operators', 'measurement-based restoration']
+2026-05-14 10:10:24,491 - src.semantic_analyzer - INFO - Analyzing paper: Neural Qaoa$^{2}$: Differentiable Joint Graph Part...
+2026-05-14 10:10:24,896 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:27,844 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['partitioning', 'QAOA', 'graph partitioning', 'parameter initialization', 'differentiable quantum evaluator']
+2026-05-14 10:10:27,844 - src.semantic_analyzer - INFO - Progress: 35/142 papers analyzed
+2026-05-14 10:10:28,845 - src.semantic_analyzer - INFO - Analyzing paper: Feedback-based Quantum Optimization And Its Classi...
+2026-05-14 10:10:29,178 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:32,504 - src.semantic_analyzer - INFO - Paper analysis complete: score=4.0, recommend=False, tags=['feedback-based quantum optimization', 'FALQON', 'quantum-classical correspondence', 'combinatorial optimization', 'quantum advantage']
+2026-05-14 10:10:33,504 - src.semantic_analyzer - INFO - Analyzing paper: Qcivet: A Quantum--Classical Pipeline Integrity Fr...
+2026-05-14 10:10:33,835 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:37,184 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.5, recommend=True, tags=['noise', 'quantum-classical pipeline', 'integrity verification', 'contract-based verification', 'observable-deviation test']
+2026-05-14 10:10:38,184 - src.semantic_analyzer - INFO - Analyzing paper: Three Ways To Find Comfort With The Bell Proof And...
+2026-05-14 10:10:38,515 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:42,300 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.0, recommend=True, tags=['inequality', "Bell's theorem", 'CHSH inequality', 'counterfactual definiteness', 'local causality']
+2026-05-14 10:10:43,300 - src.semantic_analyzer - INFO - Analyzing paper: Volumetric Optical Scattering Neural Networks...
+2026-05-14 10:10:43,635 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:46,256 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['optical neural networks', 'volumetric scattering', 'inverse design', 'two-photon nanolithography', 'MNIST classification']
+2026-05-14 10:10:47,256 - src.semantic_analyzer - INFO - Analyzing paper: Burst-Mode Ultrafast Laser Welding Of Sapphire And...
+2026-05-14 10:10:47,594 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:50,315 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['burst-mode ultrafast laser welding', 'sapphire', 'Invar alloy', 'interfacial gap', 'shear strength']
+2026-05-14 10:10:50,315 - src.semantic_analyzer - INFO - Progress: 40/142 papers analyzed
+2026-05-14 10:10:51,315 - src.semantic_analyzer - INFO - Analyzing paper: On-chip 1 Tops Hyperdimensional Photonic Tensor Co...
+2026-05-14 10:10:51,638 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:54,807 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['photonic tensor core', 'silicon photonics', 'time-space-wavelength multiplexing', 'AI accelerator', 'coherent crossbar']
+2026-05-14 10:10:55,808 - src.semantic_analyzer - INFO - Analyzing paper: Crossover And Universality Breaking In The Dilute ...
+2026-05-14 10:10:56,143 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:10:58,710 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Baxter-Wu model', 'dilution', 'crystal field', 'critical exponents', 'Monte Carlo simulation']
+2026-05-14 10:10:59,711 - src.semantic_analyzer - INFO - Analyzing paper: No Chaos Required: Traversable Wormhole Signals Su...
+2026-05-14 10:11:00,022 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:03,307 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.5, recommend=True, tags=['quantum-simulation', 'Sachdev-Ye-Kitaev model', 'traversable wormhole', 'quantum chaos', 'coupling deletion']
+2026-05-14 10:11:04,307 - src.semantic_analyzer - INFO - Analyzing paper: Uniform Microwave Field Formation For Control Of E...
+2026-05-14 10:11:04,637 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:07,540 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.5, recommend=True, tags=['NV centers', 'microwave field homogeneity', 'barrel-shaped coil', 'Rabi oscillations', 'magnetometry']
+2026-05-14 10:11:08,540 - src.semantic_analyzer - INFO - Analyzing paper: Physics Guided Generative Optimization For Trotter...
+2026-05-14 10:11:08,855 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:11,982 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['compilation', 'nisq', 'Trotter-Suzuki decomposition', 'generative optimization', 'physics-informed neural network']
+2026-05-14 10:11:11,982 - src.semantic_analyzer - INFO - Progress: 45/142 papers analyzed
+2026-05-14 10:11:12,983 - src.semantic_analyzer - INFO - Analyzing paper: OAM-Induced Lattice Rotation Reveals A Fractional ...
+2026-05-14 10:11:13,304 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:16,296 - src.semantic_analyzer - INFO - Paper analysis complete: score=7.5, recommend=True, tags=['noise', 'GKP codes', 'orbital angular momentum', 'quantum sensing', 'fault tolerance']
+2026-05-14 10:11:17,297 - src.semantic_analyzer - INFO - Analyzing paper: Robust High-Precision Time Transfer Over 91-km Hol...
+2026-05-14 10:11:17,746 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:20,823 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['noise', 'hollow-core fiber', 'time transfer', 'chromatic dispersion', 'optical Kerr effect']
+2026-05-14 10:11:21,823 - src.semantic_analyzer - INFO - Analyzing paper: Stochastic Modeling Of Power-Grid Frequency Fluctu...
+2026-05-14 10:11:22,157 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:24,752 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['power grid frequency', 'superstatistics', 'Gaussian-core potential', 'low-inertia systems', 'stochastic modeling']
+2026-05-14 10:11:25,752 - src.semantic_analyzer - INFO - Analyzing paper: A Guide To Applications Of $k$-Contact Geometry In...
+2026-05-14 10:11:26,072 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:29,165 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['k-contact geometry', 'Hamilton–De Donder–Weyl formalism', 'dissipative PDEs', 'geometric mechanics', 'nonconservative systems']
+2026-05-14 10:11:30,165 - src.semantic_analyzer - INFO - Analyzing paper: Threefold Efficiency Enhancement And Narrowed Nano...
+2026-05-14 10:11:30,481 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:32,901 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['GHz-burst ablation', 'laser ablation in liquids', 'gold nanoparticles', 'cavitation bubble', 'nanoparticle size distribution']
+2026-05-14 10:11:32,901 - src.semantic_analyzer - INFO - Progress: 50/142 papers analyzed
+2026-05-14 10:11:33,901 - src.semantic_analyzer - INFO - Analyzing paper: Non-asymptotic Quantisation Of Spherically Symmetr...
+2026-05-14 10:11:34,214 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:37,157 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['quantisation', 'spherically symmetric distributions', "Zador's theorem", 'extreme-value theory', 'random quantisers']
+2026-05-14 10:11:38,157 - src.semantic_analyzer - INFO - Analyzing paper: Bifurcations And Structural Stability Of Generic P...
+2026-05-14 10:11:38,478 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:40,870 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['bifurcation', 'structural stability', 'PC-HC families', 'vector fields', 'dynamical systems']
+2026-05-14 10:11:41,870 - src.semantic_analyzer - INFO - Analyzing paper: Multiconic Optimization For Symmetric Cones And Hy...
+2026-05-14 10:11:42,210 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:44,385 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['multiconic optimization', 'interior-point algorithm', 'hyperbolic coupling', 'parabolic target space', 'symmetric cones']
+2026-05-14 10:11:45,385 - src.semantic_analyzer - INFO - Analyzing paper: Newton Methods Beyond Hessian Lipschitz Continuity...
+2026-05-14 10:11:45,703 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:49,449 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Newton methods', 'nonlinear preconditioning', 'Hessian Lipschitz continuity', 'superlinear convergence', 'iteration complexity']
+2026-05-14 10:11:50,450 - src.semantic_analyzer - INFO - Analyzing paper: Singular Geometric Averages For Ergodic Multiflows...
+2026-05-14 10:11:50,792 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:52,854 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['ergodic multiflows', 'universal averaging', 'manifolds', 'probability space']
+2026-05-14 10:11:52,854 - src.semantic_analyzer - INFO - Progress: 55/142 papers analyzed
+2026-05-14 10:11:53,854 - src.semantic_analyzer - INFO - Analyzing paper: Approximations With Non-Symmetric Green's Kernels ...
+2026-05-14 10:11:54,163 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:11:56,506 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=["non-symmetric Green's kernels", 'fractional differential equations', 'kernel Galerkin method', 'reproducing kernel Banach space', 'fractional order spline interpolation']
+2026-05-14 10:11:57,506 - src.semantic_analyzer - INFO - Analyzing paper: Smirnov Decomposition Of A Horizontal Vector Charg...
+2026-05-14 10:11:57,810 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:00,005 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['Smirnov decomposition', 'Heisenberg group', 'horizontal vector current', 'Federer-Fleming current', 'Liouville theorem']
+2026-05-14 10:12:01,006 - src.semantic_analyzer - INFO - Analyzing paper: Optimal Sequential Tests Yield Log-optimal E-proce...
+2026-05-14 10:12:01,333 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:03,761 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['e-processes', 'sequential testing', 'log-optimality', 'stopping times', 'asymptotic optimality']
+2026-05-14 10:12:04,761 - src.semantic_analyzer - INFO - Analyzing paper: Asymptotic Kkt Conditions For Continuous-Time Nonl...
+2026-05-14 10:12:05,084 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:07,568 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['inequality', 'continuous-time nonlinear programming', 'Karush-Kuhn-Tucker conditions', 'augmented Lagrangian method', 'sequential optimality conditions']
+2026-05-14 10:12:08,568 - src.semantic_analyzer - INFO - Analyzing paper: Uncovering Symmetry Transfer In Large Language Mod...
+2026-05-14 10:12:08,978 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:12,447 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['layer-peeled optimization', 'symmetry transfer', 'large language models', 'circulant matrices', 'equiangular tight frames']
+2026-05-14 10:12:12,447 - src.semantic_analyzer - INFO - Progress: 60/142 papers analyzed
+2026-05-14 10:12:13,448 - src.semantic_analyzer - INFO - Analyzing paper: Indefinite Stochastic Lq Optimal Control For Jump-...
+2026-05-14 10:12:13,773 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:16,355 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['inequality', 'indefinite stochastic LQ control', 'jump-diffusion systems', 'random coefficients', 'stochastic Riccati equation with jumps']
+2026-05-14 10:12:17,355 - src.semantic_analyzer - INFO - Analyzing paper: Quantum Precoded Polar Codes...
+2026-05-14 10:12:17,682 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:20,181 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['quantum error correction', 'polar codes', 'CSS codes', 'genetic algorithm', 'depolarizing channel']
+2026-05-14 10:12:21,182 - src.semantic_analyzer - INFO - Analyzing paper: Resolution Information: Limits Of Ambiguity Resolu...
+2026-05-14 10:12:21,639 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:24,043 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['generative communication', 'resolution information', 'ambiguity resolution', 'posterior geometry', 'semantic ambiguity']
+2026-05-14 10:12:25,043 - src.semantic_analyzer - INFO - Analyzing paper: Fast And Stable Gradient Approximation For Bilinea...
+2026-05-14 10:12:25,359 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:27,921 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['Lanczos algorithm', 'gradient approximation', 'Hermitian matrix', 'bilinear forms', 'automatic differentiation']
+2026-05-14 10:12:28,922 - src.semantic_analyzer - INFO - Analyzing paper: Accuracy And Relationships Of Quadratic Models In ...
+2026-05-14 10:12:29,257 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:31,942 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['derivative-free optimization', 'quadratic models', 'error bounds', 'Hessian approximation', 'directional accuracy']
+2026-05-14 10:12:31,943 - src.semantic_analyzer - INFO - Progress: 65/142 papers analyzed
+2026-05-14 10:12:32,943 - src.semantic_analyzer - INFO - Analyzing paper: The Method Of Ellipcenters For Strongly Convex Min...
+2026-05-14 10:12:33,355 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:36,340 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Method of Ellipcenters', 'strongly convex minimization', 'first-order optimization', 'linear convergence', 'numerical optimization']
+2026-05-14 10:12:37,340 - src.semantic_analyzer - INFO - Analyzing paper: Pseudo-Anosov Flows And The Geometry Of Anosov-lik...
+2026-05-14 10:12:37,663 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:39,924 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['pseudo-Anosov flow', 'Anosov-like action', 'Gromov-hyperbolic space', 'weakly properly discontinuous', 'bifoliated plane']
+2026-05-14 10:12:40,924 - src.semantic_analyzer - INFO - Analyzing paper: Walk On Spheres And Array-RQMC...
+2026-05-14 10:12:41,250 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:44,337 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Array-RQMC', 'walk on spheres', 'variance reduction', "Sobol' indices", 'Dirichlet boundary value problem']
+2026-05-14 10:12:45,337 - src.semantic_analyzer - INFO - Analyzing paper: A Refined Cj--ss--rr Method With A Reliable Remova...
+2026-05-14 10:12:45,679 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:48,074 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Hermitian eigenvalue problem', 'spurious Ritz values', 'refined Rayleigh-Ritz', 'SS-RR method', 'restarted algorithm']
+2026-05-14 10:12:49,074 - src.semantic_analyzer - INFO - Analyzing paper: Affine Yangians As Limits Of Quantum Toroidal Alge...
+2026-05-14 10:12:49,391 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:52,319 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['affine Yangian', 'quantum toroidal algebra', 'PBW basis', "Drinfeld's conjecture", 'Kac-Moody Lie algebra']
+2026-05-14 10:12:52,320 - src.semantic_analyzer - INFO - Progress: 70/142 papers analyzed
+2026-05-14 10:12:53,320 - src.semantic_analyzer - INFO - Analyzing paper: Adam-SHANG: A Convergent Adam-Type Method For Stoc...
+2026-05-14 10:12:53,631 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:12:56,666 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['Adam', 'stochastic optimization', 'convex optimization', 'adaptive preconditioning', 'Lyapunov analysis']
+2026-05-14 10:12:57,666 - src.semantic_analyzer - INFO - Analyzing paper: Tensor-Lifted Multivariate Functional Calculus Bey...
+2026-05-14 10:12:57,993 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:01,176 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['functional calculus', 'nilpotent structure', 'tensor lifting', 'non-commuting operators', 'resolvent convergence']
+2026-05-14 10:13:02,176 - src.semantic_analyzer - INFO - Analyzing paper: Electromagnetic Signal And Information Theory: A C...
+2026-05-14 10:13:02,486 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:05,176 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['continuous-aperture arrays', 'electromagnetic signal and information theory', 'wavenumber-domain methods', 'functional analysis', 'wireless communications']
+2026-05-14 10:13:06,176 - src.semantic_analyzer - INFO - Analyzing paper: Diagrammatic Technique For Vogel's Universality...
+2026-05-14 10:13:06,575 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:09,088 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=["Vogel's universality", 'diagrammatic algebra', 'Lie algebra', 'universal computations', 'representation theory']
+2026-05-14 10:13:10,088 - src.semantic_analyzer - INFO - Analyzing paper: Fully Discrete Active Flux Method Based On Transpo...
+2026-05-14 10:13:10,396 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:12,360 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['Active Flux Method', 'Compressible Euler Equations', 'Transported Acoustic Increments', 'Numerical Method', 'CFL Condition']
+2026-05-14 10:13:12,360 - src.semantic_analyzer - INFO - Progress: 75/142 papers analyzed
+2026-05-14 10:13:13,360 - src.semantic_analyzer - INFO - Analyzing paper: Infinite-Horizon Non-Autonomous Zero-Sum Stochasti...
+2026-05-14 10:13:13,674 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:16,338 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['stochastic differential games', 'BSDEs', 'HJBI equations', 'viscosity solutions', 'infinite horizon']
+2026-05-14 10:13:17,338 - src.semantic_analyzer - INFO - Analyzing paper: Embedding Complexity Into Banach Spaces And The St...
+2026-05-14 10:13:17,661 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:20,241 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['Novikov conjecture', 'coarse embedding', 'Banach space', 'discrete group', 'operator K-theory']
+2026-05-14 10:13:21,242 - src.semantic_analyzer - INFO - Analyzing paper: An NPDo Approach For Tensor Block-Diagonalization...
+2026-05-14 10:13:21,549 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:24,524 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['tensor block-diagonalization', 'NPDo', 'Tucker decomposition', 'tensor SVD', 'Gauss-Seidel']
+2026-05-14 10:13:25,525 - src.semantic_analyzer - INFO - Analyzing paper: A Uniformly Accurate Multiscale Time Integrator Fo...
+2026-05-14 10:13:25,862 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:28,594 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Klein-Gordon-Schrödinger equations', 'multiscale time integrator', 'nonrelativistic regime', 'uniform accuracy', 'Fourier pseudospectral method']
+2026-05-14 10:13:29,595 - src.semantic_analyzer - INFO - Analyzing paper: Variable Muckenhoupt $A_\infty$ Weights...
+2026-05-14 10:13:29,933 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:32,697 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['inequality', 'Muckenhoupt weights', 'variable exponent spaces', 'reverse Hölder inequality', 'reducing operators']
+2026-05-14 10:13:32,697 - src.semantic_analyzer - INFO - Progress: 80/142 papers analyzed
+2026-05-14 10:13:33,697 - src.semantic_analyzer - INFO - Analyzing paper: Stochastic Mean-Field Lq Stackelberg Differential ...
+2026-05-14 10:13:34,030 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:36,838 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Stackelberg differential games', 'mean-field', 'random coefficients', 'FBSDE', 'deep learning solver']
+2026-05-14 10:13:37,838 - src.semantic_analyzer - INFO - Analyzing paper: Grouped Annulus-Modulated Transceiver Is Almost Fu...
+2026-05-14 10:13:38,164 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:40,440 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['RIS-assisted symbiotic radios', 'grouped annulus modulation', 'degrees of freedom', 'matrix decomposition', 'spatial-correlated channels']
+2026-05-14 10:13:41,440 - src.semantic_analyzer - INFO - Analyzing paper: Classification Of Ternary Maximal Self-orthogonal ...
+2026-05-14 10:13:41,851 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:44,062 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['ternary codes', 'self-orthogonal codes', 'maximal codes', 'classification', 'length 25']
+2026-05-14 10:13:45,063 - src.semantic_analyzer - INFO - Analyzing paper: Skew Polycyclic Codes Over $\frac{\mathbb{F}_{p^m}...
+2026-05-14 10:13:45,389 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:48,150 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['skew polycyclic codes', 'finite chain rings', 'skew polynomial rings', 'left ideals', 'constacyclic codes']
+2026-05-14 10:13:49,150 - src.semantic_analyzer - INFO - Analyzing paper: Reverse Iterated Function Systems: Density, Dimens...
+2026-05-14 10:13:49,456 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:52,541 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['reverse iterated function systems', 'fractal dimensions', 'forward orbits', 'renewal theory', 'p-adic systems']
+2026-05-14 10:13:52,541 - src.semantic_analyzer - INFO - Progress: 85/142 papers analyzed
+2026-05-14 10:13:53,541 - src.semantic_analyzer - INFO - Analyzing paper: Triebel-Lizorkin Spaces And Expansive Matrices...
+2026-05-14 10:13:53,872 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:13:56,821 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['classification', 'Triebel-Lizorkin spaces', 'expansive matrices', 'anisotropic spaces', 'homogeneous quasi-norms']
+2026-05-14 10:13:57,822 - src.semantic_analyzer - INFO - Analyzing paper: A Philosophical History Of Infinitesimals...
+2026-05-14 10:13:58,161 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:01,043 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['infinitesimals', 'nonstandard analysis', 'ringinals', 'set theory', 'foundations of mathematics']
+2026-05-14 10:14:02,043 - src.semantic_analyzer - INFO - Analyzing paper: Guaranteed Cost Structured Control In Infinite-hor...
+2026-05-14 10:14:02,365 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:05,119 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['infinite-horizon', 'guaranteed cost control', 'structured control', 'cooperative differential games', 'output feedback']
+2026-05-14 10:14:06,119 - src.semantic_analyzer - INFO - Analyzing paper: Hypernetwork-Conditioned Weno5 Conservative-Form C...
+2026-05-14 10:14:06,452 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:09,388 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['hypernetwork', 'WENO5', 'conservation laws', 'convolutional neural network', 'finite-volume scheme']
+2026-05-14 10:14:10,389 - src.semantic_analyzer - INFO - Analyzing paper: Recasting Ai Data Centers As Engines For Carbon Re...
+2026-05-14 10:14:10,786 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:13,384 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['direct air capture', 'waste heat recovery', 'AI data centers', 'carbon removal', 'heat pumps']
+2026-05-14 10:14:13,384 - src.semantic_analyzer - INFO - Progress: 90/142 papers analyzed
+2026-05-14 10:14:14,385 - src.semantic_analyzer - INFO - Analyzing paper: Polynomial Interpolation--regression On The Sphere...
+2026-05-14 10:14:14,707 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:17,711 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['spherical harmonics', 'polynomial interpolation', 'least squares', 'antipodal symmetry', 'spherical designs']
+2026-05-14 10:14:18,712 - src.semantic_analyzer - INFO - Analyzing paper: On The Generalization Of Knowledge Distillation: A...
+2026-05-14 10:14:19,022 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:21,483 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['knowledge distillation', 'generalization bounds', 'information theory', 'algorithmic stability', 'distillation divergence']
+2026-05-14 10:14:22,483 - src.semantic_analyzer - INFO - Analyzing paper: On A Posteriori Stopping Rules Of Adaptive Stochas...
+2026-05-14 10:14:22,809 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:25,299 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['stochastic heavy ball method', 'ill-posed inverse problems', 'a posteriori stopping rule', 'adaptive step size', 'convex penalty']
+2026-05-14 10:14:26,300 - src.semantic_analyzer - INFO - Analyzing paper: On Fixed Point Results In Metric Spaces For Large ...
+2026-05-14 10:14:26,603 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:29,243 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['fixed point', 'large contractions', 'triangle-perimeter contractions', 'metric spaces']
+2026-05-14 10:14:30,243 - src.semantic_analyzer - INFO - Analyzing paper: Decoding Product Codes And Staircase Codes With It...
+2026-05-14 10:14:30,583 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:33,125 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['product codes', 'staircase codes', 'Chase-Pyndiah decoding', 'FEC decoder', 'sliding-window decoding']
+2026-05-14 10:14:33,125 - src.semantic_analyzer - INFO - Progress: 95/142 papers analyzed
+2026-05-14 10:14:34,125 - src.semantic_analyzer - INFO - Analyzing paper: Indefinite Stochastic Linear-Quadratic Optimal Con...
+2026-05-14 10:14:34,438 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:37,275 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['stochastic linear-quadratic control', 'Poisson jumps', 'Riccati equation', 'indefinite weighting', 'closed-loop representation']
+2026-05-14 10:14:38,276 - src.semantic_analyzer - INFO - Analyzing paper: Voltage-Aware Grid Aggregation: Expanding The Euro...
+2026-05-14 10:14:38,602 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:40,889 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['partitioning', 'grid aggregation', 'voltage levels', 'transformer expansion', 'energy system optimization']
+2026-05-14 10:14:41,889 - src.semantic_analyzer - INFO - Analyzing paper: On Weak Convergence In K\"{o}the-Bochner Function ...
+2026-05-14 10:14:49,157 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:49,171 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['Kothe-Bochner function spaces', 'weak convergence', 'Radon-Nikodym property', 'James boundary', 'order continuous']
+2026-05-14 10:14:50,171 - src.semantic_analyzer - INFO - Analyzing paper: Robust Approximation Error Estimates For Analysis-...
+2026-05-14 10:14:50,501 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:53,263 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['isogeometric analysis', 'multi-patch discretization', 'G1 continuity', 'approximation error estimates', 'biharmonic equation']
+2026-05-14 10:14:54,263 - src.semantic_analyzer - INFO - Analyzing paper: Continuity Properties Of Partial Entropy...
+2026-05-14 10:14:54,595 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:14:57,068 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['partial entropy', 'Lyapunov exponents', 'upper semi-continuity', 'C^1 diffeomorphisms', 'ergodic measures']
+2026-05-14 10:14:57,068 - src.semantic_analyzer - INFO - Progress: 100/142 papers analyzed
+2026-05-14 10:14:58,068 - src.semantic_analyzer - INFO - Analyzing paper: Prime Successor Irreducibility: Turing Machine Com...
+2026-05-14 10:14:58,395 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:01,090 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['prime gaps', 'computational irreducibility', 'Kolmogorov complexity', 'Turing machine complexity', 'sieve theory']
+2026-05-14 10:15:02,090 - src.semantic_analyzer - INFO - Analyzing paper: Stress-Testing The Reasoning Competence Of LLMs Wi...
+2026-05-14 10:15:02,408 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:04,532 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['noise', 'LLM reasoning', 'proof checking', 'benchmark', 'natural deduction']
+2026-05-14 10:15:05,532 - src.semantic_analyzer - INFO - Analyzing paper: BackFlush: Knowledge-Free Backdoor Detection And E...
+2026-05-14 10:15:05,917 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:08,539 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['backdoor detection', 'watermark preservation', 'LLM security', 'embedding rotation', 'unlearning']
+2026-05-14 10:15:09,539 - src.semantic_analyzer - INFO - Analyzing paper: Ghost In The Context: Measuring Policy-Carriage Fa...
+2026-05-14 10:15:09,862 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:12,561 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['context assembly', 'policy violation', 'language model agents', 'SafeContext', 'decision-time control']
+2026-05-14 10:15:13,561 - src.semantic_analyzer - INFO - Analyzing paper: Biprofile Deviation Logic: Report-Replacement Fram...
+2026-05-14 10:15:13,886 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:16,100 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['social choice theory', 'modal logic', 'audit', 'coalition modalities', 'formal verification']
+2026-05-14 10:15:16,100 - src.semantic_analyzer - INFO - Progress: 105/142 papers analyzed
+2026-05-14 10:15:17,100 - src.semantic_analyzer - INFO - Analyzing paper: ocLTL: Ltl Realizability And Synthesis Modulo {\om...
+2026-05-14 10:15:17,433 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:19,963 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['LTL realizability', 'synthesis', 'ω-categorical structures', 'temporal logic', 'infinite-state systems']
+2026-05-14 10:15:20,963 - src.semantic_analyzer - INFO - Analyzing paper: Cubical Type Theoretic Navya-Ny\=aya...
+2026-05-14 10:15:21,282 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:23,857 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['cubical type theory', 'Navya-Nyaya', 'formal logic', 'Indian philosophy', 'CCHM']
+2026-05-14 10:15:24,858 - src.semantic_analyzer - INFO - Analyzing paper: OverrideFuzz: Semantic-Aware Grammar Fuzzing For S...
+2026-05-14 10:15:25,162 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:28,018 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['fuzzing', 'script-language runtime', 'semantic-aware', 'override hooks', 'vulnerability detection']
+2026-05-14 10:15:29,018 - src.semantic_analyzer - INFO - Analyzing paper: Persona-Conditioned Adversarial Prompting (pcap): ...
+2026-05-14 10:15:29,316 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:31,683 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['adversarial prompting', 'red-teaming', 'jailbreak', 'persona-conditioned search', 'large language models']
+2026-05-14 10:15:32,683 - src.semantic_analyzer - INFO - Analyzing paper: Ensuring Logic In The Fog: Sound Pomdp Synthesis W...
+2026-05-14 10:15:33,008 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:35,668 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['benchmark', 'synthesis', 'POMDP', 'LTL', 'reward shaping']
+2026-05-14 10:15:35,668 - src.semantic_analyzer - INFO - Progress: 110/142 papers analyzed
+2026-05-14 10:15:36,668 - src.semantic_analyzer - INFO - Analyzing paper: Profit Maximization In Bilateral Trade Against A S...
+2026-05-14 10:15:37,145 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:39,341 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['bilateral trade', 'online learning', 'smooth adversary', 'regret bound', 'algorithmic chaining']
+2026-05-14 10:15:40,341 - src.semantic_analyzer - INFO - Analyzing paper: The End Justifies The Mean: A Linear Ranking Rule ...
+2026-05-14 10:15:40,658 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:43,902 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['linear ranking rules', 'individual proportionality', 'angular mean', 'proportional sequential decisions', 'AI alignment']
+2026-05-14 10:15:44,902 - src.semantic_analyzer - INFO - Analyzing paper: Still Camouflage, Moving Illusion: View-Induced Tr...
+2026-05-14 10:15:45,291 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:48,033 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['adversarial attack', 'autonomous driving', 'camouflage', 'trajectory manipulation', 'physical attack']
+2026-05-14 10:15:49,033 - src.semantic_analyzer - INFO - Analyzing paper: CoT-Guard: Small Models For Strong Monitoring...
+2026-05-14 10:15:49,363 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:52,394 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['chain-of-thought monitoring', 'hidden objective detection', 'reinforcement learning', 'supervised fine-tuning', 'code generation safety']
+2026-05-14 10:15:53,395 - src.semantic_analyzer - INFO - Analyzing paper: Dynamic Transaction Scheduling And Pricing In The ...
+2026-05-14 10:15:53,701 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:15:56,828 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['Ethereum', 'mempool', 'EIP-1559', 'Markov Decision Process', 'Natural Policy Gradient']
+2026-05-14 10:15:56,828 - src.semantic_analyzer - INFO - Progress: 115/142 papers analyzed
+2026-05-14 10:15:57,829 - src.semantic_analyzer - INFO - Analyzing paper: GraphIP-Bench: How Hard Is It To Steal A Graph Neu...
+2026-05-14 10:15:58,156 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:01,428 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['benchmark', 'Graph Neural Networks', 'Model Stealing', 'Defense', 'Benchmark']
+2026-05-14 10:16:02,428 - src.semantic_analyzer - INFO - Analyzing paper: He-pim: Demystifying Homomorphic Operations On A R...
+2026-05-14 10:16:02,738 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:05,044 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['homomorphic encryption', 'processing-in-memory', 'UPMEM', 'modular multiplication', 'data movement']
+2026-05-14 10:16:06,045 - src.semantic_analyzer - INFO - Analyzing paper: Quantifying Llm Safety Degradation Under Repeated ...
+2026-05-14 10:16:06,352 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:08,551 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['jailbreak', 'survival analysis', 'LLM safety', 'adversarial attacks', 'hazard function']
+2026-05-14 10:16:09,551 - src.semantic_analyzer - INFO - Analyzing paper: On The Advantage Of Adaptivity For Sampling With C...
+2026-05-14 10:16:10,156 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:12,676 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['adaptivity', 'cell-probe model', 'sampling', 'separation', 'complexity theory']
+2026-05-14 10:16:13,676 - src.semantic_analyzer - INFO - Analyzing paper: Do Skill Descriptions Tell The Truth? Detecting Un...
+2026-05-14 10:16:14,014 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:16,938 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['LLM security', 'programmatic skills', 'security property graph', 'consistency checking', 'taxonomy']
+2026-05-14 10:16:16,938 - src.semantic_analyzer - INFO - Progress: 120/142 papers analyzed
+2026-05-14 10:16:17,938 - src.semantic_analyzer - INFO - Analyzing paper: ThermalTap: Passive Application Fingerprinting In ...
+2026-05-14 10:16:18,254 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:20,442 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['noise', 'thermal side channel', 'VR headset', 'application fingerprinting', 'long-wave infrared']
+2026-05-14 10:16:21,442 - src.semantic_analyzer - INFO - Analyzing paper: From Compression To Accountability: Harmless Copyr...
+2026-05-14 10:16:21,778 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:24,482 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['dataset distillation', 'copyright protection', 'subpopulation bias', 'black-box verification', 'model provenance']
+2026-05-14 10:16:25,483 - src.semantic_analyzer - INFO - Analyzing paper: Cloudburst: Cloud-Layer Observations Using Beacons...
+2026-05-14 10:16:25,789 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:28,445 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['taxonomy', 'cloud-native security', 'honeytokens', 'beacon frameworks', 'attribution metrics']
+2026-05-14 10:16:29,445 - src.semantic_analyzer - INFO - Analyzing paper: Insecure Despite Proven Updated: Extracting The Ro...
+2026-05-14 10:16:29,763 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:32,499 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['defense', 'SEV-SNP', 'VCEK', 'hardware root seed', 'fuse controller']
+2026-05-14 10:16:33,499 - src.semantic_analyzer - INFO - Analyzing paper: No Attack Required: Semantic Fuzzing For Specifica...
+2026-05-14 10:16:33,820 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:37,041 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['fuzzing', 'defense', 'semantic fuzzing', 'specification violations', 'LLM-powered agents']
+2026-05-14 10:16:37,041 - src.semantic_analyzer - INFO - Progress: 125/142 papers analyzed
+2026-05-14 10:16:38,041 - src.semantic_analyzer - INFO - Analyzing paper: Watermarking Should Be Treated As A Monitoring Pri...
+2026-05-14 10:16:38,360 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:40,641 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['watermarking', 'monitoring', 'attribution', 'generative models', 'observer-based threat model']
+2026-05-14 10:16:41,642 - src.semantic_analyzer - INFO - Analyzing paper: Security Incentivization: An Empirical Study Of Ho...
+2026-05-14 10:16:41,957 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:45,081 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['security incentivization', 'micropayments', 'static analysis', 'code security', 'empirical study']
+2026-05-14 10:16:46,081 - src.semantic_analyzer - INFO - Analyzing paper: DiffusionHijack: Supply-Chain Prng Backdoor Attack...
+2026-05-14 10:16:46,405 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:50,089 - src.semantic_analyzer - INFO - Paper analysis complete: score=6.5, recommend=True, tags=['noise', 'defense', 'sampling', 'audit', 'supply-chain attack']
+2026-05-14 10:16:51,089 - src.semantic_analyzer - INFO - Analyzing paper: Extending Blockchain Untraceability With Plausible...
+2026-05-14 10:16:51,421 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:54,163 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['ethereum', 'blockchain', 'untraceability', 'plausible deniability', 'MEV']
+2026-05-14 10:16:55,163 - src.semantic_analyzer - INFO - Analyzing paper: Empowering IoT Security: On-Device Intrusion Detec...
+2026-05-14 10:16:55,490 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:16:57,759 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['monitoring', 'IoT security', 'intrusion detection', 'machine learning', 'resource-constrained devices']
+2026-05-14 10:16:57,760 - src.semantic_analyzer - INFO - Progress: 130/142 papers analyzed
+2026-05-14 10:16:58,760 - src.semantic_analyzer - INFO - Analyzing paper: LoREnc: Low-Rank Encryption For Securing Foundatio...
+2026-05-14 10:16:59,085 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:01,462 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['defense', 'low-rank encryption', 'spectral truncation', 'orthogonal reparameterization', 'model recovery attack']
+2026-05-14 10:17:02,462 - src.semantic_analyzer - INFO - Analyzing paper: Backdoor Channels Hidden In Latent Space: Cryptogr...
+2026-05-14 10:17:02,794 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:05,188 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['classification', 'backdoor attacks', 'cryptographic undetectability', 'latent space', 'neural network security']
+2026-05-14 10:17:06,188 - src.semantic_analyzer - INFO - Analyzing paper: When And Why Is Optimistic Multiplicative Weights ...
+2026-05-14 10:17:06,520 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:09,459 - src.semantic_analyzer - INFO - Paper analysis complete: score=2.0, recommend=False, tags=['separation', 'Optimistic Multiplicative Weights', 'zero-sum games', 'convergence rate', 'energy dissipation']
+2026-05-14 10:17:10,459 - src.semantic_analyzer - INFO - Analyzing paper: Automatic Detection Of Reference Counting Bugs In ...
+2026-05-14 10:17:10,777 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:12,815 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['reference counting', 'Linux kernel drivers', 'bug detection', 'program slicing', 'assertion checking']
+2026-05-14 10:17:13,816 - src.semantic_analyzer - INFO - Analyzing paper: Embodied Neurocomputation: A Framework For Interfa...
+2026-05-14 10:17:14,176 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:16,633 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['benchmark', 'biological neural networks', 'neurocomputation', 'encoding/decoding', 'closed-loop navigation']
+2026-05-14 10:17:16,633 - src.semantic_analyzer - INFO - Progress: 135/142 papers analyzed
+2026-05-14 10:17:17,634 - src.semantic_analyzer - INFO - Analyzing paper: Blind Recognition Of Polar Codes Using Successive ...
+2026-05-14 10:17:18,001 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:20,310 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['polar codes', 'blind recognition', 'successive cancellation list decoding', 'log-likelihood ratios', 'information-set recognition']
+2026-05-14 10:17:21,310 - src.semantic_analyzer - INFO - Analyzing paper: Context-Aware Web Attack Detection In Open-Source ...
+2026-05-14 10:17:21,634 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:24,682 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['SIEM', 'web attack detection', 'LightGBM', 'XGBoost', 'MITRE ATT&CK']
+2026-05-14 10:17:25,682 - src.semantic_analyzer - INFO - Analyzing paper: Inducing Overthink: Hierarchical Genetic Algorithm...
+2026-05-14 10:17:26,020 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:28,589 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['benchmark', 'defense', 'large reasoning models', 'overthinking', 'denial-of-service']
+2026-05-14 10:17:29,589 - src.semantic_analyzer - INFO - Analyzing paper: Quantitative Linear Logic...
+2026-05-14 10:17:29,929 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:32,562 - src.semantic_analyzer - INFO - Paper analysis complete: score=1.0, recommend=False, tags=['quantitative linear logic', 'soft semantics', 'additive connectives', 'sequent calculus', 'cut-elimination']
+2026-05-14 10:17:33,562 - src.semantic_analyzer - INFO - Analyzing paper: A Horn Extension Of DL-Lite With Nl Data Complexit...
+2026-05-14 10:17:33,863 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:36,629 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['ontology-mediated query answering', 'description logic', 'graph query languages', 'data complexity', 'regular path queries']
+2026-05-14 10:17:36,629 - src.semantic_analyzer - INFO - Progress: 140/142 papers analyzed
+2026-05-14 10:17:37,629 - src.semantic_analyzer - INFO - Analyzing paper: Model-Agnostic Lifelong Llm Safety Via Externalize...
+2026-05-14 10:17:37,942 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:40,165 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.5, recommend=False, tags=['defense', 'red-teaming', 'LLM safety', 'adversarial robustness', 'red teaming']
+2026-05-14 10:17:41,165 - src.semantic_analyzer - INFO - Analyzing paper: Sleeper Channels And Provenance Gates: Persistent ...
+2026-05-14 10:17:41,504 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/chat/completions "HTTP/1.1 200 OK"
+2026-05-14 10:17:43,938 - src.semantic_analyzer - INFO - Paper analysis complete: score=0.0, recommend=False, tags=['defense', 'audit', 'separation', 'prompt injection', 'autonomous AI agents']
+2026-05-14 10:17:43,938 - src.semantic_analyzer - INFO - Progress: 142/142 papers analyzed
+2026-05-14 10:17:43,938 - src.semantic_analyzer - INFO - Completed analysis of 142 papers
+2026-05-14 10:17:43,938 - __main__ - INFO - Combining papers with analyses...
+2026-05-14 10:17:43,938 - __main__ - INFO - Analyzed 142 papers
+2026-05-14 10:17:43,938 - __main__ - INFO - Exporting data...
+2026-05-14 10:17:43,944 - src.data_exporter - INFO - Exported 142 papers to JSONL: data/all/data_2026-05-14_101743.jsonl
+2026-05-14 10:17:43,947 - src.data_exporter - INFO - Exported report with 142 papers: data/reports/report_2026-05-14_101743.md
+2026-05-14 10:17:43,957 - src.data_exporter - INFO - Copied 142 papers to Jekyll site: jekyll_site/_data/papers.json
+2026-05-14 10:17:43,958 - __main__ - INFO - Sending daily email digest...
+2026-05-14 10:17:43,959 - src.email_sender - INFO - Sending email via mail.ustc.edu.cn:465 -> zhenyizheng@outlook.com
+2026-05-14 10:18:15,533 - src.email_sender - ERROR - Failed to send email: Connection unexpectedly closed
+2026-05-14 10:18:15,533 - __main__ - WARNING - Daily email failed to send
+2026-05-14 10:18:15,533 - __main__ - INFO - Pipeline completed in 619.87 seconds
+2026-05-14 10:18:15,534 - __main__ - INFO - Quantum RSS Radar Jekyll pipeline completed successfully
