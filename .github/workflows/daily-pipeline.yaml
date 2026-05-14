@@ -16,6 +16,8 @@ on:
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # 允许 push 到 data 分支
 
     steps:
       - name: Checkout repository
@@ -150,6 +152,145 @@ jobs:
             data/reports/*.md
           if-no-files-found: warn
           retention-days: 7
+
+      # ─────────────────────────────────────────────────────────────────
+      # Push generated data files to the `data` branch.
+      # • Files are committed under data/all/ and data/reports/
+      # • Files whose filename-date is older than 6 months are auto-deleted
+      # • Requires: job-level `permissions: contents: write` (already set)
+      # ─────────────────────────────────────────────────────────────────
+      - name: Push data to data branch
+        if: always()
+        run: |
+          # ── Save new files to /tmp before any branch switching ──────
+          mkdir -p /tmp/quantum-new-data/all /tmp/quantum-new-data/reports
+          cp data/all/data_*.jsonl     /tmp/quantum-new-data/all/     2>/dev/null || true
+          cp data/reports/report_*.md  /tmp/quantum-new-data/reports/ 2>/dev/null || true
+
+          HAS_FILES=$(ls /tmp/quantum-new-data/all/*.jsonl \
+                         /tmp/quantum-new-data/reports/*.md 2>/dev/null | wc -l)
+          if [ "$HAS_FILES" -eq 0 ]; then
+            echo "No data files generated this run, skipping data branch push"
+            exit 0
+          fi
+
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          # ── Checkout or create the data branch ──────────────────────
+          if git ls-remote --heads origin data | grep -q "refs/heads/data"; then
+            git fetch origin data:data --depth=1
+            git checkout data
+          else
+            echo "data branch does not exist — creating orphan branch..."
+            git checkout --orphan data
+            git rm -rf . --quiet 2>/dev/null || true
+            # Remove all non-git files/dirs except what we need
+            find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} + 2>/dev/null || true
+            mkdir -p data/all data/reports
+            cat > README.md << 'EOREADME'
+          # Quantum RSS Radar — Data Archive
+
+          This branch stores auto-generated daily pipeline outputs:
+          - `data/all/data_YYYY-MM-DD_HHMMSS.jsonl` — all papers (one JSON per line)
+          - `data/reports/report_YYYY-MM-DD_HHMMSS.md` — human-readable Markdown report
+
+          **Retention policy:** files older than 6 months are automatically removed.
+          **Source code** is on the `master` branch.
+          EOREADME
+          fi
+
+          # ── Copy new data files into the branch ─────────────────────
+          mkdir -p data/all data/reports
+          cp /tmp/quantum-new-data/all/*.jsonl    data/all/     2>/dev/null || true
+          cp /tmp/quantum-new-data/reports/*.md   data/reports/ 2>/dev/null || true
+
+          # ── Remove files whose filename-date is older than 6 months ─
+          CUTOFF=$(date -u -d "6 months ago" +%Y-%m-%d)
+          REMOVED=0
+          for f in data/all/data_*.jsonl data/reports/report_*.md; do
+            [ -f "$f" ] || continue
+            FILE_DATE=$(basename "$f" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)
+            [ -z "$FILE_DATE" ] && continue
+            if [[ "$FILE_DATE" < "$CUTOFF" ]]; then
+              echo "  Removing expired file: $f  (date: $FILE_DATE < cutoff: $CUTOFF)"
+              git rm -f "$f" 2>/dev/null || rm -f "$f"
+              REMOVED=$((REMOVED + 1))
+            fi
+          done
+          [ "$REMOVED" -gt 0 ] && echo "Removed $REMOVED expired file(s)" || echo "No expired files found"
+
+          # ── Commit and push ─────────────────────────────────────────
+          git add -A
+          if git diff --staged --quiet; then
+            echo "Nothing new to commit on data branch"
+          else
+            NEW_JSONL=$(ls /tmp/quantum-new-data/all/*.jsonl    2>/dev/null | wc -l)
+            NEW_MD=$(ls    /tmp/quantum-new-data/reports/*.md   2>/dev/null | wc -l)
+            git commit -m "data: $(date -u '+%Y-%m-%d') — ${NEW_JSONL} JSONL, ${NEW_MD} MD (removed: ${REMOVED})"
+            git push origin data
+            echo "✅ Data pushed to data branch ($(git rev-parse --short HEAD))"
+          fi
+
+      # ─────────────────────────────────────────────────────────────────
+      # Upload Markdown reports to OneDrive via rclone.
+      #
+      # 【One-time setup — run locally before first use】
+      #   1. Install rclone:  https://rclone.org/downloads/
+      #   2. Configure OneDrive:
+      #        rclone config
+      #        → New remote → name: onedrive
+      #        → Storage type: onedrive
+      #        → Leave client_id / client_secret blank
+      #        → Follow the browser OAuth flow
+      #   3. Export the config:
+      #        rclone config show
+      #   4. Copy the ENTIRE output and save it as GitHub Secret:
+      #        Secret name:  RCLONE_CONF
+      #        Secret value: <paste rclone config content>
+      #
+      # Files are uploaded to:  QuantumRSSRadar/{YEAR}/{MONTH}/report_*.md
+      # e.g.                     QuantumRSSRadar/2026/05/report_2026-05-14_073436.md
+      # ─────────────────────────────────────────────────────────────────
+      - name: Upload MD report to OneDrive
+        if: always()
+        env:
+          RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
+        run: |
+          if [ -z "$RCLONE_CONF" ]; then
+            echo "⏭ RCLONE_CONF secret not set — skipping OneDrive upload"
+            echo "   See step comments for one-time setup instructions."
+            exit 0
+          fi
+
+          # ── Install rclone ───────────────────────────────────────────
+          curl -s https://rclone.org/install.sh | sudo bash
+
+          # ── Write rclone config from secret ─────────────────────────
+          mkdir -p ~/.config/rclone
+          printf '%s' "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
+
+          # ── Find MD files (prefer /tmp save, fallback to data/) ──────
+          MD_SOURCE="/tmp/quantum-new-data/reports"
+          if [ ! -d "$MD_SOURCE" ] || [ -z "$(ls $MD_SOURCE/*.md 2>/dev/null)" ]; then
+            MD_SOURCE="data/reports"
+          fi
+          if [ -z "$(ls $MD_SOURCE/*.md 2>/dev/null)" ]; then
+            echo "⚠ No MD files found — skipping OneDrive upload"
+            exit 0
+          fi
+
+          # ── Upload to QuantumRSSRadar/{YEAR}/{MONTH}/ ────────────────
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          ONEDRIVE_FOLDER="QuantumRSSRadar/${YEAR}/${MONTH}"
+          echo "Uploading to OneDrive: ${ONEDRIVE_FOLDER}/"
+          rclone copy "$MD_SOURCE/" "onedrive:${ONEDRIVE_FOLDER}/" \
+            --include "*.md" \
+            --progress \
+            --stats-log-level NOTICE
+          echo "✅ MD reports uploaded to OneDrive: ${ONEDRIVE_FOLDER}/"
+          ls -lh $MD_SOURCE/*.md
 
       - name: Create deployment summary
         if: always()
