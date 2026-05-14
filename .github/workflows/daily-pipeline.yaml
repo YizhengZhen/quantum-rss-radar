@@ -140,27 +140,60 @@ jobs:
 
           echo "✅ Public repository deployment completed"
 
+      - name: Upload pipeline artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-outputs-${{ github.run_id }}
+          path: |
+            data/all/*.jsonl
+            data/reports/*.md
+          if-no-files-found: warn
+          retention-days: 7
+
       - name: Create deployment summary
         if: always()
+        env:
+          EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
         run: |
           echo "## Quantum RSS Radar Pipeline" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Run Time:** $(date)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Check for processed papers (latest JSONL)
-          LATEST_JSONL=$(ls -t data/all/quantum_rss_radar_*.jsonl 2>/dev/null | head -1)
+          # Check for processed papers (latest JSONL — actual filename: data_*.jsonl)
+          LATEST_JSONL=$(ls -t data/all/data_*.jsonl 2>/dev/null | head -1)
           if [ -n "$LATEST_JSONL" ]; then
             PAPER_COUNT=$(wc -l < "$LATEST_JSONL")
             echo "**Papers Analyzed:** $PAPER_COUNT" >> $GITHUB_STEP_SUMMARY
+            echo "**JSONL file:** \`$LATEST_JSONL\`" >> $GITHUB_STEP_SUMMARY
           else
-            echo "**Papers Analyzed:** 0" >> $GITHUB_STEP_SUMMARY
+            echo "**Papers Analyzed:** ⚠️ No JSONL file found (pipeline may have failed)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Check for generated Markdown report
+          LATEST_MD=$(ls -t data/reports/report_*.md 2>/dev/null | head -1)
+          if [ -n "$LATEST_MD" ]; then
+            MD_LINES=$(wc -l < "$LATEST_MD")
+            echo "**Markdown report:** \`$LATEST_MD\` ($MD_LINES lines)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Markdown report:** ⚠️ Not found" >> $GITHUB_STEP_SUMMARY
           fi
 
           # Check for generated website files
           if [ -d "jekyll_site/_site" ]; then
             WEB_FILES=$(find jekyll_site/_site -type f -name "*.html" | wc -l)
-            echo "**Website Files Generated:** $WEB_FILES" >> $GITHUB_STEP_SUMMARY
+            echo "**Website Files Generated:** $WEB_FILES HTML files" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Email configuration check
+          echo "### 📧 Email Configuration" >> $GITHUB_STEP_SUMMARY
+          if [ "${EMAIL_ENABLED}" = "true" ]; then
+            echo "- EMAIL_ENABLED: ✅ true" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- EMAIL_ENABLED: ❌ not enabled (set GitHub Secret EMAIL_ENABLED=true to enable)" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
