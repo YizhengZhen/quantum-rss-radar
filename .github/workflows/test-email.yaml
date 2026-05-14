@@ -1,0 +1,159 @@
+name: Test Email — Send Latest MD Report
+
+# 仅允许手动触发，用于验证邮件配置是否正确
+on:
+  workflow_dispatch:
+    inputs:
+      recipient_override:
+        description: "覆盖收件人（留空则使用 EMAIL_RECIPIENT secret）"
+        required: false
+        default: ""
+
+jobs:
+  test-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv sync
+
+      - name: Run pipeline to generate latest MD report
+        continue-on-error: true
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          EMAIL_ENABLED: "false"   # 先不在这里发，统一由下面步骤发送
+        run: |
+          source .venv/bin/activate
+          python -m src.orchestrator_jekyll --format all
+
+      - name: Send test email with MD report
+        env:
+          EMAIL_SENDER:    ${{ secrets.EMAIL_SENDER }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+          EMAIL_SMTP_SERVER:   ${{ secrets.EMAIL_SMTP_SERVER }}
+          EMAIL_SMTP_PORT:     ${{ secrets.EMAIL_SMTP_PORT }}
+          EMAIL_SMTP_USERNAME: ${{ secrets.EMAIL_SMTP_USERNAME }}
+          EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
+          RECIPIENT_OVERRIDE:  ${{ inputs.recipient_override }}
+        run: |
+          source .venv/bin/activate
+          python - <<'PYEOF'
+          import os, smtplib, glob
+          from email.mime.text import MIMEText
+          from email.mime.multipart import MIMEMultipart
+          from email.mime.application import MIMEApplication
+          from datetime import datetime, timezone
+
+          # ── SMTP settings ────────────────────────────────
+          sender   = os.environ["EMAIL_SENDER"]
+          recipient = os.environ.get("RECIPIENT_OVERRIDE") or os.environ["EMAIL_RECIPIENT"]
+          smtp_server = os.environ["EMAIL_SMTP_SERVER"]
+          smtp_port   = int(os.environ.get("EMAIL_SMTP_PORT", "587"))
+          username    = os.environ["EMAIL_SMTP_USERNAME"]
+          password    = os.environ["EMAIL_SMTP_PASSWORD"]
+
+          # ── Find latest MD report ────────────────────────
+          md_files = sorted(glob.glob("data/reports/report_*.md"), reverse=True)
+          run_time = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+          if md_files:
+              latest_md = md_files[0]
+              with open(latest_md, encoding="utf-8") as f:
+                  md_content = f.read()
+              md_filename = os.path.basename(latest_md)
+              paper_count = sum(1 for line in md_content.splitlines() if line.startswith("## "))
+              body_html = f"""
+          <html><body>
+          <h2>✅ Quantum RSS Radar — 邮件发送测试成功</h2>
+          <p><b>运行时间：</b>{run_time}</p>
+          <p><b>MD 报告：</b>{md_filename}</p>
+          <p><b>论文数量：</b>{paper_count} 篇</p>
+          <hr>
+          <p>报告文件已作为附件附在本邮件中，请查收。</p>
+          <p><small>由 GitHub Actions 自动发送 — Quantum RSS Radar</small></p>
+          </body></html>"""
+              subject = f"[TEST] Quantum RSS Radar 邮件测试 — {run_time}"
+          else:
+              md_content = None
+              md_filename = None
+              body_html = f"""
+          <html><body>
+          <h2>⚠️ Quantum RSS Radar — 邮件发送测试（无MD报告）</h2>
+          <p><b>运行时间：</b>{run_time}</p>
+          <p>Pipeline 未生成 MD 报告（请检查 LLM_API_KEY 配置），<br>
+          但 SMTP 连接本身正常，说明邮件配置 ✅ 正确。</p>
+          <p><small>由 GitHub Actions 自动发送 — Quantum RSS Radar</small></p>
+          </body></html>"""
+              subject = f"[TEST] Quantum RSS Radar 邮件测试（SMTP连通性）— {run_time}"
+
+          # ── Build message ────────────────────────────────
+          msg = MIMEMultipart("mixed")
+          msg["Subject"] = subject
+          msg["From"]    = sender
+          msg["To"]      = recipient
+
+          msg.attach(MIMEText(body_html, "html"))
+
+          if md_content and md_filename:
+              attachment = MIMEApplication(md_content.encode("utf-8"), Name=md_filename)
+              attachment["Content-Disposition"] = f'attachment; filename="{md_filename}"'
+              msg.attach(attachment)
+
+          # ── Send ─────────────────────────────────────────
+          print(f"Connecting to {smtp_server}:{smtp_port} ...")
+          with smtplib.SMTP(smtp_server, smtp_port, timeout=30) as server:
+              server.ehlo()
+              server.starttls()
+              server.login(username, password)
+              server.send_message(msg)
+
+          print(f"✅ Test email sent successfully to {recipient}")
+          if md_filename:
+              print(f"   Attachment: {md_filename}")
+          PYEOF
+
+      - name: Upload MD report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-email-md-report-${{ github.run_id }}
+          path: data/reports/report_*.md
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## 📧 邮件测试结果" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**运行时间:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          LATEST_MD=$(ls -t data/reports/report_*.md 2>/dev/null | head -1)
+          if [ -n "$LATEST_MD" ]; then
+            PAPER_COUNT=$(grep -c "^## " "$LATEST_MD" || echo 0)
+            echo "**MD 报告:** \`$(basename $LATEST_MD)\`  ($PAPER_COUNT 篇论文)" >> $GITHUB_STEP_SUMMARY
+            echo "**邮件附件:** ✅ 已附带 MD 报告" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**MD 报告:** ⚠️ 未生成（检查 LLM_API_KEY）" >> $GITHUB_STEP_SUMMARY
+            echo "**邮件内容:** SMTP 连通性测试" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> 如果此步骤通过，邮件已发送。请检查收件箱（含垃圾邮件）。" >> $GITHUB_STEP_SUMMARY
