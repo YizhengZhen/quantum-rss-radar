@@ -26,41 +26,41 @@ jobs:
           EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
           EMAIL_SMTP_PORT:   ${{ secrets.EMAIL_SMTP_PORT }}
         run: |
-          echo "=== Network Diagnostics ==="
-          echo "Testing TCP connectivity to SMTP server..."
-
           SERVER="$EMAIL_SMTP_SERVER"
-          PORT="${EMAIL_SMTP_PORT:-587}"
+          CONFIGURED_PORT="${EMAIL_SMTP_PORT:-587}"
 
-          # Test port 587 (STARTTLS)
+          echo "=== Network Diagnostics ==="
+          echo "SMTP Server  : $SERVER"
+          echo "Configured Port: $CONFIGURED_PORT"
           echo ""
-          echo "--- Port 587 (STARTTLS) ---"
-          if timeout 10 bash -c "echo '' | nc -w 5 $SERVER 587 2>/dev/null"; then
-            echo "✅ Port 587: REACHABLE"
-          else
-            echo "❌ Port 587: UNREACHABLE or TIMED OUT"
-          fi
 
-          # Test port 465 (SSL)
-          echo ""
-          echo "--- Port 465 (SSL) ---"
-          if timeout 10 bash -c "echo '' | nc -w 5 $SERVER 465 2>/dev/null"; then
-            echo "✅ Port 465: REACHABLE"
-          else
-            echo "❌ Port 465: UNREACHABLE or TIMED OUT"
-          fi
+          check_port() {
+            local PORT=$1
+            local LABEL=$2
+            if timeout 10 bash -c "echo '' | nc -w 5 $SERVER $PORT 2>/dev/null"; then
+              echo "✅ Port $PORT ($LABEL): REACHABLE"
+            else
+              echo "❌ Port $PORT ($LABEL): UNREACHABLE or TIMED OUT"
+            fi
+          }
 
-          # Test port 25 (legacy SMTP, usually blocked on cloud)
-          echo ""
-          echo "--- Port 25 (legacy, expected blocked) ---"
-          if timeout 5 bash -c "echo '' | nc -w 3 $SERVER 25 2>/dev/null"; then
-            echo "✅ Port 25: REACHABLE"
-          else
-            echo "❌ Port 25: BLOCKED (expected on cloud runners)"
-          fi
+          # Test configured port first
+          echo "--- Configured port: $CONFIGURED_PORT ---"
+          check_port "$CONFIGURED_PORT" "configured"
+
+          # Test other common ports
+          for TEST_PORT in 465 587 25; do
+            if [ "$TEST_PORT" != "$CONFIGURED_PORT" ]; then
+              echo ""
+              LABEL="STARTTLS"
+              [ "$TEST_PORT" = "465" ] && LABEL="SSL"
+              [ "$TEST_PORT" = "25"  ] && LABEL="legacy, expected blocked"
+              check_port "$TEST_PORT" "$LABEL"
+            fi
+          done
 
           echo ""
-          echo "=== Runner IP (for whitelist check) ==="
+          echo "=== Runner IP (for server whitelist check) ==="
           curl -s https://api.ipify.org && echo ""
 
       # ─────────────────────────────────────────────────────────────────
@@ -113,12 +113,18 @@ jobs:
 
           last_error = None
 
-          # ── Try STARTTLS on the configured port ──────────────────────
-          ports_to_try = []
-          if smtp_port not in [587, 465]:
-              ports_to_try.append((smtp_port, "starttls"))
-          ports_to_try.append((587, "starttls"))
-          ports_to_try.append((465, "ssl"))
+          # ── Build port list: configured port FIRST, then fallback ────
+          # Port 465 → SSL, Port 587 → STARTTLS, others → STARTTLS
+          def mode_for_port(p):
+              return "ssl" if p == 465 else "starttls"
+
+          ports_to_try = [(smtp_port, mode_for_port(smtp_port))]
+          print(f"Configured port: {smtp_port} ({mode_for_port(smtp_port).upper()})")
+
+          # Add fallback only if different from configured
+          for fallback_port in [465, 587]:
+              if fallback_port != smtp_port:
+                  ports_to_try.append((fallback_port, mode_for_port(fallback_port)))
 
           for port, mode in ports_to_try:
               print(f"\nTrying {smtp_server}:{port} ({mode.upper()}) ...")
