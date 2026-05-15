@@ -118,6 +118,16 @@ jobs:
           def mode_for_port(p):
               return "ssl" if p == 465 else "starttls"
 
+          # ── Print config summary (without secrets) ───────────────────
+          sender_domain   = sender.split('@')[-1]   if '@' in sender   else 'INVALID'
+          recipient_domain = recipient.split('@')[-1] if '@' in recipient else 'INVALID'
+          print(f"SMTP Server  : {smtp_server}:{smtp_port}")
+          print(f"Sender       : ***@{sender_domain}")
+          print(f"Recipient    : ***@{recipient_domain}")
+          if recipient_domain == 'INVALID':
+              print("❌ ERROR: EMAIL_RECIPIENT is empty or invalid!")
+              exit(1)
+
           ports_to_try = [(smtp_port, mode_for_port(smtp_port))]
           print(f"Configured port: {smtp_port} ({mode_for_port(smtp_port).upper()})")
 

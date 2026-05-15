@@ -68,6 +68,13 @@ jobs:
           # Run the orchestrator (Jekyll version)
           python -m src.orchestrator_jekyll --format all
 
+          # ── Save log to /tmp so it's accessible after branch switch ──
+          cp quantum_rss_radar_jekyll.log /tmp/pipeline.log 2>/dev/null || true
+          # Extract email-related lines for the summary
+          grep -iE "email|EMAIL" /tmp/pipeline.log 2>/dev/null \
+            | grep -v "PASSWORD\|password\|smtp_pass" \
+            > /tmp/email_status.txt || true
+
       - name: Setup Ruby and Bundler
         if: always()
         run: |
@@ -334,12 +341,28 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Email configuration check
-          echo "### 📧 Email Configuration" >> $GITHUB_STEP_SUMMARY
+          # ── Email status from pipeline log ──────────────────────────
+          echo "### 📧 Email Status" >> $GITHUB_STEP_SUMMARY
           if [ "${EMAIL_ENABLED}" = "true" ]; then
             echo "- EMAIL_ENABLED: ✅ true" >> $GITHUB_STEP_SUMMARY
           else
-            echo "- EMAIL_ENABLED: ❌ not enabled (set GitHub Secret EMAIL_ENABLED=true to enable)" >> $GITHUB_STEP_SUMMARY
+            echo "- EMAIL_ENABLED: ❌ not enabled (set GitHub Secret \`EMAIL_ENABLED=true\` to enable)" >> $GITHUB_STEP_SUMMARY
+          fi
+          # Show actual send result from log
+          if [ -f /tmp/email_status.txt ] && [ -s /tmp/email_status.txt ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Pipeline log — email lines:**" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat /tmp/email_status.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+          # Quick pass/fail check
+          if grep -qi "sent successfully" /tmp/email_status.txt 2>/dev/null; then
+            echo "- **Result: ✅ Email sent successfully**" >> $GITHUB_STEP_SUMMARY
+          elif grep -qi "failed\|error\|disabled\|skipping" /tmp/email_status.txt 2>/dev/null; then
+            echo "- **Result: ❌ Email not sent** (see log above)" >> $GITHUB_STEP_SUMMARY
+          elif [ "${EMAIL_ENABLED}" = "true" ]; then
+            echo "- **Result: ⚠️ No email log found** (pipeline may have not reached email step)" >> $GITHUB_STEP_SUMMARY
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
