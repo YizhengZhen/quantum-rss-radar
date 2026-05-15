@@ -326,10 +326,21 @@ def send_daily_email(
         port = config.email_smtp_port
         logger.info(f"Sending email via {config.email_smtp_server}:{port} -> {config.email_recipient}")
 
-        with smtplib.SMTP(config.email_smtp_server, port) as server:
-            server.starttls()
-            server.login(config.email_smtp_username, config.email_smtp_password)
-            server.send_message(msg)
+        # Port 465 → SMTP_SSL (immediate TLS)
+        # Port 587 / others → SMTP + STARTTLS
+        if port == 465:
+            import ssl as _ssl
+            ctx = _ssl.create_default_context()
+            with smtplib.SMTP_SSL(config.email_smtp_server, port, context=ctx) as server:
+                server.login(config.email_smtp_username, config.email_smtp_password)
+                server.send_message(msg)
+        else:
+            with smtplib.SMTP(config.email_smtp_server, port) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login(config.email_smtp_username, config.email_smtp_password)
+                server.send_message(msg)
 
         logger.info(f"Daily email sent successfully to {config.email_recipient}")
         return True
