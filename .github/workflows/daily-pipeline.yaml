@@ -177,6 +177,11 @@ jobs:
           git config user.name  "GitHub Actions"
           git config user.email "actions@github.com"
 
+          # ── Remove untracked files that would conflict with checkout ─
+          # Jekyll installs vendor gems as untracked files; must remove
+          # before switching branches to avoid "would be overwritten" error
+          rm -rf jekyll_site/vendor jekyll_site/.bundle 2>/dev/null || true
+
           # ── Checkout or create the data branch ──────────────────────
           if git ls-remote --heads origin data | grep -q "refs/heads/data"; then
             git fetch origin data:data --depth=1
