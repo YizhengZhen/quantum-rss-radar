@@ -2,8 +2,8 @@ name: Quantum RSS Radar - Daily Pipeline
 
 on:
   schedule:
-    # Run daily at 8 AM UTC
-    - cron: "0 8 * * *"
+    # Run daily at 10:00 AM Beijing Time (UTC+8 → UTC 2:00)
+    - cron: "0 2 * * *"
   workflow_dispatch: # Allow manual triggering
   push:
     branches: [master]
