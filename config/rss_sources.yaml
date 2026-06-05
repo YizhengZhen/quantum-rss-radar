@@ -1,6 +1,5 @@
 # Quantum RSS Radar - RSS Sources Configuration
-# For testing, only arXiv Quantum Physics (quant-ph) is enabled
-# Add more sources after initial testing is successful
+# Edit as needed: add/remove feeds, change source labels, adjust colours.
 
 feeds:
 
@@ -26,37 +25,178 @@ feeds:
       type: "daily"  
 
 
+  # ── Nature Journals ────────────────────────────
   # Nature Physics
   - name: "Nature Physics"
     url: "https://www.nature.com/nphys.rss"
     source: "nature"
-    max_items: -1  # Unlimited
+    max_items: -1
     update_frequency:
       type: "weekdays"
 
-  # Physical Review Letters
-  - name: "Physical Review Letters"
-    url: "https://journals.aps.org/prl/rss"
-    source: "aps"
-    max_items: -1  # Unlimited
+  # Nature Photonics
+  - name: "Nature Photonics"
+    url: "https://www.nature.com/nphoton.rss"
+    source: "nature"
+    max_items: -1
     update_frequency:
       type: "weekdays"
 
+  # Nature Reviews Physics
+  - name: "Nature Reviews Physics"
+    url: "https://www.nature.com/natrevphys.rss"
+    source: "nature"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Nature Communications
+  - name: "Nature Communications"
+    url: "https://www.nature.com/ncomms.rss"
+    source: "nature"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # npj Quantum Information
+  - name: "npj Quantum Information"
+    url: "https://www.nature.com/npjqi.rss"
+    source: "nature"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # ── Science Journals ───────────────────────────
   # Science Magazine
   - name: "Science Magazine"
     url: "https://www.science.org/rss/current.xml"
     source: "science"
-    max_items: -1  # Unlimited
+    max_items: -1
     update_frequency:
       type: "weekdays"
 
-  # IEEE Transactions on Quantum Engineering
-  - name: "IEEE Transactions on Quantum Engineering"
-    url: "https://ieeexplore.ieee.org/rss/TOC94.XML"
-    source: "ieee"
-    max_items: -1  # Unlimited
+  # Science Advances
+  - name: "Science Advances"
+    url: "https://www.science.org/rss/sciadv.xml"
+    source: "science"
+    max_items: -1
     update_frequency:
       type: "weekdays"
+
+  # ── APS Journals ───────────────────────────────
+  # Physical Review Letters
+  - name: "Physical Review Letters"
+    url: "https://journals.aps.org/prl/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Physical Review A
+  - name: "Physical Review A"
+    url: "https://journals.aps.org/pra/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Physical Review B
+  - name: "Physical Review B"
+    url: "https://journals.aps.org/prb/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Physical Review E
+  - name: "Physical Review E"
+    url: "https://journals.aps.org/pre/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Physical Review Research
+  - name: "Physical Review Research"
+    url: "https://journals.aps.org/prresearch/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Physical Review X
+  - name: "Physical Review X"
+    url: "https://journals.aps.org/prx/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # PRX Quantum
+  - name: "PRX Quantum"
+    url: "https://journals.aps.org/prxquantum/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Reviews of Modern Physics
+  - name: "Reviews of Modern Physics"
+    url: "https://journals.aps.org/rmp/rss"
+    source: "aps"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # ── Other / Open Access Journals ────────────────
+  # Quantum — the open journal for quantum science
+  - name: "Quantum"
+    url: "https://quantum-journal.org/rss/"
+    source: "other"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # New Journal of Physics (IOP)
+  - name: "New Journal of Physics"
+    url: "https://iopscience.iop.org/1367-2630/rss"
+    source: "other"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Proceedings of the National Academy of Sciences
+  - name: "PNAS"
+    url: "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=PNAS"
+    source: "other"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # National Science Review (Oxford)
+  - name: "National Science Review"
+    url: "https://academic.oup.com/nsr/rss"
+    source: "other"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Journal of Mathematical Physics (AIP)
+  - name: "Journal of Mathematical Physics"
+    url: "https://pubs.aip.org/aip/jmp/rss"
+    source: "other"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # IEEE Transactions on Information Theory
+  - name: "IEEE Transactions on Information Theory"
+    url: "https://ieeexplore.ieee.org/rss/recent/18/6189.xml"
+    source: "ieee"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
 
 sources:
   # Each source maps to a color tag on the website
