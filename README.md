@@ -2,9 +2,6 @@
 
 > **"您的个人AI研究助手，每天追踪、分析并推荐学术论文"**
 
-🚧 **Work in Progress** — This project is under active development and is currently experimental.
-❗ **This project is not ready for external contributions. Issues and PRs are currently NOT accepted.**
-⚠️ **No Support Provided** — This is an experimental project with no support or maintenance guarantees.
 
 [![GitHub Pages](https://img.shields.io/badge/部署于-GitHub%20Pages-blue?logo=github)](https://pages.github.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -37,7 +34,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/quantum-rss-radar.git
+git clone https://github.com/YizhengZhen/quantum-rss-radar.git
 cd quantum-rss-radar
 ```
 
@@ -136,7 +133,7 @@ git push origin main
 - 自动部署到GitHub Pages
 
 您的研究门户网站将在以下地址可用：  
-`https://YOUR_USERNAME.github.io/quantum-rss-radar/`
+`https://YizhengZhen.github.io/quantum-rss-radar/`
 
 ### 配置邮件推送（可选）
 
@@ -200,9 +197,9 @@ LLM_API_KEY=sk-not-needed  # 本地部署无需密钥
 
 1. **数据采集**：从配置的RSS源获取最新论文
 2. **数据清洗**：标准化元数据、去重、丰富信息
-3. **AI分析**：使用LLM分析论文与研究方向的相关性
+3. **AI分析**：使用LLM分析论文与研究方向的相关性（命中缓存则跳过API调用）
 4. **评分排名**：根据相关性评分（0-10分）排序
-5. **结果存储**：保存结构化数据到JSONL文件
+5. **结果存储**：同时写入JSONL文件 + SQLite数据库
 6. **网站生成**：生成包含所有论文的静态网站
 7. **自动部署**：部署网站到GitHub Pages或自定义服务器
 8. **邮件通知**：发送每日推荐摘要（可选）
@@ -317,62 +314,48 @@ feeds:
 
 ```
 quantum-rss-radar/
-├── .env.example              # 环境变量配置模板
-├── src/                     # Python源代码
-│   ├── orchestrator_jekyll.py      # 主协调器
+├── .env.example                   # 环境变量配置模板
+├── Dockerfile / docker-compose.yaml
+├── pyproject.toml / requirements.txt
+│
+├── src/                           # Python源代码
+│   ├── orchestrator_jekyll.py     # 主协调器（12步流程）
 │   ├── config_loader.py           # 配置加载器
-│   ├── rss_fetcher.py            # RSS采集器
-│   ├── semantic_analyzer.py      # 语义分析器
-│   ├── data_exporter.py          # 数据导出器
-│   ├── normalizer.py             # 元数据标准化
-│   ├── deduplicate.py            # 论文去重
-│   ├── email_sender.py           # 邮件发送器
-│   ├── tag_manager.py            # 标签管理
-│   └── scheduler.py              # 调度器
+│   ├── rss_fetcher.py             # RSS采集器
+│   ├── semantic_analyzer.py       # 语义分析器（含LLM缓存）
+│   ├── arxiv_deep_reader.py       # arXiv PDF深度阅读
+│   ├── data_exporter.py           # 数据导出（JSONL + MD + Jekyll）
+│   ├── database.py                # SQLite持久化存储
+│   ├── normalizer.py              # 元数据标准化
+│   ├── deduplicate.py             # 论文去重
+│   ├── email_sender.py            # 邮件发送器
+│   ├── tag_manager.py             # 标签管理
+│   ├── models.py                  # 数据模型
+│   └── scheduler.py               # 调度器
 │
-├── config/                 # 配置文件
-│   ├── rss_sources.yaml          # RSS源配置
-│   └── research_directions.md    # 研究方向
+├── config/                        # 配置文件
+│   ├── rss_sources.yaml           # RSS源配置
+│   └── research_directions.md     # 研究方向（按需修改）
 │
-├── jekyll_site/           # Jekyll静态网站
-│   ├── _config.yml        # Jekyll配置
-│   ├── _layouts/          # HTML模板
-│   ├── _includes/         # 可复用组件
-│   └── _site/             # 生成的网站（自动）
+├── jekyll_site/                   # Jekyll静态网站
+│   ├── _config.yml
+│   ├── _layouts/                  # HTML模板
+│   ├── _includes/                 # 可复用组件
+│   ├── assets/
+│   └── _data/papers.json          # 运行后自动生成
 │
-├── data/                  # 处理后的数据
-│   ├── all/              # 分析后的论文（JSONL，每日一份）
-│   └── reports/          # MD 分析报告（每日一份，按评分排序）
+├── data/                          # 运行输出（gitignored）
+│   ├── all/                       # JSONL每日全量数据
+│   ├── reports/                   # MD每日报告
+│   ├── llm_cache.json             # LLM分析缓存
+│   └── radar.db                   # SQLite数据库
 │
-├── .github/workflows/    # GitHub Actions
-│   └── daily-pipeline.yaml # 每日自动化工作流
+├── .github/workflows/
+│   └── daily-pipeline.yaml        # 每日自动化工作流
 │
-├── scripts/              # 辅助脚本
-│   ├── run_local.sh      # 本地运行脚本
-│   └── deploy_to_public_repo.py  # 部署到公开仓库
-│
-└── docker/               # Docker 补充配置
-│
-├── config/                 # 配置文件
-│   ├── rss_sources.yaml          # RSS源配置
-│   └── research_directions.md    # 研究方向
-│
-├── jekyll_site/           # Jekyll静态网站
-│   ├── _config.yml        # Jekyll配置
-│   ├── _layouts/          # HTML模板
-│   ├── _includes/         # 可复用组件
-│   └── _site/             # 生成的网站（自动）
-│
-├── data/                  # 处理后的数据
-│   ├── raw/              # 原始RSS数据（JSON）
-│   ├── all/              # 分析后的论文（JSONL，每日一份）
-│   └── reports/          # MD 分析报告（每日一份，按评分排序）
-│
-├── .github/workflows/    # GitHub Actions
-│   └── daily-pipeline.yaml # 每日自动化工作流
-│
-└── scripts/              # 辅助脚本
-    └── run_local.sh      # 本地运行脚本
+└── scripts/                       # 辅助脚本
+    ├── run_local.sh
+    └── deploy_to_public_repo.py
 ```
 
 ## 🤝 贡献指南

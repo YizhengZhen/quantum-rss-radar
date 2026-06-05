@@ -260,6 +260,9 @@ class DataExporter:
             "keywords": analysis.keywords,
             "analysis_timestamp": analysis.processing_time.isoformat(),
 
+            # — deep reading (optional) —
+            "deep_read": analysis.deep_read.model_dump() if analysis.deep_read else None,
+
             # — pipeline metadata —
             "pipeline_run": run_timestamp.isoformat(),
         }
@@ -315,6 +318,7 @@ class DataExporter:
                     "direction": direction,
                     "processing_time": rec.get("analysis_timestamp", ""),
                 },
+                "deep_read": rec.get("deep_read"),
             }
             papers.append(paper_entry)
             sources_data[src_id]["count"] += 1

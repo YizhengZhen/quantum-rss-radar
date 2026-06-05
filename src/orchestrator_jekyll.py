@@ -25,7 +25,9 @@ from .rss_fetcher import fetch_all_feeds
 from .normalizer import normalize_papers, enrich_paper_metadata
 from .deduplicate import deduplicate_papers
 from .semantic_analyzer import SemanticAnalyzer
+from .arxiv_deep_reader import deep_read_high_score_papers
 from .data_exporter import DataExporter
+from .database import RadarDatabase
 from .email_sender import send_daily_email
 from .models import Paper, PaperAnalysis
 
@@ -51,6 +53,7 @@ class QuantumRSSRadarJekyll:
         self.sources = None
         self.research_directions = None
         self.analyzer = None
+        self.db = None
 
         # Setup logging
         self._setup_logging()
@@ -160,17 +163,36 @@ class QuantumRSSRadarJekyll:
 
             logger.info(f"Analyzed {len(all_papers_with_analyses)} papers")
 
-            # Step 8: Export data to requested format(s)
+            # Step 8: Deep reading for high-score papers (arXiv PDF + LLM analysis)
+            logger.info("Running deep reading for high-score papers...")
+            all_papers_with_analyses = deep_read_high_score_papers(
+                all_papers_with_analyses,
+                self.config,
+                self.analyzer.llm_client if hasattr(self.analyzer, 'llm_client') else None,
+            )
+            logger.info(f"Deep reading completed for {len(all_papers_with_analyses)} papers")
+
+            # Step 9: Export data to requested format(s)
             logger.info("Exporting data...")
             results = self._export_data(all_papers_with_analyses, date_str)
 
-            # Step 9: Copy to Jekyll site if applicable
+            # Step 10: Copy to Jekyll site if applicable
             if self.output_format in ["all", "jekyll"]:
                 if self.output_format != "all":  # export_all() already did this
                     logger.info("Copying data to Jekyll site...")
                     self._copy_to_jekyll_site(results)
 
-            # Step 10: Send daily email (if enabled)
+            # Step 11: Save to SQLite database
+            logger.info("Saving to SQLite database...")
+            pipeline_ts = datetime.now().isoformat()
+            try:
+                self.db = RadarDatabase()
+                db_saved = self.db.save_papers(all_papers_with_analyses, self.sources, pipeline_ts)
+                logger.info(f"Saved {db_saved} papers to database")
+            except Exception as e:
+                logger.warning(f"Failed to save to database: {e}")
+
+            # Step 12: Send daily email (if enabled)
             if self.config.email_enabled:
                 logger.info("Sending daily email digest...")
                 email_success = send_daily_email(all_papers_with_analyses, self.sources, self.config)
@@ -185,9 +207,21 @@ class QuantumRSSRadarJekyll:
             else:
                 logger.info("Email sending disabled, skipping")
 
-            # Calculate execution time
+            # Calculate execution time and record pipeline run
             execution_time = datetime.now() - start_time
             logger.info(f"Pipeline completed in {execution_time.total_seconds():.2f} seconds")
+            if self.db is not None:
+                try:
+                    deep_read_count = sum(1 for _, a in all_papers_with_analyses if a.deep_read is not None)
+                    self.db.save_pipeline_run(
+                        run_timestamp=pipeline_ts,
+                        total_papers=len(all_papers_with_analyses),
+                        analyzed_papers=len(all_papers_with_analyses),
+                        deep_read_papers=deep_read_count,
+                        duration_seconds=execution_time.total_seconds(),
+                    )
+                except Exception as e:
+                    logger.warning(f"Failed to record pipeline run: {e}")
 
             # Print summary
             self._print_summary(results)

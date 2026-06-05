@@ -11,12 +11,93 @@ from typing import List, Dict, Optional
 from datetime import datetime
 import time
 from openai import OpenAI
-import os
+from pathlib import Path
 
 from .models import Paper, PaperAnalysis, Config
 from .tag_manager import get_tag_manager
 
 logger = logging.getLogger(__name__)
+
+# LLM analysis cache file path
+LLM_CACHE_FILE = Path("data") / "llm_cache.json"
+
+
+class LLMAnalysisCache:
+    """Persistent cache for LLM analysis results to avoid redundant API calls.
+
+    Uses paper.id (already deduplicated) as the cache key.
+    This handles the case where the same paper appears in multiple feeds
+    (e.g. arXiv + journal) because deduplicate.py merges them into one ID.
+    """
+
+    def __init__(self, cache_file: Path = LLM_CACHE_FILE, enabled: bool = True):
+        self.cache_file = cache_file
+        self.enabled = enabled
+        self._cache: Dict[str, dict] = {}
+        self._load()
+
+    def _load(self):
+        """Load cache from disk."""
+        if not self.enabled:
+            return
+        try:
+            if self.cache_file.exists():
+                with open(self.cache_file, "r", encoding="utf-8") as f:
+                    self._cache = json.load(f)
+                logger.info(f"Loaded LLM cache with {len(self._cache)} entries from {self.cache_file}")
+        except Exception as e:
+            logger.warning(f"Failed to load LLM cache: {e}")
+            self._cache = {}
+
+    def _save(self):
+        """Save cache to disk."""
+        if not self.enabled:
+            return
+        try:
+            self.cache_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.cache_file, "w", encoding="utf-8") as f:
+                json.dump(self._cache, f, ensure_ascii=False, indent=2)
+            logger.debug(f"Saved LLM cache ({len(self._cache)} entries)")
+        except Exception as e:
+            logger.warning(f"Failed to save LLM cache: {e}")
+
+    def get(self, paper_id: str) -> Optional[dict]:
+        """Get cached analysis for a paper ID. Returns None if not cached."""
+        if not self.enabled:
+            return None
+        entry = self._cache.get(paper_id)
+        if entry:
+            logger.info(f"LLM cache HIT for paper {paper_id[:20]}...")
+            return entry
+        return None
+
+    def put(self, paper_id: str, prompt: str, response_text: str, analysis: PaperAnalysis):
+        """Store an analysis result in the cache."""
+        if not self.enabled:
+            return
+        self._cache[paper_id] = {
+            "prompt_preview": prompt[:200],
+            "response": response_text,
+            "analysis": {
+                "paper_id": analysis.paper_id,
+                "relevance_score": analysis.relevance_score,
+                "recommendation": analysis.recommendation,
+                "summary": analysis.summary,
+                "keywords": analysis.keywords,
+                "direction": analysis.direction,
+            },
+            "cached_at": datetime.now().isoformat(),
+        }
+        self._save()
+
+    def clear(self):
+        """Clear the entire cache."""
+        self._cache = {}
+        self._save()
+
+    @property
+    def size(self) -> int:
+        return len(self._cache)
 
 
 class SemanticAnalyzer:
@@ -35,6 +116,10 @@ class SemanticAnalyzer:
         
         # Cache for research directions (to avoid reloading)
         self._research_directions = None
+        
+        # LLM analysis cache
+        cache_enabled = getattr(config, "llm_cache_enabled", True)
+        self._cache = LLMAnalysisCache(enabled=cache_enabled)
     
     def _initialize_llm_client(self):
         """Initialize the LLM client based on provider."""
@@ -172,24 +257,42 @@ IMPORTANT:
 Your analysis:"""
     
     def _call_llm(self, prompt: str, max_retries: int = 3) -> str:
-        """Call LLM API with retry logic."""
+        """Call LLM API with retry logic.
+
+        All supported providers (openai, deepseek, azure, generic, local) use
+        OpenAI-compatible API — they've all been initialised with the correct
+        base_url in _initialize_llm_client, so we can call them uniformly.
+
+        For providers that don't support response_format (e.g. some local
+        models), we fall back to a plain text call and parse JSON manually.
+        """
         for attempt in range(max_retries):
             try:
-                if self.config.llm_provider in ["openai", "deepseek"]:
+                # All providers use OpenAI-compatible chat completions
+                try:
                     response = self.llm_client.chat.completions.create(
                         model=self.config.llm_model,
                         messages=[
                             {"role": "system", "content": "You are a research analysis assistant. Always respond with valid JSON."},
                             {"role": "user", "content": prompt}
                         ],
-                        temperature=0.1,  # Low temperature for consistent analysis
+                        temperature=getattr(self.config, "llm_temperature", 0.1),
                         max_tokens=1000,
-                        response_format={"type": "json_object"}
+                        response_format={"type": "json_object"},
                     )
-                    return response.choices[0].message.content
-                else:
-                    raise ValueError(f"Unsupported LLM provider: {self.config.llm_provider}")
-                    
+                except Exception:
+                    # Fallback: some local/custom models don't support response_format
+                    response = self.llm_client.chat.completions.create(
+                        model=self.config.llm_model,
+                        messages=[
+                            {"role": "system", "content": "You are a research analysis assistant. Always respond with valid JSON."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=getattr(self.config, "llm_temperature", 0.1),
+                        max_tokens=1000,
+                    )
+                return response.choices[0].message.content
+
             except Exception as e:
                 logger.warning(f"LLM call failed (attempt {attempt + 1}/{max_retries}): {e}")
                 if attempt < max_retries - 1:
@@ -258,37 +361,76 @@ Your analysis:"""
     
     def analyze_papers_batch(self, papers: List[Paper], research_directions: str) -> List[PaperAnalysis]:
         """
-        Analyze multiple papers with rate limiting.
-        
+        Analyze multiple papers with rate limiting and LLM analysis cache.
+
+        Cache key: paper.id (already deduplicated).
+        Cache lookup is performed first; only cache misses call the LLM API.
+
         Args:
             papers: List of papers to analyze
             research_directions: Research interests as string
-            
+
         Returns:
             List of PaperAnalysis objects
         """
         if not papers:
             return []
-        
-        logger.info(f"Analyzing {len(papers)} papers with LLM")
-        
-        analyses = []
+
+        cache_hits = 0
+        cache_misses = 0
+
+        analyses: List[PaperAnalysis] = []
         for i, paper in enumerate(papers):
             try:
+                # ── Cache lookup ──────────────────────────────────
+                cached = self._cache.get(paper.id)
+                if cached is not None:
+                    # Restore from cache
+                    cached_analysis = cached["analysis"]
+                    analysis = PaperAnalysis(
+                        paper_id=cached_analysis["paper_id"],
+                        relevance_score=cached_analysis["relevance_score"],
+                        recommendation=cached_analysis["recommendation"],
+                        summary=cached_analysis["summary"],
+                        keywords=cached_analysis.get("keywords", []),
+                        direction=cached_analysis.get("direction", ""),
+                    )
+                    # Still assign tags (tag assignment doesn't call LLM)
+                    self._assign_tags_to_paper(paper, analysis.keywords)
+                    analyses.append(analysis)
+                    cache_hits += 1
+                    logger.info(f"Cache HIT [{cache_hits}]: {paper.title[:50]}... → score={analysis.relevance_score}")
+                    continue
+
+                # ── Cache miss → call LLM ─────────────────────────
+                cache_misses += 1
                 # Rate limiting: 1 request per second
-                if i > 0:
+                if i > 0 and cache_misses > 1:
                     time.sleep(1)
-                
-                analysis = self.analyze_paper(paper, research_directions)
+
+                # Prepare prompt
+                prompt = self._create_analysis_prompt(paper, research_directions)
+
+                # Call LLM
+                response = self._call_llm(prompt)
+
+                # Parse response
+                analysis = self._parse_llm_response(response, paper.id)
+
+                # Store in cache
+                self._cache.put(paper.id, prompt, response, analysis)
+
+                # Assign tags
+                self._assign_tags_to_paper(paper, analysis.keywords)
                 analyses.append(analysis)
-                
+
                 # Log progress
                 if (i + 1) % 5 == 0 or i == len(papers) - 1:
-                    logger.info(f"Progress: {i + 1}/{len(papers)} papers analyzed")
-                    
+                    logger.info(f"Progress: {i + 1}/{len(papers)} papers (cache hits: {cache_hits}, misses: {cache_misses})")
+
             except Exception as e:
                 logger.error(f"Failed to analyze paper {paper.id}: {e}")
-                # Add a failed analysis marker
+                # Add a failed analysis marker (don't cache failures)
                 analyses.append(PaperAnalysis(
                     paper_id=paper.id,
                     relevance_score=0.0,
@@ -302,8 +444,10 @@ Your analysis:"""
                     },
                     keywords=[]
                 ))
-        
-        logger.info(f"Completed analysis of {len(analyses)} papers")
+
+        logger.info(f"Completed analysis of {len(analyses)} papers "
+                     f"(cache hits: {cache_hits}, misses: {cache_misses}, "
+                     f"cache size: {self._cache.size})")
         return analyses
     
     def filter_and_rank_papers(self, papers: List[Paper], analyses: List[PaperAnalysis]) -> List[tuple[Paper, PaperAnalysis]]:
