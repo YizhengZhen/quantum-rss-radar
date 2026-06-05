@@ -2,28 +2,26 @@
 # Edit as needed: add/remove feeds, change source labels, adjust colours.
 
 feeds:
-
   - name: "arXiv Physics"
     url: "https://rss.arxiv.org/rss/quant-ph+cond-mat.stat-mech+math-ph+physics.soc-ph+physics.pop-ph+physics.optics+physics.comp-ph+physics.atom-ph+physics.atm-clus"
     source: "arxiv"
-    max_items: -1  # Unlimited
+    max_items: -1 # Unlimited
     update_frequency:
       type: "daily"
 
   - name: "arXiv Math"
     url: "https://rss.arxiv.org/rss/math.DS+math.FA+math.GM+math.HO+math.IT+math.NA+math.OC+math.QA+math.ST+stat.TH"
     source: "arxiv"
-    max_items: -1  # Unlimited
+    max_items: -1 # Unlimited
     update_frequency:
       type: "daily"
 
   - name: "arXiv Computer Science"
     url: "https://rss.arxiv.org/rss/cs.CC+cs.CR+cs.ET+cs.GT+cs.IT+cs.LO"
     source: "arxiv"
-    max_items: -1  # Unlimited
+    max_items: -1 # Unlimited
     update_frequency:
-      type: "daily"  
-
+      type: "daily"
 
   # ── Nature Journals ────────────────────────────
   # Nature Physics
@@ -86,7 +84,7 @@ feeds:
   # ── APS Journals ───────────────────────────────
   # Physical Review Letters
   - name: "Physical Review Letters"
-    url: "https://journals.aps.org/prl/rss"
+    url: "https://feeds.aps.org/rss/recent/prl.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -94,7 +92,7 @@ feeds:
 
   # Physical Review A
   - name: "Physical Review A"
-    url: "https://journals.aps.org/pra/rss"
+    url: "https://feeds.aps.org/rss/recent/pra.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -102,7 +100,7 @@ feeds:
 
   # Physical Review B
   - name: "Physical Review B"
-    url: "https://journals.aps.org/prb/rss"
+    url: "https://feeds.aps.org/rss/recent/prb.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -110,7 +108,7 @@ feeds:
 
   # Physical Review E
   - name: "Physical Review E"
-    url: "https://journals.aps.org/pre/rss"
+    url: "https://feeds.aps.org/rss/recent/pre.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -118,7 +116,7 @@ feeds:
 
   # Physical Review Research
   - name: "Physical Review Research"
-    url: "https://journals.aps.org/prresearch/rss"
+    url: "https://feeds.aps.org/rss/recent/prresearch.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -126,7 +124,7 @@ feeds:
 
   # Physical Review X
   - name: "Physical Review X"
-    url: "https://journals.aps.org/prx/rss"
+    url: "https://feeds.aps.org/rss/recent/prx.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -134,7 +132,7 @@ feeds:
 
   # PRX Quantum
   - name: "PRX Quantum"
-    url: "https://journals.aps.org/prxquantum/rss"
+    url: "https://feeds.aps.org/rss/recent/prxquantum.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -142,7 +140,7 @@ feeds:
 
   # Reviews of Modern Physics
   - name: "Reviews of Modern Physics"
-    url: "https://journals.aps.org/rmp/rss"
+    url: "https://feeds.aps.org/rss/recent/rmp.xml"
     source: "aps"
     max_items: -1
     update_frequency:
@@ -151,7 +149,7 @@ feeds:
   # ── Other / Open Access Journals ────────────────
   # Quantum — the open journal for quantum science
   - name: "Quantum"
-    url: "https://quantum-journal.org/rss/"
+    url: "https://quantum-journal.org/feed/"
     source: "other"
     max_items: -1
     update_frequency:
@@ -159,7 +157,15 @@ feeds:
 
   # New Journal of Physics (IOP)
   - name: "New Journal of Physics"
-    url: "https://iopscience.iop.org/1367-2630/rss"
+    url: "https://iopscience.iop.org/journal/rss/1367-2630"
+    source: "other"
+    max_items: -1
+    update_frequency:
+      type: "weekdays"
+
+  # Reports on Progress in Physics (ROPP)
+  - name: "Reports on Progress in Physics (ROPP)"
+    url: "https://iopscience.iop.org/journal/rss/0034-4885"
     source: "other"
     max_items: -1
     update_frequency:
@@ -173,17 +179,9 @@ feeds:
     update_frequency:
       type: "weekdays"
 
-  # National Science Review (Oxford)
-  - name: "National Science Review"
-    url: "https://academic.oup.com/nsr/rss"
-    source: "other"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
   # Journal of Mathematical Physics (AIP)
   - name: "Journal of Mathematical Physics"
-    url: "https://pubs.aip.org/aip/jmp/rss"
+    url: "https://pubs.aip.org/rss/site_1000031/1000018.xml"
     source: "other"
     max_items: -1
     update_frequency:
@@ -191,12 +189,11 @@ feeds:
 
   # IEEE Transactions on Information Theory
   - name: "IEEE Transactions on Information Theory"
-    url: "https://ieeexplore.ieee.org/rss/recent/18/6189.xml"
+    url: "https://ieeexplore.ieee.org/rss/TOC18.XML"
     source: "ieee"
     max_items: -1
     update_frequency:
       type: "weekdays"
-
 
 sources:
   # Each source maps to a color tag on the website

@@ -6,7 +6,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/)
 
-> 个人项目，因精力有限可能无法及时响应 issues 和 PR。但项目保持开放，欢迎 fork 和自由使用。
+> 因精力有限可能无法及时响应 issues 和 PR。但项目保持开放，欢迎 fork 和自由使用。
 
 ---
 
