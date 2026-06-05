@@ -6,7 +6,7 @@ Automatically track the latest papers from arXiv / Nature / Science / APS / IEEE
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/)
 
-> Personal project. May not respond to issues/PRs promptly due to limited bandwidth, but the project is open — feel free to fork and use.
+> 🇨🇳 中文版请见 [README_CN.md](README_CN.md)
 
 ---
 
