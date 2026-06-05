@@ -6,7 +6,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker)](https://www.docker.com/)
 
-> ⚠️ 个人研究工具，暂不接受外部贡献。
+> 个人项目，因精力有限可能无法及时响应 issues 和 PR。但项目保持开放，欢迎 fork 和自由使用。
 
 ---
 
@@ -46,42 +46,54 @@
 
 ### 0. 基础配置（必做，无论哪种部署方式）
 
+在 GitHub 上 fork 或 clone 本仓库：
+
 ```bash
 git clone https://github.com/YizhengZhen/quantum-rss-radar.git && cd quantum-rss-radar
 ```
 
 编辑以下两个文件：
 
-| 文件 | 作用 | 示例 |
+| 文件 | 作用 | 说明 |
 |------|------|------|
-| `config/research_directions.md` | 写上你的研究方向，LLM 据此评分/分类 | 量子纠错、量子通信…… |
-| `config/rss_sources.yaml` | 添加/删除你想追踪的 RSS 源 | arXiv quant-ph、Nature Physics…… |
+| `config/research_directions.md` | 写上你的研究方向，LLM 据此评分/分类 | 详见文件中格式示例 |
+| `config/rss_sources.yaml` | 添加/删除你想追踪的 RSS 源 | 详见文件中格式示例 |
 
 > 默认 `research_directions.md` 为作者的量子信息研究方向，`rss_sources.yaml` 已预置 arXiv × 4 + APS + Nature + Science 等源，按需修改即可。
 
 ### 方式一：GitHub Actions + 邮件推送（推荐）
 
-1. **设置 Secrets** — 仓库 **Settings → Secrets and variables → Actions** 添加：
+1. **推送代码**到你自己的 GitHub 仓库
+
+2. **设置 Secrets** — 仓库 **Settings → Secrets and variables → Actions** 添加以下变量：
 
    | Secret | 必需 | 说明 |
    |--------|------|------|
    | `LLM_API_KEY` | ✅ | OpenAI / DeepSeek API 密钥 |
+   | `LLM_BASE_URL` | 可选 | API 端点，DeepSeek 默认 `https://api.deepseek.com` |
+   | `LLM_MODEL` | 可选 | 模型名，DeepSeek 默认 `deepseek-chat` |
+   | `MAX_PAPERS_PER_FEED` | 可选 | 每源最大论文数，默认 50 |
+   | `MIN_RELEVANCE_SCORE` | 可选 | 最低评分，默认 5.0 |
+   | `TOP_N_RECOMMENDATIONS` | 可选 | 邮件推荐数，默认 10 |
+   | `LLM_CACHE_ENABLED` | 可选 | 是否启用缓存，默认 true |
+   | `DEEP_READ_ENABLED` | 可选 | 是否启用深度阅读，默认 true |
    | `EMAIL_ENABLED` | 可选 | `true` 启用邮件推送 |
-   | `EMAIL_*` | 可选 | SMTP 配置（发件/收件/服务器/密码） |
+   | `EMAIL_SENDER` | 可选 | 发件邮箱地址 |
+   | `EMAIL_RECIPIENT` | 可选 | 收件邮箱地址 |
+   | `EMAIL_SMTP_SERVER` | 可选 | SMTP 服务器，如 `smtp.gmail.com` |
+   | `EMAIL_SMTP_PORT` | 可选 | SMTP 端口，默认 587 |
+   | `EMAIL_SMTP_USERNAME` | 可选 | SMTP 用户名（通常是邮箱） |
+   | `EMAIL_SMTP_PASSWORD` | 可选 | SMTP 密码或应用专用密码 |
 
-2. **启用 GitHub Pages** — **Settings → Pages** → Source: "GitHub Actions"
+   > 只需要设置 `LLM_API_KEY` 即可运行，其余按需添加。
 
-3. **推送代码**
+3. **启用 GitHub Pages** — **Settings → Pages** → Source: "GitHub Actions"
 
-```bash
-git add . && git commit -m "Init" && git push origin master
-```
-
-系统自动每日 08:00 UTC 运行，部署到 `https://YizhengZhen.github.io/quantum-rss-radar/`。
+4. 系统自动每日 08:00 UTC 运行，部署到 `https://你的用户名.github.io/quantum-rss-radar/`
 
 ### 方式二：仅 GitHub Pages（无邮件）
 
-同上步骤，跳过 `EMAIL_*` Secrets 即可。
+同上步骤，跳过所有 `EMAIL_*` Secrets 即可。
 
 ### 方式三：本地运行 / Docker
 
@@ -113,8 +125,7 @@ Pipeline 流程、模块架构、数据模型、关键设计决策详见 **[DEVE
 
 - Web UI 管理面板 — 可视化运行记录、手动触发
 - 论文收藏 / 忽略机制 — 基于反馈优化评分
-- Slack / Telegram 推送
-- WebSocket 实时通知
+- 极高分论文 Note 格式自定义 — 深度阅读生成 Note 的模板配置
 
 ---
 

@@ -251,7 +251,5 @@ docker run --env-file .env quantum-rss-radar
 
 - [ ] Web UI 管理面板 — 可视化运行记录、手动触发 pipeline
 - [ ] 论文收藏 / 忽略机制 — 基于历史反馈优化评分
-- [ ] Slack / Telegram 推送 — 替代或补充邮件
-- [ ] WebSocket 实时推送 — 新论文到达即时通知
+- [ ] 极高分论文 Note 格式自定义 — 深度阅读生成 Note 的模板配置
 - [ ] 单元测试覆盖（当前无测试）
-- [ ] 多语言提示词支持
