@@ -108,9 +108,9 @@ jobs:
           echo "Building Jekyll site..."
           cd jekyll_site
 
-          # Set baseurl for GitHub Pages deployment (e.g., /qfqe-new-papers)
-          # If PUBLIC_REPO_NAME is not set, default to /qfqe-new-papers
-          BASEURL="${JEKYLL_BASEURL:-/qfqe-new-papers}"
+          # Set baseurl for GitHub Pages deployment
+          # Use PUBLIC_REPO_NAME secret, or default to repository name
+          BASEURL="${JEKYLL_BASEURL:-/${{ github.event.repository.name }}}"
           echo "Using baseurl: $BASEURL"
 
           # Build Jekyll site with proper baseurl for sub-path deployment
@@ -129,6 +129,7 @@ jobs:
         if: success()
         env:
           PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+          PUBLIC_REPO_NAME: ${{ secrets.PUBLIC_REPO_NAME }}
         run: |
           source .venv/bin/activate
           echo "Deploying to public repository..."
@@ -140,10 +141,15 @@ jobs:
             exit 0
           fi
 
+          # Use PUBLIC_REPO_NAME secret, or default to current repo name + '-public'
+          REPO_NAME="${PUBLIC_REPO_NAME:-${{ github.event.repository.name }}-public}"
+          PUBLIC_REPO_URL="https://github.com/${{ github.repository_owner }}/${REPO_NAME}.git"
+          echo "Deploying to: ${PUBLIC_REPO_URL}"
+
           # Run deployment script
           python scripts/deploy_to_public_repo.py \
             --source-dir jekyll_site/_site \
-          --public-repo-url "https://github.com/${{ github.repository_owner }}/qfqe-new-papers.git" \
+            --public-repo-url "${PUBLIC_REPO_URL}" \
             --branch main \
             --token "$PUBLIC_REPO_TOKEN"
 
@@ -368,9 +374,11 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           # Check for public repository deployment
+          PUBLIC_REPO_NAME_VAL="${{ secrets.PUBLIC_REPO_NAME }}"
+          REPO_NAME="${PUBLIC_REPO_NAME_VAL:-${{ github.event.repository.name }}-public}"
           if [ -n "${{ secrets.PUBLIC_REPO_TOKEN }}" ]; then
-            echo "**Public Repository:** Deployed to qfqe-new-papers" >> $GITHUB_STEP_SUMMARY
-            echo "**Public Website:** https://${{ github.repository_owner }}.github.io/qfqe-new-papers/" >> $GITHUB_STEP_SUMMARY
+            echo "**Public Repository:** Deployed to ${REPO_NAME}" >> $GITHUB_STEP_SUMMARY
+            echo "**Public Website:** https://${{ github.repository_owner }}.github.io/${REPO_NAME}/" >> $GITHUB_STEP_SUMMARY
           else
             echo "**Public Repository:** Not configured (set PUBLIC_REPO_TOKEN to enable)" >> $GITHUB_STEP_SUMMARY
           fi
@@ -379,7 +387,7 @@ jobs:
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "**Configuration:**" >> $GITHUB_STEP_SUMMARY
           echo "- LLM Provider: Generic OpenAI-compatible API" >> $GITHUB_STEP_SUMMARY
-          echo "- RSS Sources: arXiv Quantum Physics (quant-ph)" >> $GITHUB_STEP_SUMMARY
+          echo "- RSS Sources: 21 sources (arXiv × 3, Nature × 5, Science × 2, APS × 8, Other × 3)" >> $GITHUB_STEP_SUMMARY
           echo "- GitHub Secrets used: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, PUBLIC_REPO_TOKEN" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Architecture:** Dual-repository (private dev + public static site)" >> $GITHUB_STEP_SUMMARY
