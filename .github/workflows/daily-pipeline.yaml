@@ -125,35 +125,6 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy to Public Repository
-        if: success()
-        env:
-          PUBLIC_REPO_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
-          PUBLIC_REPO_NAME: ${{ secrets.PUBLIC_REPO_NAME }}
-        run: |
-          source .venv/bin/activate
-          echo "Deploying to public repository..."
-
-          # Check if public repository configuration is set
-          if [ -z "$PUBLIC_REPO_TOKEN" ]; then
-            echo "Warning: PUBLIC_REPO_TOKEN not set. Skipping public repository deployment."
-            echo "To enable public repository deployment, set PUBLIC_REPO_TOKEN GitHub Secret."
-            exit 0
-          fi
-
-          # Use PUBLIC_REPO_NAME secret, or default to current repo name + '-public'
-          REPO_NAME="${PUBLIC_REPO_NAME:-${{ github.event.repository.name }}-public}"
-          PUBLIC_REPO_URL="https://github.com/${{ github.repository_owner }}/${REPO_NAME}.git"
-          echo "Deploying to: ${PUBLIC_REPO_URL}"
-
-          # Run deployment script
-          python scripts/deploy_to_public_repo.py \
-            --source-dir jekyll_site/_site \
-            --public-repo-url "${PUBLIC_REPO_URL}" \
-            --branch main \
-            --token "$PUBLIC_REPO_TOKEN"
-
-          echo "✅ Public repository deployment completed"
 
       - name: Upload pipeline artifacts
         if: always()
@@ -373,23 +344,13 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Check for public repository deployment
-          PUBLIC_REPO_NAME_VAL="${{ secrets.PUBLIC_REPO_NAME }}"
-          REPO_NAME="${PUBLIC_REPO_NAME_VAL:-${{ github.event.repository.name }}-public}"
-          if [ -n "${{ secrets.PUBLIC_REPO_TOKEN }}" ]; then
-            echo "**Public Repository:** Deployed to ${REPO_NAME}" >> $GITHUB_STEP_SUMMARY
-            echo "**Public Website:** https://${{ github.repository_owner }}.github.io/${REPO_NAME}/" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "**Public Repository:** Not configured (set PUBLIC_REPO_TOKEN to enable)" >> $GITHUB_STEP_SUMMARY
-          fi
-
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "**Configuration:**" >> $GITHUB_STEP_SUMMARY
           echo "- LLM Provider: Generic OpenAI-compatible API" >> $GITHUB_STEP_SUMMARY
           echo "- RSS Sources: 21 sources (arXiv × 3, Nature × 5, Science × 2, APS × 8, Other × 3)" >> $GITHUB_STEP_SUMMARY
-          echo "- GitHub Secrets used: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, PUBLIC_REPO_TOKEN" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub Secrets used: LLM_API_KEY, LLM_BASE_URL, LLM_MODEL" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Architecture:** Dual-repository (private dev + public static site)" >> $GITHUB_STEP_SUMMARY
+          echo "**Architecture:** GitHub Pages (built by workflow, deployed from master)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Pipeline completed successfully!" >> $GITHUB_STEP_SUMMARY

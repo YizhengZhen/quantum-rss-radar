@@ -59,6 +59,7 @@ def load_config() -> Config:
     max_papers_per_feed = int(os.getenv("MAX_PAPERS_PER_FEED", "50"))
     min_relevance_score = float(os.getenv("MIN_RELEVANCE_SCORE", "5.0"))
     top_n_recommendations = int(os.getenv("TOP_N_RECOMMENDATIONS", "10"))
+    email_min_score = float(os.getenv("EMAIL_MIN_SCORE", "7.0"))
 
     # Get output directories
     output_dir = os.getenv("OUTPUT_DIR", "data")
@@ -87,6 +88,7 @@ def load_config() -> Config:
         max_papers_per_feed=max_papers_per_feed,
         min_relevance_score=min_relevance_score,
         top_n_recommendations=top_n_recommendations,
+        email_min_score=email_min_score,
 
         output_dir=output_dir,
         web_dir=web_dir,

@@ -110,9 +110,13 @@ def build_email_html(
     total = len(papers_with_analyses)
     recommended = sum(1 for _, a in papers_with_analyses if a.recommendation)
 
-    sorted_pairs = sorted(papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True)
-    top_n = min(config.top_n_recommendations, total)
-    top_papers = sorted_pairs[:top_n]
+    # Filter by minimum score for email — send ALL papers scoring >= email_min_score
+    email_min = config.email_min_score
+    scored_pairs = sorted(papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True)
+    top_papers = [(p, a) for p, a in scored_pairs if a.relevance_score >= email_min]
+    if not top_papers:
+        logger.info(f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}")
+        top_papers = scored_pairs[:min(config.top_n_recommendations, total)]
 
     # Direction stats
     direction_counts: Dict[str, int] = {}
@@ -192,7 +196,7 @@ def build_email_html(
 
     <h3 style="color:#4A90E2; border-bottom:2px solid #E9ECEF; padding-bottom:10px;
                font-size:17px; margin-top:0;">
-      Top {top_n} Papers by Score
+      Top {len(top_papers)} Papers by Score
     </h3>
 
     {papers_html}
@@ -238,19 +242,23 @@ def build_email_text(
     total = len(papers_with_analyses)
     recommended = sum(1 for _, a in papers_with_analyses if a.recommendation)
 
-    sorted_pairs = sorted(papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True)
-    top_n = min(config.top_n_recommendations, total)
-    top_papers = sorted_pairs[:top_n]
+    # Filter by minimum score for email — send ALL papers scoring >= email_min_score
+    email_min = config.email_min_score
+    scored_pairs = sorted(papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True)
+    top_papers = [(p, a) for p, a in scored_pairs if a.relevance_score >= email_min]
+    if not top_papers:
+        logger.info(f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}")
+        top_papers = scored_pairs[:min(config.top_n_recommendations, total)]
 
     lines = [
         "=" * 60,
-        f"QUANTUM RSS RADAR — Daily Research Digest",
+        "QUANTUM RSS RADAR — Daily Research Digest",
         date_str,
         "=" * 60,
         "",
         f"Total papers: {total}  |  Recommended: {recommended}",
         "",
-        f"TOP {top_n} PAPERS BY SCORE",
+        f"TOP {len(top_papers)} PAPERS BY SCORE (min: {email_min})",
         "-" * 40,
         "",
     ]

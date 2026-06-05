@@ -126,6 +126,7 @@ class Config(BaseModel):
     max_papers_per_feed: int = Field(50, description="Max papers to fetch per feed")
     min_relevance_score: float = Field(5.0, description="Minimum score for recommendation")
     top_n_recommendations: int = Field(10, description="Number of top papers for email")
+    email_min_score: float = Field(7.0, description="Minimum score for papers to include in email (overrides top_n_recommendations)")
 
     output_dir: str = Field("data", description="Base output directory")
     web_dir: str = Field("web_output", description="Website output directory")
