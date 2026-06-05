@@ -40,8 +40,6 @@ Automatically track the latest papers from arXiv / Nature / Science / APS / IEEE
 | 🔌 **Modular, Swappable LLM** | Supports OpenAI / DeepSeek / Azure / local Ollama — just change `.env` |
 | 🛠️ **Zero Maintenance** | Set up GitHub Actions once and it runs fully automatically |
 
-> 🇨🇳 中文版请见 [README_CN.md](README_CN.md)
-
 ---
 
 ## 🚀 Quick Start
@@ -58,8 +56,8 @@ Edit the following two files:
 
 | File | Purpose | Note |
 |------|---------|------|
-| `config/research_directions.md` | Define your research interests; LLM scores & classifies papers against this | See format examples inside the file |
-| `config/rss_sources.yaml` | Add/remove RSS sources you want to track | See format examples inside the file |
+| `config/research_directions.md` | Define your research interests; LLM scores & classifies papers against this | `##` for direction name, `-` list for keywords |
+| `config/rss_sources.yaml` | Add/remove RSS sources you want to track | `name` / `url` / `source` fields per entry |
 
 > The default `research_directions.md` contains the author's quantum information research directions. `rss_sources.yaml` comes pre-configured with arXiv × 4 + APS + Nature + Science and others. Modify as needed.
 

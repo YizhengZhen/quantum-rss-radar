@@ -1,12 +1,5 @@
 # Research Interests
 
-> 📝 **格式说明：**
-> - `##` 定义一个大方向，LLM 会按此分类论文
-> - `-` 列表是该方向下的关键词/子主题，帮助 LLM 准确匹配
-> - **方向名称建议用英文**（LLM 对英文方向名识别更准确）
-> - 至少保留 2 个方向，每个方向至少 2 个关键词
-> - 修改后无需任何额外配置，LLM 会自动按新方向评分/分类
-
 ## Information Thermodynamics
 
 - Finite‑time nonequilibrium thermodynamics
