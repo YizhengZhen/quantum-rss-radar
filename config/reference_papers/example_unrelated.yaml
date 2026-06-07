@@ -1,0 +1,20 @@
+# Example: Unrelated reference paper
+# This paper shows what a completely unrelated paper looks like.
+# It prevents LLM from over-scoring papers that sound "quantum-ish" but aren't relevant.
+
+id: "arxiv_2310.99999"
+title: "High-Performance Battery Electrolytes for Electric Vehicles"
+direction: "General / Other"
+expected_score: 0.0
+tier: "unrelated"
+reason: |
+  This paper is about classical electrochemistry and materials science for
+  lithium-ion batteries. Despite mentioning "energy" and "efficiency", it has
+  no connection to quantum information, quantum hardware, or quantum thermodynamics.
+  It is a paradigm example of a paper that should score 0 regardless of how
+  quantum-adjacent the title might seem.
+abstract_snippet: |
+  We report a novel solid-state electrolyte for lithium-ion batteries that achieves
+  room-temperature ionic conductivity of 12 mS/cm, enabling fast-charge cycles
+  suitable for electric vehicle applications. The electrolyte is synthesized via
+  a scalable sol-gel process and demonstrates electrochemical stability up to 5V.

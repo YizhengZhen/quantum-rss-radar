@@ -18,6 +18,32 @@ from .models import Paper, PaperAnalysis, PaperSource, Config, SourceConfig
 logger = logging.getLogger(__name__)
 
 
+# ── Source priority for email sorting ───────────────────────
+# Primary sort: source priority (ascending = most important first)
+# Secondary sort: relevance score (descending = highest first)
+# See docs/email_sorting.md for full rationale.
+_SOURCE_PRIORITY: Dict[str, int] = {
+    "arxiv": 1,
+    # Nature & sub-journals
+    "nature": 2,
+    # Science & Science Advances
+    "science": 3,
+    # APS journals (PRL, PRX, PRA, PRB, PRE, RMP, …)
+    "aps": 4,
+    # Other known publishers
+    "ieee": 5,
+    "springer": 5,
+    "acm": 5,
+}
+
+
+def _email_sort_key(pair: tuple) -> tuple:
+    """Two-level sort key: (source_priority asc, relevance_score desc)."""
+    paper, analysis = pair
+    priority = _SOURCE_PRIORITY.get(paper.source.value.lower(), 9)
+    return (priority, -analysis.relevance_score)
+
+
 # ── Helpers ─────────────────────────────────────────────────
 
 def _source_tag_html(source_key: str, source_display: str, source_color: str) -> str:
@@ -117,6 +143,8 @@ def build_email_html(
     if not top_papers:
         logger.info(f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}")
         top_papers = scored_pairs[:min(config.top_n_recommendations, total)]
+    # Two-level sort: source priority first, then score descending
+    top_papers = sorted(top_papers, key=_email_sort_key)
 
     # Direction stats
     direction_counts: Dict[str, int] = {}
@@ -249,6 +277,8 @@ def build_email_text(
     if not top_papers:
         logger.info(f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}")
         top_papers = scored_pairs[:min(config.top_n_recommendations, total)]
+    # Two-level sort: source priority first, then score descending
+    top_papers = sorted(top_papers, key=_email_sort_key)
 
     lines = [
         "=" * 60,
