@@ -116,6 +116,9 @@ class SemanticAnalyzer:
         
         # Cache for research directions (to avoid reloading)
         self._research_directions = None
+
+        # Few-shot calibration examples from config/curated_papers.yaml
+        self._curated_papers: list = []
         
         # LLM analysis cache
         cache_enabled = getattr(config, "llm_cache_enabled", True)
@@ -154,6 +157,60 @@ class SemanticAnalyzer:
     def load_research_directions(self, research_directions: str):
         """Load research directions for context."""
         self._research_directions = research_directions
+
+    def load_curated_papers(self, config_dir: str) -> int:
+        """
+        Load few-shot calibration examples from config/curated_papers.yaml.
+        Returns the number of examples loaded.
+        """
+        try:
+            from .reference_paper_analyzer import load_curated_papers as _load
+            data = _load(config_dir)
+            self._curated_papers = data.get("papers", [])
+            logger.info(f"Loaded {len(self._curated_papers)} curated paper(s) for few-shot calibration")
+            return len(self._curated_papers)
+        except Exception as e:
+            logger.warning(f"Could not load curated papers: {e}")
+            self._curated_papers = []
+            return 0
+
+    def _build_few_shot_block(self) -> str:
+        """
+        Build a few-shot calibration block from self._curated_papers.
+        Selects up to 5 examples, prioritising coverage across tiers.
+        Returns an empty string if no curated papers are loaded.
+        """
+        if not self._curated_papers:
+            return ""
+
+        # Pick at most 2 per tier, total ≤ 5
+        by_tier: dict = {"core": [], "relevant": [], "not_priority": [], "unrelated": []}
+        for p in self._curated_papers:
+            t = p.get("tier", "unrelated")
+            if t in by_tier:
+                by_tier[t].append(p)
+
+        selected = []
+        for tier in ("core", "relevant", "not_priority", "unrelated"):
+            selected.extend(by_tier[tier][:2])
+            if len(selected) >= 5:
+                break
+        selected = selected[:5]
+
+        if not selected:
+            return ""
+
+        lines = ["\nFEW-SHOT CALIBRATION EXAMPLES (use these to anchor your scoring):"]
+        for i, p in enumerate(selected, 1):
+            lines.append(
+                f"\n[Example {i} — tier: {p.get('tier','?')}, score: {p.get('score','?')}]"
+                f"\nTitle: {p.get('title','')}"
+                f"\nDirection: {p.get('direction','')}"
+                f"\nAbstract: {p.get('abstract_snippet','')[:300]}"
+                f"\nWhy this score: {p.get('reason','')}"
+            )
+        lines.append("\n--- End of examples ---")
+        return "\n".join(lines)
     
     def analyze_paper(self, paper: Paper, research_directions: str) -> PaperAnalysis:
         """
@@ -208,10 +265,18 @@ class SemanticAnalyzer:
     
     def _create_analysis_prompt(self, paper: Paper, research_directions: str) -> str:
         """Create LLM prompt for paper analysis."""
+        few_shot_block = self._build_few_shot_block()
         return f"""You are an expert research assistant specializing in quantum computing, condensed matter physics, and machine learning. Your task is to evaluate a research paper based on the user's research interests and provide a structured analysis.
 
 RESEARCH INTERESTS:
 {research_directions}
+{few_shot_block}
+
+SCORING GUIDE (use these tier boundaries — output a float, not an integer):
+  core         8.0 – 10.0  (papers you would read in full; directly relevant)
+  relevant     6.0 –  8.0  (related but not central; worth skimming)
+  not_priority 4.0 –  6.0  (in-field but not your focus; low priority)
+  unrelated    0.0 –  4.0  (completely unrelated; includes most papers)
 
 PAPER TO ANALYZE:
 Title: {paper.title}
@@ -222,21 +287,18 @@ Source: {paper.source.value}
 Link: {paper.link}
 
 INSTRUCTIONS:
-1. Direction: Identify which one of the user's research directions this paper belongs to (use the exact name or a short phrase from RESEARCH INTERESTS). If it doesn't fit any, use "General / Other".
-2. Relevance Score (0-10): Score how relevant this paper is to the research interests above. Consider both direct and indirect relevance.
-3. Recommendation (yes/no): Should the researcher read this paper? Consider novelty, importance, and alignment with research interests.
-4. Structured Summary: Provide a concise summary in the following format:
-   - TLDR: One-sentence summary
-   - Motivation: Why was this research conducted?
-   - Method: What approach/methodology was used?
-   - Result: What were the key findings?
-   - Conclusion: What are the implications and future directions?
-5. Keywords: Extract 3-5 key technical keywords from the paper.
+1. Direction: Identify which one of the user's research directions this paper belongs to.
+   Use the exact H2 heading name from RESEARCH INTERESTS (strip "## N. " prefix).
+   If it doesn't fit any, use "General / Other".
+2. Relevance Score: Score against the SCORING GUIDE above. Output a float (e.g. 7.4, not 7 or 7.5).
+3. Recommendation: "yes" if score ≥ 6.0, otherwise "no".
+4. Structured Summary (5 fields: tldr / motivation / method / result / conclusion).
+5. Keywords: 3-5 key technical terms.
 
-OUTPUT FORMAT (JSON only):
+OUTPUT FORMAT (JSON only, no markdown):
 {{
-  "direction": "<research direction name>",
-  "relevance_score": <float 0-10>,
+  "direction": "<exact direction name or 'General / Other'>",
+  "relevance_score": <float 0.0–10.0>,
   "recommendation": <"yes" or "no">,
   "summary": {{
     "tldr": "<one sentence>",
@@ -247,12 +309,6 @@ OUTPUT FORMAT (JSON only):
   }},
   "keywords": ["<keyword1>", "<keyword2>", ...]
 }}
-
-IMPORTANT:
-- Be objective and critical.
-- Focus on technical content, not just buzzwords.
-- If the abstract lacks details, make reasonable inferences but note limitations.
-- Score 0-2: Completely irrelevant, 3-5: Somewhat relevant, 6-8: Highly relevant, 9-10: Essential reading.
 
 Your analysis:"""
     

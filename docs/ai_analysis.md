@@ -59,52 +59,65 @@ LLM 输出的 `direction` 字段**必须**与以下名称完全一致（包括�
 参考论文库存放用户亲自精选的代表性论文，作为 LLM 打分的 **few-shot 校准示例**。  
 这些论文代表个人研究品味的"标尺"，让 LLM 打分结果对齐到你真实的判断。
 
-### 2.2 使用方式（PDF 自动分析）
+### 2.2 单一累积文件 `config/curated_papers.yaml`
 
-将 PDF 文件丢入 `config/papers/{tier}/` 对应子文件夹。**Pipeline 每次启动时（Step 1.5）会自动检测新文件，调用 LLM 分析并生成 YAML**：
+所有校准论文（无论来源）都存储在 **一个文件** 中：`config/curated_papers.yaml`。
 
-```
-config/papers/
-├── core/           ← 你会精读的论文（score 8.5–9.5）
-├── relevant/       ← 相关但非核心（score 5.0–6.5）
-├── not_priority/   ← 领域内但不关注（score 1.5–3.0）
-└── unrelated/      ← 完全无关（score 0.0–1.0）
-```
+**三种写入方式**：
 
-**自动生成的 YAML 存放在 `config/` 下：**
+| 来源 | 触发时机 | `source` 字段 |
+|------|----------|:-------------:|
+| 手动 PDF 分析 | Pipeline Step 1.5：PDF 丢入 `config/papers/{tier}/` | `pdf` |
+| Pipeline 自动积累 | Pipeline Step 7.5：分析后 score ≥ MIN_RELEVANCE_SCORE | `pipeline` |
+| 手动编辑 | 直接编辑 `config/curated_papers.yaml` | 任意 |
+
+**PDF 自动写入流程**：
 
 ```
 config/papers/core/entropy_accumulation.pdf
-    ↓ Pipeline Step 1.5 (reference_paper_analyzer.py)
-config/ref_core_entropy_accumulation.yaml   ← 自动生成
+    ↓ Step 1.5 (reference_paper_analyzer.py)
+config/curated_papers.yaml  ← 追加新条目（id=local_entropy_accumulation）
 ```
 
-如果对应 YAML 已存在，PDF 被跳过（幂等）。要重新分析，删除 YAML 文件后重新运行 pipeline。
+**Pipeline 自动积累流程**：
 
-### 2.3 YAML 格式（自动生成或手动创建）
+```
+每日 RSS 论文 → LLM 分析 → score ≥ MIN_RELEVANCE_SCORE
+    ↓ Step 7.5 (append_pipeline_papers)
+config/curated_papers.yaml  ← 追加新条目（id=arxiv_xxxxxxxx）
+```
+
+**幂等性规则**：
+- 主键为 `id` 字段，同一 `id` 不会被写入两次
+- **手动删除条目后，该条目永远不会被重新添加**（包括 PDF 仍存在或 pipeline 重新遇到同一论文）
+- 删除 PDF 源文件 → curated_papers.yaml 中对应条目保留不变
+
+### 2.3 条目格式
 
 ```yaml
-id: "arxiv_2401.12345"                # 唯一标识，建议用 arXiv ID
-title: "论文完整标题"
-direction: "Quantum Communication & Networks"   # 精确匹配 research_directions.md 中的方向名
-expected_score: 9.0                   # 预期分数 (0–10)
-tier: "core"                          # core | relevant | not_priority | unrelated
-reason: |
-  简短说明为什么这篇论文得这个分。
-  会被注入到 LLM 的 few-shot 示例中，帮助 LLM 理解你的判断标准。
-abstract_snippet: |
-  论文摘要的关键段落（100-200 词，包含核心方法和结果）。
-  LLM 将以此为"示例摘要"来理解该类论文的风格。
+papers:
+  - id: "arxiv_2401.12345"       # 唯一主键；pipeline 论文用 arxiv ID，PDF 用 local_{stem}
+    title: "论文完整标题"
+    direction: "Quantum Communication & Networks"  # 精确匹配 research_directions.md 的 H2 标题
+    score: 9.0                   # 实际打分 (0.0–10.0)，决定 tier
+    tier: "core"                 # 由 score 自动推断：core/relevant/not_priority/unrelated
+    reason: |
+      2-3 句说明：为什么这篇论文属于此 tier，结合研究方向具体说明。
+      被注入 LLM few-shot prompt 中。
+    abstract_snippet: |
+      100-150 词直接引用自摘要或引言，代表该类论文的典型输入。
+    source: "pdf"                # pdf | pipeline | manual
+    added_at: "2026-06-07"       # ISO 日期
 ```
 
 ### 2.4 Tier 说明
 
-| Tier | 预期分值 | 含义 |
-|------|:-------:|------|
-| `core` | 8.0–10.0 | 你会精读的高价值论文 |
-| `relevant` | 4.0–6.9 | 相关但不核心，值得浏览摘要 |
-| `not_priority` | 1.0–3.9 | 属于领域但不关注（校准 LLM 不要高估此类）|
-| `unrelated` | 0.0–2.0 | 完全无关（防止 LLM 误判为高分）|
+| Tier | 分值区间 | 含义 |
+|------|:--------:|------|
+| `core` | **8.0–10.0** | 你会精读的高价值论文 |
+| `relevant` | **6.0–8.0** | 相关但不核心，值得浏览摘要 |
+| `not_priority` | **4.0–6.0** | 属于领域但不关注（校准 LLM 不要高估此类）|
+| `unrelated` | **0.0–4.0** | 完全无关（防止 LLM 误判为高分）|
 
 ### 2.5 建议的参考论文组合
 

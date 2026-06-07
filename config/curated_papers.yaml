@@ -1,0 +1,27 @@
+# curated_papers.yaml — Accumulated reference papers for LLM few-shot calibration
+#
+# HOW IT WORKS:
+#   - PDF dropped in config/papers/{tier}/ → LLM analyzes → entry appended here
+#   - Pipeline-recommended papers (score ≥ MIN_RELEVANCE_SCORE) → appended here
+#   - Each entry is identified by 'id' — no entry is added twice
+#   - If you DELETE an entry manually, it stays deleted (not re-added)
+#   - If you DELETE the source PDF, the entry here remains
+#
+# SCORE → TIER MAPPING:
+#   core          8.0 – 10.0   (papers you'd read in full)
+#   relevant      6.0 –  8.0   (related but not central)
+#   not_priority  4.0 –  6.0   (in-field but not your focus)
+#   unrelated     0.0 –  4.0   (completely unrelated)
+#
+# ENTRY FORMAT:
+#   id:               unique identifier (arxiv ID preferred, or local_<filename>)
+#   title:            paper title
+#   direction:        exact H2 heading from research_directions.md, or "General / Other"
+#   score:            float 0.0–10.0 (determines tier automatically)
+#   tier:             core | relevant | not_priority | unrelated
+#   reason:           why this paper has this score (injected into LLM few-shot prompt)
+#   abstract_snippet: 100-150 word excerpt (LLM uses this as example input)
+#   source:           pdf | pipeline  (how this entry was added)
+#   added_at:         ISO date (YYYY-MM-DD)
+
+papers: []
