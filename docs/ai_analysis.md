@@ -52,28 +52,36 @@ LLM 输出的 `direction` 字段**必须**与以下名称完全一致（包括�
 
 ---
 
-## 2. 参考论文库 (`config/`)
+## 2. 参考论文库
 
 ### 2.1 作用
 
 参考论文库存放用户亲自精选的代表性论文，作为 LLM 打分的 **few-shot 校准示例**。  
 这些论文代表个人研究品味的"标尺"，让 LLM 打分结果对齐到你真实的判断。
 
-### 2.2 文件位置与命名
+### 2.2 使用方式（PDF 自动分析）
 
-参考论文 YAML 文件直接放在 `config/` 下，命名格式自由：
+将 PDF 文件丢入 `config/papers/{tier}/` 对应子文件夹。**Pipeline 每次启动时（Step 1.5）会自动检测新文件，调用 LLM 分析并生成 YAML**：
 
 ```
-config/
-├── research_directions.md        ← 研究方向配置
-├── rss_sources.yaml              ← RSS 源定义
-├── ref_core_qit.yaml             ← 参考论文：QI Theory 核心
-├── ref_core_qthermo.yaml         ← 参考论文：量子热力学核心
-├── ref_relevant_qcomm.yaml       ← 参考论文：量子通信边缘相关
-└── ref_unrelated.yaml            ← 参考论文：完全无关（防误判）
+config/papers/
+├── core/           ← 你会精读的论文（score 8.5–9.5）
+├── relevant/       ← 相关但非核心（score 5.0–6.5）
+├── not_priority/   ← 领域内但不关注（score 1.5–3.0）
+└── unrelated/      ← 完全无关（score 0.0–1.0）
 ```
 
-### 2.3 文件格式
+**自动生成的 YAML 存放在 `config/` 下：**
+
+```
+config/papers/core/entropy_accumulation.pdf
+    ↓ Pipeline Step 1.5 (reference_paper_analyzer.py)
+config/ref_core_entropy_accumulation.yaml   ← 自动生成
+```
+
+如果对应 YAML 已存在，PDF 被跳过（幂等）。要重新分析，删除 YAML 文件后重新运行 pipeline。
+
+### 2.3 YAML 格式（自动生成或手动创建）
 
 ```yaml
 id: "arxiv_2401.12345"                # 唯一标识，建议用 arXiv ID

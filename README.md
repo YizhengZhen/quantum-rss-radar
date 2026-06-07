@@ -18,9 +18,10 @@ Automatically track the latest papers from arXiv / Nature / Science / APS / IEEE
 | 🎯 **Research-Direction Scoring** | LLM scores each paper (0-10) against your `research_directions.md` |
 | 📝 **High-Score Paper Reports** | Score ≥ threshold → structured summary (TLDR / Motivation / Method / Result / Conclusion) |
 | 📄 **arXiv Deep Reading** | Very high scores → auto-download PDF, full-text re-analysis, generates a Note |
-| 📧 **Email Digest** | Daily Top-N recommended papers sent via SMTP |
+| 📚 **Reference Paper Calibration** | Drop PDFs in `config/papers/{tier}/` → pipeline auto-generates few-shot YAML calibration files |
+| 📧 **Email Digest** | Daily Top-N recommended papers sent via SMTP, sorted by source priority then score |
 | 🌐 **Static Website** | Jekyll site with search, direction filtering, and statistics |
-| 🎯 **Direction Classification** | LLM assigns each paper to a research direction from your config |
+| 🗂️ **Direction Classification** | LLM assigns each paper to one of your research directions |
 | 🏷️ **Auto Keyword Tagging** | LLM extracts keywords; tag manager accumulates, matches, and categorizes them |
 | 🗃️ **SQLite History Database** | All papers persisted, cross-day historical queries supported |
 | 🔁 **Auto-Deduplication** | Same paper across multiple sources (arXiv + journal) merged automatically |
@@ -117,15 +118,42 @@ python -m src.orchestrator_jekyll --test   # Test mode (10 papers)
 
 ---
 
+## 📚 Reference Paper Calibration
+
+To improve scoring accuracy, drop your own reference PDFs into `config/papers/`:
+
+```
+config/papers/
+├── core/           ← Papers you'd read in full  (auto-score: 8.5–9.5)
+├── relevant/       ← Related but not central    (auto-score: 5.0–6.5)
+├── not_priority/   ← In-field, not your focus   (auto-score: 1.5–3.0)
+└── unrelated/      ← Completely unrelated       (auto-score: 0.0–1.0)
+```
+
+On the next pipeline run, each new PDF is automatically:
+1. Text-extracted (PyMuPDF / pdfminer)
+2. Analyzed by the LLM (title, direction, reason, abstract snippet)
+3. Saved as `config/ref_{tier}_{name}.yaml` for few-shot injection
+
+See [`config/papers/README.md`](config/papers/README.md) for details and naming conventions.
+
+---
+
 ## 🧠 Architecture
 
-Pipeline flow, module architecture, data models, and key design decisions are detailed in **[DEVELOPMENT.md](DEVELOPMENT.md)** (English) / **[DEVELOPMENT_CN.md](DEVELOPMENT_CN.md)** (中文).
+| Document | Contents |
+|----------|----------|
+| [`docs/architecture.md`](docs/architecture.md) | Pipeline flow, module map, data models, design decisions |
+| [`docs/setup.md`](docs/setup.md) | Local dev, Docker, GitHub Actions, RSS source config |
+| [`docs/ai_analysis.md`](docs/ai_analysis.md) | Scoring mechanism, research directions format, reference papers |
+| [`docs/email_sorting.md`](docs/email_sorting.md) | Email source priority and sort rules |
 
 ### 🔮 Roadmap
 
+- JSON parse retry — fix 22% of papers currently scored 0 due to parse failures
+- Two-stage scoring pipeline — abstract coarse filter → full-text fine scoring
 - Web UI dashboard — visualize run history, trigger pipelines manually
-- Paper bookmark / dismiss mechanism — feedback-based scoring optimization
-- Custom Note template for deep-read papers
+- Feedback mechanism — thumbs up/down for score calibration
 
 ---
 

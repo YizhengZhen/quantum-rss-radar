@@ -26,6 +26,7 @@ from .normalizer import normalize_papers, enrich_paper_metadata
 from .deduplicate import deduplicate_papers
 from .semantic_analyzer import SemanticAnalyzer
 from .arxiv_deep_reader import deep_read_high_score_papers
+from .reference_paper_analyzer import run_reference_paper_analysis
 from .data_exporter import DataExporter
 from .database import RadarDatabase
 from .email_sender import send_daily_email
@@ -112,6 +113,18 @@ class QuantumRSSRadarJekyll:
             if not self.load_configuration():
                 logger.error("Failed to load configuration")
                 return False
+
+            # Step 1.5: Analyze any new reference PDFs (config/papers/{tier}/)
+            logger.info("Checking for new reference PDFs...")
+            new_refs = run_reference_paper_analysis(
+                self.config_dir,
+                self.config,
+                self.research_directions,
+            )
+            if new_refs:
+                logger.info(f"Generated {new_refs} new reference YAML(s) — reloading analyzer")
+                # Reload so the new YAMLs are included in the few-shot prompt
+                self.analyzer.load_research_directions(self.research_directions)
 
             # Step 2: Fetch RSS feeds
             logger.info("Fetching RSS feeds...")
