@@ -1,7 +1,7 @@
 # Quantum RSS Radar — 开发规划
 
 > 本文档记录项目当前状态、待完成事项及规划原因。  
-> 技术参考请见 [DEVELOPMENT_CN.md](DEVELOPMENT_CN.md)
+> 技术参考请见 [docs/architecture.md](docs/architecture.md) · [docs/ai_analysis.md](docs/ai_analysis.md) · [docs/setup.md](docs/setup.md)
 
 ---
 
@@ -176,5 +176,5 @@
 | 数据探查脚本 | `scripts/inspect_results.py` — 历史评分分布分析 |
 | A/B 对比脚本 | `scripts/rerun_analysis.py` — 新配置效果验证 |
 | research_directions v2 | 三层分级 + 评分精度要求 + 方向重叠规则（5,900+ chars）|
-| 参考论文库 | `config/reference_papers/` — few-shot 校准示例（含说明和示例 YAML）|
-| docs/ 文档 | `docs/score.md`（评分机制）+ `docs/email_sorting.md`（邮件排序规则）|
+| 参考论文库 | `config/example_*.yaml` — few-shot 校准示例（含说明和示例 YAML）|
+| docs/ 文档 | `architecture.md` + `setup.md` + `ai_analysis.md` + `email_sorting.md` |

@@ -1,6 +1,6 @@
-# Quantum RSS Radar — 评分机制设计
+# Quantum RSS Radar — AI 分析与评分机制
 
-> 本文档详细说明系统的评分逻辑、研究方向配置规范，以及两阶段打分流水线的设计。
+> 本文档详细说明系统的评分逻辑、研究方向配置规范、参考论文库格式，以及两阶段打分流水线的设计。
 
 ---
 
@@ -14,66 +14,102 @@
 ## [方向名称]
 > 一句话描述该方向的核心问题
 
-**🟢 Core focus** (7–10):
-- 直接关联的核心子方向（LLM 应给高分）
+**🟢 Core focus** (7.0–10.0):
+- 直接关联的核心子方向（LLM 应给高分，输出小数）
 
-**🟡 Also relevant** (4–6):
+**🟡 Also relevant** (4.0–6.9):
 - 相关但不核心的方向（LLM 应给中分）
 
-**🔴 Not priority** (1–3):
+**🔴 Not priority** (1.0–3.9):
 - 属于该领域但不关注的子方向（LLM 给低分而非跳过）
 ```
 
+**评分精度**：LLM 必须输出小数（如 7.4, 8.2, 5.6），不得四舍五入为整数或 0.5 步长。
+
+**方向重叠规则**：方向 1 和方向 2 有重叠。优先原则：
+- 信息论结果 → 方向 1 (Quantum Information Theory)
+- 物理/热力学结果 → 方向 2 (Quantum Thermodynamics)
+
 ### 1.2 四个研究方向
 
-| 方向 | 核心关键词 |
-|------|----------|
-| **1. Quantum Information Theory & Foundations** | 纠缠理论、Bell 非局域、量子熵、信道容量、量子纠错、资源理论 |
-| **2. Quantum Thermodynamics & Many-Body Physics** | 非平衡热力学、量子热机、ETH/MBL、量子相变、张量网络、开放量子系统 |
-| **3. Quantum Communication & Networks** | 量子中继、纠缠分发、量子网络、QKD（MDI-QKD / TF-QKD）、卫星量子通信 |
-| **4. Quantum Hardware & Hybrid Systems** | 超导 qubit、Circuit QED、量子转导、Tavis-Cummings / superradiance、硬件层纠错 |
+| # | 方向 | 核心关键词 |
+|---|------|----------|
+| 1 | **Quantum Information Theory & Foundations** | 纠缠理论、Bell 非局域、量子熵/信道容量、量子纠错、资源理论 |
+| 2 | **Quantum Thermodynamics & Many-Body Physics** | 非平衡热力学、量子热机、ETH/MBL、量子相变、张量网络、开放量子系统 |
+| 3 | **Quantum Communication & Networks** | 量子中继、纠缠分发、量子网络、MDI-QKD / TF-QKD、卫星量子通信 |
+| 4 | **Quantum Hardware & Hybrid Systems** | 超导 qubit、Circuit QED、量子转导、Tavis-Cummings / superradiance、硬件层纠错 |
 
 ### 1.3 General / Other 的使用
 
-若论文**完全不属于以上四个方向**，LLM 应使用 `General / Other` 并给 **0–2 分**。  
-绝大部分物理/CS 论文都落在这里（约占 60-70%），这是正常现象。
+若论文**完全不属于以上四个方向**，LLM 使用 `General / Other` 并给 **0–2 分**。  
+历史数据显示约 60-70% 论文属于此类，这是正常现象。
 
 ---
 
-## 2. 参考论文库 (`config/reference_papers/`)
+## 2. 参考论文库 (`config/`)
 
 ### 2.1 作用
 
 参考论文库存放用户亲自精选的代表性论文，作为 LLM 打分的 **few-shot 校准示例**。  
-这些论文不依赖 RSS 抓取，而是由用户手动添加，代表个人研究品味的"标尺"。
+这些论文代表个人研究品味的"标尺"，让 LLM 打分结果对齐到你真实的判断。
 
-### 2.2 文件格式
+### 2.2 文件位置与命名
 
-每篇参考论文对应一个 `.yaml` 文件，格式如下：
+参考论文 YAML 文件直接放在 `config/` 下，命名格式自由：
 
-```yaml
-# config/reference_papers/paper_001.yaml
-id: "arxiv_2401.12345"
-title: "Finite-time quantum thermodynamics of the quantum Rabi model"
-direction: "Quantum Thermodynamics & Many-Body Physics"
-expected_score: 9.0
-tier: "core"          # core | relevant | not_priority
-reason: |
-  This paper directly addresses finite-time quantum thermodynamics with
-  a model (Rabi) directly related to our experimental focus.
-  It is a paradigmatic example of what we consider "core focus".
-abstract_snippet: |
-  We study the finite-time thermodynamic cycle of the quantum Rabi model...
+```
+config/
+├── research_directions.md        ← 研究方向配置
+├── rss_sources.yaml              ← RSS 源定义
+├── ref_core_qit.yaml             ← 参考论文：QI Theory 核心
+├── ref_core_qthermo.yaml         ← 参考论文：量子热力学核心
+├── ref_relevant_qcomm.yaml       ← 参考论文：量子通信边缘相关
+└── ref_unrelated.yaml            ← 参考论文：完全无关（防误判）
 ```
 
-### 2.3 Tier 说明
+### 2.3 文件格式
 
-| Tier | 预期分值 | 代表意义 |
-|------|:-------:|----------|
-| `core` | 8–10 | 你真正关心、会深读的论文 |
-| `relevant` | 4–6 | 相关但不核心，可浏览摘要 |
-| `not_priority` | 1–3 | 属于领域但不关注，以免 LLM 误判为高分 |
-| `unrelated` | 0–2 | 完全无关，防止 LLM 高估 |
+```yaml
+id: "arxiv_2401.12345"                # 唯一标识，建议用 arXiv ID
+title: "论文完整标题"
+direction: "Quantum Communication & Networks"   # 精确匹配 research_directions.md 中的方向名
+expected_score: 9.0                   # 预期分数 (0–10)
+tier: "core"                          # core | relevant | not_priority | unrelated
+reason: |
+  简短说明为什么这篇论文得这个分。
+  会被注入到 LLM 的 few-shot 示例中，帮助 LLM 理解你的判断标准。
+abstract_snippet: |
+  论文摘要的关键段落（100-200 词，包含核心方法和结果）。
+  LLM 将以此为"示例摘要"来理解该类论文的风格。
+```
+
+### 2.4 Tier 说明
+
+| Tier | 预期分值 | 含义 |
+|------|:-------:|------|
+| `core` | 8.0–10.0 | 你会精读的高价值论文 |
+| `relevant` | 4.0–6.9 | 相关但不核心，值得浏览摘要 |
+| `not_priority` | 1.0–3.9 | 属于领域但不关注（校准 LLM 不要高估此类）|
+| `unrelated` | 0.0–2.0 | 完全无关（防止 LLM 误判为高分）|
+
+### 2.5 建议的参考论文组合
+
+**推荐总数：10–12 篇**，每个方向侧重不同：
+
+| 来源方向 | Tier | 数量 | 说明 |
+|---------|------|:----:|------|
+| 方向 1（QI Theory）| `core` | 2 | 覆盖纠缠/Bell + 信道/纠错两个核心子领域 |
+| 方向 2（QThermo）| `core` | 2 | 覆盖量子热机/热力学 + 多体物理/MBL 两个子领域 |
+| 方向 3（QComm）| `core` | 1 | QKD 或量子网络的代表性论文 |
+| 方向 4（QHardware）| `core` | 1 | 超导 qubit 或 Circuit QED 的代表性论文 |
+| 任意方向 | `relevant` | 2 | 相关但不核心的边缘案例，帮助 LLM 校准中间分段 |
+| 任意方向 | `not_priority` | 1 | 同领域但不关注的子方向（防止 LLM 对此类给高分）|
+| 无关领域 | `unrelated` | 1–2 | 听起来"量子"但完全无关的论文 |
+
+**总计：约 10–11 篇**
+
+> 💡 **最小可用集合**：若刚开始，每个方向各 1 篇 `core` + 1 篇通用 `unrelated` = 5 篇即可启动。
+> 随着使用增加，逐步补充 `relevant` 和 `not_priority` 来填充中间分段。
 
 ---
 
@@ -88,11 +124,11 @@ RSS 抓取（每日论文）
  │                                                         │
  │  输入: 论文标题 + 摘要 (~300 词)                           │
  │  LLM: 快速判断方向 + 粗略相关性                            │
- │  输出: stage1_score (0–10)                              │
+ │  输出: stage1_score (0–10，小数)                        │
  │                                                         │
  │  Prompt 要素:                                           │
  │    - research_directions.md (三层分级)                  │
- │    - few-shot 参考论文示例 (来自 reference_papers/)      │
+ │    - few-shot 参考论文示例 (来自 config/ 中的 yaml)      │
  │    - 统一 Tier Guide (取代旧的 0-2/3-5/6-8/9-10 描述)   │
  └──────────────┬──────────────────────────────────────────┘
                 │ stage1_score ≥ STAGE1_THRESHOLD (默认 5.0)
@@ -106,7 +142,7 @@ RSS 抓取（每日论文）
  │    3. 其他 → 跳过，保持 stage1_score                      │
  │                                                         │
  │  LLM: 深度阅读全文，多维度打分                              │
- │  输出: stage2_score = 加权和（精确到小数）                  │
+ │  输出: stage2_score = 加权和（小数）                       │
  │                                                         │
  │  打分维度（全文）:                                          │
  │    novelty          — 30%  (新颖性/贡献度)                │
@@ -123,7 +159,7 @@ RSS 抓取（每日论文）
 
 1. **仅使用摘要**：不调用全文，控制 API 成本
 2. **嵌入三层分级**：research_directions.md 全文注入
-3. **few-shot 示例**：从 reference_papers/ 中随机选 3–5 篇，覆盖 core/relevant/unrelated 三个 tier
+3. **few-shot 示例**：从 config/ 中加载所有参考论文 yaml，覆盖 core/relevant/unrelated 三个 tier
 4. **统一评分指南**：引用 Tier Guide，不再使用旧的 0-2/3-5/6-8/9-10 描述
 5. **JSON 解析 retry**：解析失败时先尝试正则提取，再重试一次 LLM 调用
 
@@ -132,7 +168,7 @@ Stage 1 的 JSON 输出格式：
 ```json
 {
   "direction": "Quantum Information Theory & Foundations",
-  "stage1_score": 8.0,
+  "stage1_score": 8.3,
   "recommendation": "yes",
   "summary": {
     "tldr": "一句话摘要",
@@ -148,7 +184,7 @@ Stage 1 的 JSON 输出格式：
 ### 3.2 Stage 2 Prompt 设计原则（待实现）
 
 1. **使用全文**：分段 chunk + 重点提取（Introduction / Conclusion / Key Results）
-2. **四维度加权打分**：明确要求 LLM **不得取整数或 0.5 步长**，必须输出精确小数
+2. **四维度加权打分**：明确要求 LLM 输出精确小数，不得取整数或 0.5 步长
 3. **参考 few-shot 示例**：与 Stage 1 一致
 4. **与 Stage 1 对比**：输出最终分值 = Stage 2 加权分（Stage 1 分数仅供参考）
 
@@ -172,10 +208,7 @@ Stage 2 的 JSON 输出格式：
 }
 ```
 
-最终分值计算：
-```
-stage2_score = novelty×0.30 + technical_rigor×0.30 + alignment×0.25 + practical_impact×0.15
-```
+最终分值：`stage2_score = novelty×0.30 + technical_rigor×0.30 + alignment×0.25 + practical_impact×0.15`
 
 ### 3.3 分值使用规则
 
@@ -187,7 +220,7 @@ stage2_score = novelty×0.30 + technical_rigor×0.30 + alignment×0.25 + practic
 
 ---
 
-## 4. JSON 解析容错（Stage 1 改进，待实现）
+## 4. JSON 解析容错（待实现）
 
 当前问题：`_parse_llm_response` 中 `json.loads` 失败直接返回 `score=0`，导致约 22% 论文被误判。
 
@@ -237,14 +270,14 @@ def _parse_llm_response(self, response_text, paper_id):
 | **arXiv Recommender** | arXiv 内置推荐 | 仅限 arXiv 论文 |
 | **LLM few-shot** | 参考论文作为上下文 | **当前方案**，无需额外模型 |
 
-**当前选择：LLM few-shot（Stage 1 prompt 注入 reference_papers）**
+**当前选择：LLM few-shot（Stage 1 prompt 注入 config/ 中的参考论文）**
 
 理由：
 - 不需要额外的 embedding 模型或 API
 - 参考论文可以精确表达"研究品味"，比关键词更准确
-- 维护成本低：只需往 `config/reference_papers/` 里加文件
+- 维护成本低：只需往 `config/` 里加文件
 
-未来可选升级：若论文量扩大，用 Sentence-BERT 对参考论文建立向量索引，先做向量相似度预筛，再做 LLM 精判。
+未来可选升级：若论文量扩大，可用 Sentence-BERT 对参考论文建立向量索引，先做向量相似度预筛，再做 LLM 精判。
 
 ---
 
