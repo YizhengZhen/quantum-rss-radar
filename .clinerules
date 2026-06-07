@@ -1,0 +1,51 @@
+# Quantum RSS Radar — Project Conventions for AI Assistants
+
+## Documentation Policy
+
+This project follows a three-tier documentation structure:
+
+| Location | Purpose | Audience |
+|----------|---------|----------|
+| `README.md` (root) | Project overview, features, quick start | Everyone / GitHub visitors |
+| `docs/*.md` | Detailed design, algorithms, config formats | Developers / maintainers |
+| Source files (`src/`) | Brief usage comments in docstrings/headers | AI assistants / developers reading code |
+
+**Rules:**
+1. There is ONE root README.md. Do NOT create READMEs inside subdirectories.
+2. Each `docs/*.md` file covers one topic area (e.g. `ai_analysis.md` covers scoring + calibration).
+3. Source file docstrings explain WHAT + HOW; docs explain WHY + design decisions.
+4. When adding a new feature, update the relevant `docs/` file. Do NOT create a new markdown file inside `src/` or `config/`.
+
+## File Structure Rules
+
+```
+config/
+  curated_papers.yaml       ← SINGLE accumulated few-shot calibration file
+  research_directions.md    ← Research interest definitions (H2 headings = direction names)
+  rss_sources.yaml          ← RSS feed list
+  papers/{tier}/            ← Drop PDFs here for auto-analysis; no README inside
+
+src/
+  *.py                      ← Module docstrings must include: purpose, inputs, outputs
+  No markdown files inside src/
+
+docs/
+  ai_analysis.md            ← Scoring, few-shot calibration, curated_papers.yaml format
+  architecture.md           ← Pipeline flow, module map, data models
+  setup.md                  ← Local dev, Docker, GitHub Actions
+  email_sorting.md          ← Email sort rules
+```
+
+## Coding Conventions
+
+- All new modules must start with a module-level docstring (purpose + flow summary + copyright)
+- Use `logger = logging.getLogger(__name__)` — do not use print() for diagnostics
+- Prefer explicit `Optional[str]` return types; never return ambiguous None silently
+- New pipeline steps: number as X.5 if between existing steps (e.g. Step 1.5, Step 7.5)
+- Git commit format: `feat:` / `fix:` / `docs:` / `refactor:` prefix, imperative mood
+
+## Config/Data Idempotency Rules
+
+- `curated_papers.yaml`: id-keyed, append-only from code. Manual deletes are permanent.
+- `llm_cache.json`: paper.id-keyed. Cache misses call LLM; hits skip it.
+- `data/radar.db`: SQLite history. Never delete papers from DB; mark as outdated instead.
