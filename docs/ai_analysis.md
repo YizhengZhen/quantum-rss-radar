@@ -30,14 +30,20 @@
 - 信息论结果 → 方向 1 (Quantum Information Theory)
 - 物理/热力学结果 → 方向 2 (Quantum Thermodynamics)
 
-### 1.2 四个研究方向
+### 1.2 四个研究方向（精确名称）
 
-| # | 方向 | 核心关键词 |
+方向名称由 `config/research_directions.md` 中的 **H2 标题**决定（去掉编号前缀 `## N. `）。
+LLM 输出的 `direction` 字段**必须**与以下名称完全一致（包括大小写、标点、连字符）：
+
+| # | 精确方向名称（`direction` 字段的合法值）| 核心关键词 |
 |---|------|----------|
-| 1 | **Quantum Information Theory & Foundations** | 纠缠理论、Bell 非局域、量子熵/信道容量、量子纠错、资源理论 |
-| 2 | **Quantum Thermodynamics & Many-Body Physics** | 非平衡热力学、量子热机、ETH/MBL、量子相变、张量网络、开放量子系统 |
-| 3 | **Quantum Communication & Networks** | 量子中继、纠缠分发、量子网络、MDI-QKD / TF-QKD、卫星量子通信 |
-| 4 | **Quantum Hardware & Hybrid Systems** | 超导 qubit、Circuit QED、量子转导、Tavis-Cummings / superradiance、硬件层纠错 |
+| 1 | `Quantum Information Theory & Foundations` | 纠缠理论、Bell 非局域、量子熵/信道容量、量子纠错、资源理论 |
+| 2 | `Quantum Thermodynamics & Many-Body Physics` | 非平衡热力学、量子热机、ETH/MBL、量子相变、张量网络、开放量子系统 |
+| 3 | `Quantum Communication & Networks` | 量子中继、纠缠分发、量子网络、MDI-QKD / TF-QKD、卫星量子通信 |
+| 4 | `Quantum Hardware & Hybrid Systems` | 超导 qubit、Circuit QED、量子转导、Tavis-Cummings / superradiance、硬件层纠错 |
+
+> ⚠️ **常见错误**：`Many‑Body` (en-dash `‑`) ≠ `Many-Body` (hyphen `-`)。请确保使用连字符 `-`。  
+> 如需修改方向名称，需同时修改：`research_directions.md` 的 H2 标题 + 所有 `config/ref_*.yaml` 的 `direction` 字段 + `semantic_analyzer.py` 的 prompt（如有硬编码）。
 
 ### 1.3 General / Other 的使用
 
