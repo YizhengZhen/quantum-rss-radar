@@ -1,6 +1,26 @@
-# Example: Core-tier reference paper
-# This paper is a paradigm example of a "core focus" (tier=core) paper.
-# Replace with a real paper you care about.
+# ─────────────────────────────────────────────────────────────────
+# EXAMPLE — Core-tier reference paper (tier: core, score: 8-10)
+#
+# PURPOSE:
+#   "Core" papers are ones you would actually read in full.
+#   They represent your highest-interest subset and teach the LLM
+#   what a 8-10 score looks like for this research direction.
+#
+# RECOMMENDED PAPER SET (10-11 total across all 4 directions):
+#   Direction 1 (QI Theory):   2 core  (entanglement/Bell + channel/QEC)
+#   Direction 2 (QThermo):     2 core  (quantum engines/thermo + ETH/MBL)
+#   Direction 3 (QComm):       1 core  (QKD or quantum network)
+#   Direction 4 (QHardware):   1 core  (superconducting qubits or Circuit QED)
+#   Any direction:             2 relevant  (border cases, calibrates 4-6 range)
+#   Any direction:             1 not_priority  (in-field but not your focus)
+#   Unrelated:                 1-2 unrelated  (prevents LLM from over-scoring)
+#
+# MINIMUM VIABLE SET: 1 core per direction + 1 unrelated = 5 papers
+#
+# NAMING CONVENTION: ref_<tier>_<short_label>.yaml
+#   e.g. ref_core_qit_entropy.yaml, ref_core_qthermo_engines.yaml
+#       ref_relevant_qcomm_memory.yaml, ref_unrelated_battery.yaml
+# ─────────────────────────────────────────────────────────────────
 
 id: "arxiv_2308.01432"
 title: "Entropy Accumulation Under Post-Quantum Cryptographic Assumptions"
@@ -11,7 +31,8 @@ reason: |
   This paper directly proves entropy accumulation theorems under minimal assumptions,
   which is foundational for device-independent QKD and quantum network security proofs.
   It combines Bell nonlocality, quantum channel theory, and information theory —
-  all three at the core of our research interests.
+  all three at the core of our research interests. This is the type of paper that
+  warrants a score of 9+: novel result, technically deep, directly actionable.
 abstract_snippet: |
   We prove a general entropy accumulation theorem showing that in a sequential process
   where each step satisfies a certain "non-signalling" condition, the total smooth

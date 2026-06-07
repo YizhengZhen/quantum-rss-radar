@@ -1,6 +1,24 @@
-# Example: Unrelated reference paper
-# This paper shows what a completely unrelated paper looks like.
-# It prevents LLM from over-scoring papers that sound "quantum-ish" but aren't relevant.
+# ─────────────────────────────────────────────────────────────────
+# EXAMPLE — Unrelated reference paper (tier: unrelated, score: 0-2)
+#
+# PURPOSE:
+#   "Unrelated" papers prevent the LLM from over-scoring papers that
+#   sound quantum-adjacent but have no connection to your research.
+#   1-2 such examples are enough to anchor the 0 end of the scale.
+#
+# WHEN TO USE tier: unrelated
+#   - Paper is from physics/chemistry/CS but has no quantum information angle
+#   - Paper title or abstract contains words like "energy", "efficiency",
+#     "lattice", "spin", "network" but in a purely classical context
+#   - Paper is quantum in some sense but from a completely different subfield
+#     (e.g., quantum biology, quantum cognition) — score: 0-1
+#
+# WHEN TO USE tier: not_priority (score: 1-3) instead:
+#   - Paper is genuinely quantum (e.g., quantum optics experiment, quantum
+#     chemistry) but not in any of the 4 research directions
+#   - Paper is in a direction you follow but in a sub-area you don't care about
+#     (e.g., post-quantum cryptography if you only care about QKD)
+# ─────────────────────────────────────────────────────────────────
 
 id: "arxiv_2310.99999"
 title: "High-Performance Battery Electrolytes for Electric Vehicles"
@@ -12,7 +30,8 @@ reason: |
   lithium-ion batteries. Despite mentioning "energy" and "efficiency", it has
   no connection to quantum information, quantum hardware, or quantum thermodynamics.
   It is a paradigm example of a paper that should score 0 regardless of how
-  quantum-adjacent the title might seem.
+  quantum-adjacent the title might seem. Use papers like this to prevent the
+  LLM from giving nonzero scores to clearly irrelevant work.
 abstract_snippet: |
   We report a novel solid-state electrolyte for lithium-ion batteries that achieves
   room-temperature ionic conductivity of 12 mS/cm, enabling fast-charge cycles
