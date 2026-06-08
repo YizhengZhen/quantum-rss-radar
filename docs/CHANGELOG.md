@@ -16,6 +16,15 @@
 
 ---
 
+## 2026-06-08 — Fix curated_papers.yaml push rejected in GitHub Actions
+
+**Changed files:** `.github/workflows/daily-pipeline.yaml`
+
+- Added `git pull --rebase origin master` before `git push origin master` when committing curated_papers.yaml back to master.
+- Root cause: a developer push to master landed after the workflow checked out the repo but before the workflow tried to push, causing "fetch first" rejection.
+
+---
+
 ## 2026-06-08 — Fix GitHub Actions data-branch checkout failure
 
 **Changed files:** `.github/workflows/daily-pipeline.yaml`

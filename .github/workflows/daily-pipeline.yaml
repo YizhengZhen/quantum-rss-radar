@@ -162,12 +162,17 @@ jobs:
           git config user.email "actions@github.com"
 
           # ── Commit curated_papers.yaml back to master if modified ────
-          # The pipeline (Step 7.5) appends to curated_papers.yaml.
-          # This must be committed before switching branches, otherwise
-          # git checkout data aborts with "would be overwritten" error.
+          # The pipeline (Step 1.5) appends to curated_papers.yaml when
+          # new PDFs are found. This must be committed before switching
+          # branches; otherwise git checkout data aborts with
+          # "would be overwritten" error.
+          # We pull --rebase first because other commits (e.g. docs pushes
+          # from a developer's machine) may have landed on master after this
+          # workflow started, which would cause the push to be rejected.
           if ! git diff --quiet config/curated_papers.yaml 2>/dev/null; then
             git add config/curated_papers.yaml
             git commit -m "auto: update curated_papers.yaml [$(date -u '+%Y-%m-%d')]"
+            git pull --rebase origin master
             git push origin master
             echo "✅ curated_papers.yaml committed to master"
           else
