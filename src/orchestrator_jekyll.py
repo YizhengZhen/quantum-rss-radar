@@ -26,7 +26,7 @@ from .normalizer import normalize_papers, enrich_paper_metadata
 from .deduplicate import deduplicate_papers
 from .semantic_analyzer import SemanticAnalyzer
 from .arxiv_deep_reader import deep_read_high_score_papers
-from .reference_paper_analyzer import run_reference_paper_analysis, append_pipeline_papers
+from .reference_paper_analyzer import run_reference_paper_analysis
 from .data_exporter import DataExporter
 from .database import RadarDatabase
 from .email_sender import send_daily_email
@@ -176,19 +176,6 @@ class QuantumRSSRadarJekyll:
                 return False
 
             logger.info(f"Analyzed {len(all_papers_with_analyses)} papers")
-
-            # Step 7.5: Append pipeline-recommended papers to curated_papers.yaml
-            logger.info("Updating curated_papers.yaml with recommended papers...")
-            min_score = getattr(self.config, "min_relevance_score", 5.0)
-            new_curated = append_pipeline_papers(
-                self.config_dir,
-                all_papers_with_analyses,
-                min_score=min_score,
-            )
-            if new_curated:
-                logger.info(f"Added {new_curated} new paper(s) to curated_papers.yaml")
-                # Reload so the next pipeline run benefits from today's good papers
-                self.analyzer.load_curated_papers(self.config_dir)
 
             # Step 8: Deep reading for high-score papers (arXiv PDF + LLM analysis)
             logger.info("Running deep reading for high-score papers...")
