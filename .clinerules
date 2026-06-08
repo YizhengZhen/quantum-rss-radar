@@ -46,6 +46,31 @@ docs/
 
 ## Config/Data Idempotency Rules
 
-- `curated_papers.yaml`: id-keyed, append-only from code. Manual deletes are permanent.
+- `curated_papers.yaml`: **user-managed only**. Pipeline does NOT auto-write to it.
+  - Written only by: Step 1.5 (user drops PDF) or direct manual edit.
+  - id-keyed; manual deletes are permanent and will not be re-added.
 - `llm_cache.json`: paper.id-keyed. Cache misses call LLM; hits skip it.
 - `data/radar.db`: SQLite history. Never delete papers from DB; mark as outdated instead.
+
+## Change Log Skill
+
+**After every modification to this project, you MUST:**
+
+1. **Append an entry to `docs/CHANGELOG.md`** using the format below.
+2. **Update the relevant `docs/*.md` file** to reflect any changed behaviour, policy, or design decision. Do not leave docs stale.
+
+### CHANGELOG.md entry format
+
+```
+## YYYY-MM-DD — <short title>
+
+**Changed files:** `path/to/file1`, `path/to/file2`
+
+- One-line description of each change.
+- Include the *reason* (why), not just *what*.
+```
+
+Rules:
+- Entries are prepended (newest first).
+- One entry per logical change set (not one per file).
+- If a change reverts or supersedes a previous entry, add a note to the old entry: `> ⚠️ Superseded by YYYY-MM-DD entry below.`

@@ -59,37 +59,31 @@ LLM 输出的 `direction` 字段**必须**与以下名称完全一致（包括�
 参考论文库存放用户亲自精选的代表性论文，作为 LLM 打分的 **few-shot 校准示例**。  
 这些论文代表个人研究品味的"标尺"，让 LLM 打分结果对齐到你真实的判断。
 
-### 2.2 单一累积文件 `config/curated_papers.yaml`
+### 2.2 单一文件 `config/curated_papers.yaml` — 用户主导
 
-所有校准论文（无论来源）都存储在 **一个文件** 中：`config/curated_papers.yaml`。
+`config/curated_papers.yaml` 是 **用户手动管理** 的校准文件。Pipeline 不会自动往里写入每日论文（这样做会引入未经审阅的样本，降低 few-shot 质量）。
 
-**三种写入方式**：
+**两种写入方式**：
 
 | 来源 | 触发时机 | `source` 字段 |
 |------|----------|:-------------:|
-| 手动 PDF 分析 | Pipeline Step 1.5：PDF 丢入 `config/papers/{tier}/` | `pdf` |
-| Pipeline 自动积累 | Pipeline Step 7.5：分析后 score ≥ MIN_RELEVANCE_SCORE | `pipeline` |
+| PDF 自动分析 | Pipeline Step 1.5：用户把 PDF 丢入 `config/papers/{tier}/` | `pdf` |
 | 手动编辑 | 直接编辑 `config/curated_papers.yaml` | 任意 |
+
+> ⚠️ **Pipeline 不写入 curated_papers.yaml**：每日 RSS 分析结果（Step 7 之后）不会追加到此文件。若需将某篇论文加入校准集，请手动编辑或放入对应 PDF 文件夹。
 
 **PDF 自动写入流程**：
 
 ```
+用户将 PDF 放入：
 config/papers/core/entropy_accumulation.pdf
-    ↓ Step 1.5 (reference_paper_analyzer.py)
+    ↓ Pipeline Step 1.5 (reference_paper_analyzer.py)
 config/curated_papers.yaml  ← 追加新条目（id=local_entropy_accumulation）
-```
-
-**Pipeline 自动积累流程**：
-
-```
-每日 RSS 论文 → LLM 分析 → score ≥ MIN_RELEVANCE_SCORE
-    ↓ Step 7.5 (append_pipeline_papers)
-config/curated_papers.yaml  ← 追加新条目（id=arxiv_xxxxxxxx）
 ```
 
 **幂等性规则**：
 - 主键为 `id` 字段，同一 `id` 不会被写入两次
-- **手动删除条目后，该条目永远不会被重新添加**（包括 PDF 仍存在或 pipeline 重新遇到同一论文）
+- **手动删除条目后，该条目永远不会被重新添加**（包括 PDF 仍存在）
 - 删除 PDF 源文件 → curated_papers.yaml 中对应条目保留不变
 
 ### 2.3 条目格式
