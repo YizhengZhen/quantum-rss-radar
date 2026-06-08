@@ -161,6 +161,19 @@ jobs:
           git config user.name  "GitHub Actions"
           git config user.email "actions@github.com"
 
+          # ── Commit curated_papers.yaml back to master if modified ────
+          # The pipeline (Step 7.5) appends to curated_papers.yaml.
+          # This must be committed before switching branches, otherwise
+          # git checkout data aborts with "would be overwritten" error.
+          if ! git diff --quiet config/curated_papers.yaml 2>/dev/null; then
+            git add config/curated_papers.yaml
+            git commit -m "auto: update curated_papers.yaml [$(date -u '+%Y-%m-%d')]"
+            git push origin master
+            echo "✅ curated_papers.yaml committed to master"
+          else
+            echo "curated_papers.yaml unchanged, skipping commit"
+          fi
+
           # ── Remove untracked files that would conflict with checkout ─
           # Jekyll installs vendor gems as untracked files; must remove
           # before switching branches to avoid "would be overwritten" error
