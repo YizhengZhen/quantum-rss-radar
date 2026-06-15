@@ -1,0 +1,1532 @@
+[
+  {
+    "id": "d4145b5056a03eb3",
+    "title": "How Task Structure Limits Multi-Agent Success: An Information-Theoretic Analysis",
+    "authors": [
+      "Shi Pan, Ming Luo"
+    ],
+    "abstract": "arXiv:2606.13733v1 Announce Type: new \nAbstract: Multi-agent systems (MAS) were expected to overcome the limitation of single-agent systems (SAS) through collaboration. However, under typicality conditions on the task's constraint graph and bounded inter-agent communication, we prove that the success probability of a MAS is closely tied to the connectivity of task constraints, where each agent has limited information-processing capacity. Specifically, the success probability decays exponentially with an information bottleneck that emerges from partitioning the task's constraint graph among agents. We define this quantity as the \\emph{minimum cut cost} $C_{\\min}$ of the potential constraint graph of each task. This information-theoretic bound applies to both open systems with external feedback and closed systems without. We validate our theory on both synthetic experiments and real-world empirical data from SWE-bench submissions. From our framework, effective MAS design should incorporate task-inherent constraints alongside engineering optimization, and when $\\Cmin$ is high, practitioners should restructure tasks rather than simply scaling agents or communication.",
+    "link": "https://arxiv.org/abs/2606.13733",
+    "published": "2026-06-15 07:24:28.496271",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496292",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13733v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "37e58d90a9a61205",
+    "title": "FreoStream:Enhancing Stream Guardrails via Future-Aware Reasoning and Safety-Aligned Optimization",
+    "authors": [
+      "Jianwei Wang, Guoyang Shen, Yanhong Wu, Haoran Li, Hao Peng, Huiping Zhuang, Cen Chen, Ziqian Zeng"
+    ],
+    "abstract": "arXiv:2606.13737v1 Announce Type: new \nAbstract: Stream guardrails enable token-level safety detection before full responses are generated. However, they often make overly conservative judgements and block those sensitive but safe tokens, which is known as over-refusal. Due to lack of full context, they also fail to detect implicitly harmful content from jailbreaking. To address these challenges, we propose FreoStream, a novel streaming guardrail framework. Specifically, FreoStream fine-tunes a LoRA module to perform Future-Aware Reasoning when the base guardrail detects unsafe tokens. The reasoning process follows a Future-Reason-Judge paradigm: predict the future, reason about the full context and give the final judgement. This design can effectively reduce over-refusal by incorporating the future information. Moreover, we introduce the Safety-Aligned Optimization module that extracts the safety-aligned component from the reasoning gradients to update the base guardrail model, thereby enhancing streaming safety detection. Extensive experiments on various safety benchmarks demonstrate that FreoStream achieves lower over-refusal rates and better jailbreak defense compared to existing streaming guardrails.",
+    "link": "https://arxiv.org/abs/2606.13737",
+    "published": "2026-06-15 07:24:28.496328",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496333",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13737v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "e2f358a2e2010cb4",
+    "title": "SEVRA-BENCH: Social Engineering of Vulnerabilities in Review Agents",
+    "authors": [
+      "Rui Melo, Riccardo Fogliato, Sean Zhou, Pratiksha Thaker, Zhiwei Steven Wu"
+    ],
+    "abstract": "arXiv:2606.13757v1 Announce Type: new \nAbstract: Large language model (LLM) reviewers are increasingly used in pull-request (PR) workflows, where their approvals help decide which code is merged into a repository. This raises a question that benchmarks for static vulnerability detection or code generation do not address: can an automated reviewer reject a malicious contribution when the attacker controls both the code change and the accompanying PR text? We introduce SEVRA-BENCH (Social Engineering of Vulnerabilities in Review Agents), a benchmark that measures how often an automated reviewer approves such adversarial pull requests. Each malicious PR in SEVRA-BENCH is built from a real project commit that previously fixed a vulnerability listed in the Common Vulnerabilities and Exposures (CVE) database. We automatically invert that fix to restore the original vulnerable code and submit it as a pull request wrapped in one of 15 social-engineering framings, which vary the claims made, the supporting evidence, the urgency conveyed, signals of prior approval, and appeals to authority. SEVRA-BENCH contains 1,062 malicious PRs drawn from Common Vulnerabilities and Exposures (CVE)-linked fixes across the top 10 entries of the 2025 Common Weakness Enumeration (CWE) Top 25. In a realistic setting, we evaluate 8 current LLMs as code review agents on PRs that introduce vulnerabilities previously reported in public disclosures. Our results reveal a sharp gap in security capabilities between closed- and open-source models. We hope SEVRA-BENCH will serve as a valuable resource for advancing open-source models and narrowing this gap.",
+    "link": "https://arxiv.org/abs/2606.13757",
+    "published": "2026-06-15 07:24:28.496347",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496351",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13757v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "bcb02c66509371ac",
+    "title": "Non-Simple T-Prescriptions Yield T-Complexity Gains Infinitely Often",
+    "authors": [
+      "Thomas Sch\\\"urmann"
+    ],
+    "abstract": "arXiv:2606.13766v1 Announce Type: new \nAbstract: Titchener et al. (2005) asked whether non-simple T-prescriptions can achieve larger T-complexity than simple T-prescriptions for infinitely many finite values of the maximum codeword length. We answer this question affirmatively for every fixed alphabet of size at least two. In fact, we prove a stronger upper-envelope statement: for infinitely many lengths $N$, there exists a valid non-simple T-prescription of exact maximum codeword length $N$ whose T-complexity exceeds the best value attainable by any simple prescription with maximum codeword length at most $N$. Hence the unrestricted exact-length maximum over prescriptions is strictly larger than the corresponding simple exact-length maximum for infinitely many $N$. The proof is elementary. Once a copy pattern has been used, it cannot be selected again. Thus simple prescriptions with more and more steps must use ever more distinct words, which forces the minimal simple length thresholds to have infinitely many strict upward jumps. At each such jump, changing the last copy factor of a minimal simple prescription from $1$ to $2$ yields a valid non-simple prescription, thereby increasing T-complexity by $\\log_2 3-1$ while staying below the next simple threshold.",
+    "link": "https://arxiv.org/abs/2606.13766",
+    "published": "2026-06-15 07:24:28.496364",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496367",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13766v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "639198dc4b2027f2",
+    "title": "Smart Blockchain-Based Access Control for the Internet of Things",
+    "authors": [
+      "Mahdi Manavi, Yunpeng Zhang, Guoning Chen"
+    ],
+    "abstract": "arXiv:2606.13798v1 Announce Type: new \nAbstract: Securing access control in large-scale Internet of Things (IoT) deployments requires mechanisms that adapt to risk while preserving low latency for benign traffic. Permissioned blockchains such as Hyperledger Fabric offer auditability through smart contracts, but static endorsement policies impose the same validation depth on all requests, regardless of security posture. We propose a risk-adaptive enforcement layer for Hyperledger Fabric that couples an off-chain LSTM-based risk oracle with deterministic on-chain checks. The oracle assigns each request to a tier (Low, Moderate, High) and issues a signed attestation bound to the client identity and target key/version. Endorsing peers verify the attestation in chaincode and enforce tier-conditioned SBE policies without modifying the ordering service or consensus. Experiments on a Fabric testbed show that tier-conditioned endorsement strengthens validation for higher-risk requests while retaining low confirmation latency for benign workloads.",
+    "link": "https://arxiv.org/abs/2606.13798",
+    "published": "2026-06-15 07:24:28.496380",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496383",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13798v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "313dc4e979217db4",
+    "title": "The Program Is Still There: A Conservation Law for Program Discovery",
+    "authors": [
+      "Jorge Miguel Silva"
+    ],
+    "abstract": "arXiv:2606.13799v1 Announce Type: new \nAbstract: Finding the shortest program that generates a sequence is uncomputable, and for six decades that fact has been mistaken for a wall around finding any generating program. It is not a wall but a price, and this paper measures it. For every algorithm that learns about a candidate program only through its score, a class spanning Levin search, evolutionary methods, simulated annealing, and the cross-entropy method, we define the coupling width of a search problem and prove an unconditional worst-case lower bound, exponential in that width with base one less than the domain size. From it follows a conservation law: structural knowledge injected into a search trades one for one against the search it removes, and their sum can never fall below the length of the program sought. Levin's 1973 upper bound and the lower bound proved here are the two ends of one conserved quantity, closing on each other as the instruction set grows. The only escape is to read a candidate's structure rather than its score, and its price, which we prove for generic targets, is incompleteness. A deterministic engine built on this theory recovers a generating program, certified by compressing its data and predicting an unseen continuation, for 2,383 of 3,914 sequences across four independent populations, including 244 of the 256 elementary cellular automata, with measured discovery cost rising along program length more than an order of magnitude inside the score-oracle worst case.",
+    "link": "https://arxiv.org/abs/2606.13799",
+    "published": "2026-06-15 07:24:28.496395",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496398",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13799v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "03bf21521cbb0c35",
+    "title": "From Phase Semantics to Base-extension Semantics (and back)",
+    "authors": [
+      "Ekaterina Piotrovskaya"
+    ],
+    "abstract": "arXiv:2606.13855v1 Announce Type: new \nAbstract: Linear logic admits a wide range of semantic presentations reflecting its resource-sensitive notion of consequence. One well-known example is phase semantics: an algebraic semantics in which formulas are interpreted in phase spaces, consisting of a commutative monoid and a fixed subset, with respect to which an orthogonality relation is defined. A rather different and much more recent approach is given by base-extension semantics, which defines validity by inductively extending a provability relation on a base -- a set of inference rules over atomic propositions. We establish an equivalence between the two semantics by first defining bidirectional maps between bases and phase spaces, and then constructing an isomorphism between a phase space (resp. base) and its image under the composition of these maps. As a further contribution, we define the base-extension semantics clauses for the exponentials of linear logic.",
+    "link": "https://arxiv.org/abs/2606.13855",
+    "published": "2026-06-15 07:24:28.496410",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496413",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13855v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.LO",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "3b74bde60c3b7915",
+    "title": "Information Flow Paths from RTL Traces",
+    "authors": [
+      "Calvin Deutschbein, Owyn Wyatt"
+    ],
+    "abstract": "arXiv:2606.13860v1 Announce Type: new \nAbstract: Security validation is an important yet challenging part of the hardware design process, yet, by convention, validation engineers are tasked with defining the threat model, specifying the relevant security properties, detecting any violations of those properties, and assessing the consequences to system security, each of which is manually intensive and may introduce errors. The combined technologies of information flow tracking and specification mining represent an automated approach to property generation and validation, but prior work on information flow tracking on RTL trace data was limited to find cases under which information flowed between registers, without reproducing full paths to capture how sensitive information propagates through a design. With the introduction of new technologies accelerating hardware analysis, we develop a novel approach for constructing information flow paths from register transfer level (RTL) trace data.",
+    "link": "https://arxiv.org/abs/2606.13860",
+    "published": "2026-06-15 07:24:28.496424",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496427",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13860v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "54672287a6ad2913",
+    "title": "RTL-Arrow: Hardware-to-Cloud Bridge",
+    "authors": [
+      "Calvin Deutschbein, Jimmy Ostler"
+    ],
+    "abstract": "arXiv:2606.13865v1 Announce Type: new \nAbstract: Hardware Security at Willamette is a Willamette University affiliated research group studying the hardware-software interface of security critical services. Within our program, we noticed many researchers spent considerable development time learning to understand and manually parse traces-of-execution of hardware designs which are used to identifying whether vulnerabilities or weaknesses arise at the hardware, software, or interface level. We propose the \"RTL-Arrow\" framework, a framework to compile performant binaries which bridge the hardware/data divide. We translate the outputs of simulated hardware execution, as \"value change dumps\" into modern data science workflows as cloud-ready \"dataframes\", to standardize program verification across the hardware and software levels. We describe our approach, its benefits, and lessons learned from the process of packaging and distributing these libraries for our security research program.",
+    "link": "https://arxiv.org/abs/2606.13865",
+    "published": "2026-06-15 07:24:28.496440",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496443",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13865v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.DC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "4261309abfe64d87",
+    "title": "Crypto x AI, AI x Crypto: A Survey",
+    "authors": [
+      "Sarah Allen, Pranay Anchuri, James Austgen, Maryam Bahrani, Samuel Breckenridge, Aaron Buchwald, Christian Cachin, Andr\\'es F\\'abrega, Jared Fernandez, James Hsin-yu Chiang, Marwa Mouallem, Roi Bar-Zur, Neil DeSilva, Ittay Eyal, Giulia Fanti, Ari Juels, Andrew Miller, Christian Sillaber, Dani Vilardell, Pramod Viswanath, Wenhao Wang, Matt Weinberg, Sen Yang, Jianzhu Yao, Fan Zhang"
+    ],
+    "abstract": "arXiv:2606.13892v1 Announce Type: new \nAbstract: The intersection of crypto x AI is spawning papers, products, online posts, and companies. All the surrounding buzz, though, obscures what exactly has been done, what the opportunities and challenges are, and what open questions deserve attention. This survey paper asks what AI can do for blockchain-based technologies (broadly construed as \"crypto\") (crypto x AI), and vice versa (AI x crypto). We systematize existing work, summarize key takeaways, highlight open research questions, and offer a perspective on pervasive industry misconceptions, concluding that AI and crypto are still in the very early stages of meaningful integration.",
+    "link": "https://arxiv.org/abs/2606.13892",
+    "published": "2026-06-15 07:24:28.496455",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496459",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13892v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "f653f5eb508a92e4",
+    "title": "Machine Learning-Guided Quota Optimization for Multi-Round Two-Sided Matching",
+    "authors": [
+      "Omid Khormali, Mia Pesavento"
+    ],
+    "abstract": "arXiv:2606.13935v1 Announce Type: new \nAbstract: This paper proposes an integrated framework for machine learning-guided quota optimization applied to multi-round sorority recruitment, a small two-sided market where approximately 100 potential new members (PNMs) are matched to three chapters through a structured process governed by the Release Figure Methodology (RFM). Our framework combines a Random Forest classifier trained on historical registration data to generate PNM-chapter compatibility scores, integer linear programs for Round~2 and Round~3 invitation quota optimization balancing fairness, coverage, and efficiency objectives, and a Deferred Acceptance algorithm for final matching. Applied to five years of de-identified recruitment data from a small Midwestern university, and working with only 282 matched training pairs, the compatibility model achieves a cross-validated ROC-AUC of 0.5822, reflecting the inherent difficulty of predicting social compatibility from pre-recruitment registration data in a data-limited setting. Because fairness and coverage constraints dominate quota allocation under noisy scores, the framework is designed to degrade gracefully when ML signal is weak. Optimized quotas closely align with actual coordinator decisions for active chapters, and the Deferred Acceptance algorithm replicates actual 2025 recruitment outcomes with a 96.4% individual-level agreement rate and a 100% match rate across 56 PNMs. An interactive web application implementing the framework is made available to recruitment coordinators. These results support the viability of data-driven approaches to small-market matching with broader applicability to other constrained two-sided markets.",
+    "link": "https://arxiv.org/abs/2606.13935",
+    "published": "2026-06-15 07:24:28.496470",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496474",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13935v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "a3db51cd229ef59a",
+    "title": "Side-Channel Attacks Bypass Protection in 3D Printers",
+    "authors": [
+      "Eric Yocam, Varghese Vaidyan, Micah Flack, Gurcan Comert, Judith L. Mwakalonge"
+    ],
+    "abstract": "arXiv:2606.13952v1 Announce Type: new \nAbstract: Active Motor Noise Cancellation (AMNC) ships in commercial fused deposition modeling (FDM) 3D printers as a hardware countermeasure against acoustic side-channel attacks that target intellectual property (IP). We present the first empirical evaluation of a deployed AMNC countermeasure, using a public dataset of synchronized acoustic and vibration recordings from two AMNC-equipped Bambu Lab printers across 12 object classes. AMNC fully neutralizes the acoustic channel: classification accuracy is indistinguishable from the 8.33% random baseline. The vibration channel, which AMNC does not target, still leaks. With summary statistics the leak is coarse and amplitude-driven (vibration accuracy approximately 31% pooled, 36-47% within-printer), while the waveform shape carries essentially nothing (frequency-only features at chance). A full-sequence temporal model that ingests the ordered evolution of the print raises accuracy to approximately 61%, and an order-shuffling control (approximately 33%) shows that a substantial component is genuinely sequential and tied to print progression. The leak is device-specific: a classifier trained on one printer transfers near chance to the other. We conclude that AMNC is an acoustic-only defense: vibration remains a partial, geometry-correlated side channel it does not address, but one that does not, on this dataset, support full geometric reconstruction; reconstruction-grade attacks would require the magnetic or power channels AMNC also leaves untouched. We release all code.",
+    "link": "https://arxiv.org/abs/2606.13952",
+    "published": "2026-06-15 07:24:28.496484",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496488",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13952v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.ET",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "d2ab6a926979831b",
+    "title": "Software Dark Matter: Gazing at Uncharted Files to Navigate SBOM Integrations",
+    "authors": [
+      "Abhishek Reddypalle, Dennis Roellke, Santiago Torres-Arias"
+    ],
+    "abstract": "arXiv:2606.13966v1 Announce Type: new \nAbstract: Modern software supply chains have evolved into vast, heterogeneous networks where transparency - the granular understanding of all software components - is now a critical security requirement. While Software Bills of Materials (SBOMs) have emerged as the primary mechanism for this transparency, current industry practices rely on a metadata-centric paradigm that assumes an artifact is defined solely by its package manager declarations. We posit that this assumption is fundamentally flawed, creating a systemic visibility gap we define as Software Dark Matter (SDM). SDM represents the set of security-critical files present in an artifact's filesystem that are unaccounted for by its associated metadata. We implement a reference tool, DARKFILES, and use it to analyze four ecosystems of disjoint nature: DockerHub, Maven Central, plugin/extension marketplaces (Jenkins plugins and OpenVSX), and a real-world enterprise environment.\n  Our research makes the following contributions: we introduce a general-purpose metric for artifact fidelity calculating SDM as the ratio of untracked files per total file count. We introduce Packaging Lag, a phenomenon where official metadata remains out-of-date across multiple versions before catching up to an artifact's actual content. We demonstrate that SDM exposes vulnerable software invisible to SBOM-driven pipelines both by cross-referencing untracked packages against known CVE databases and through the direct discovery of three confirmed high-severity CVEs, showing that SDM is highly correlated with sensitive information including secrets and cryptographic keys.",
+    "link": "https://arxiv.org/abs/2606.13966",
+    "published": "2026-06-15 07:24:28.496512",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496516",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13966v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "7a161a485f294af1",
+    "title": "Choric Masking in Ambient Release Systems: A Finite Certificate Calculus for Trace Indistinguishability under Bounded Audiences",
+    "authors": [
+      "Faruk Alpay, Taylan Alpay"
+    ],
+    "abstract": "arXiv:2606.13967v1 Announce Type: new \nAbstract: This paper develops a finite certificate calculus for ambient release systems, staged probabilistic environments in which a protected coordinate is not observed directly but can remain statistically readable through visible roles, timing, repeated movement, bounded attention, linked rooms, and post-release state. The security notion, choric masking, requires the trace law induced by a protected locus to lie inside or near the convex hull of admissible cover traces under the tests available to a specified audience. For finite horizons, trace laws form polytopes, audiences induce measurement operators, and masking becomes intersection in the projected measurement space. Exposure is certified by separating hyperplanes, kernel obstructions, hypothesis-testing bounds, Fano-type localization lower bounds, and support separation in downstream rooms. The calculus distinguishes trace residue from carrier localization, full-trace exposure from attention-filtered exposure, first-room masking from delayed post-release exposure, and unresolved system pressure from carrier hazard. It proves measurement-polytope equivalence for exact and approximate masks, dual separation certificates, data-processing laws for attention lenses, aperture identities for gaze-thinned observation, lower bounds for mandatory unique gestures, composition rules for linked releases, and a repeated-room debt theorem showing how unresolved pressure can broaden selection and shift cost onto cover populations without localizing the source. The result is a finite, checkable language for auditing privacy, unlinkability, side-channel leakage, and accountability in public-facing release systems.",
+    "link": "https://arxiv.org/abs/2606.13967",
+    "published": "2026-06-15 07:24:28.496528",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496532",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13967v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CY",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "25649c75b5bbd371",
+    "title": "On Cutting Cakes and Crossing Curves",
+    "authors": [
+      "Alexandros Hollender, Gilbert Maystre, Kilian Risse"
+    ],
+    "abstract": "arXiv:2606.13980v1 Announce Type: new \nAbstract: We consider the classic envy-free cake-cutting problem where the goal is to cut and allocate a divisible resource among a set of agents in a way that avoids any envy between them. When the agents' valuation functions are continuous and nonnegative, an envy-free solution is guaranteed to exist where each agent is allocated a contiguous piece of the resource. Such a solution can be efficiently computed using the standard cut-and-choose algorithm for two agents, but the problem is known to be hard when there are at least four agents. The setting with three agents has remained open.\n  We show that the problem remains intractable for three agents. We obtain this result by uncovering a novel connection between cake-cutting and a computational problem corresponding to the Jordan curve theorem, introduced by Adler, Daskalakis, and Demaine (2016). As our main technical contribution, we provide the first lower bounds for the Jordan curve problem in the form of a query lower bound as well as hardness for the class UEOPL, a subclass of PPAD containing notoriously challenging problems such as Simple Stochastic Games and the P-matrix Linear Complementarity Problem.",
+    "link": "https://arxiv.org/abs/2606.13980",
+    "published": "2026-06-15 07:24:28.496543",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496546",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13980v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "2610d63dd50ef491",
+    "title": "Hidden in Plain Sight: Benchmarking Agent Safety Against Decomposition Attacks with DECOMPBENCH",
+    "authors": [
+      "Vikhyath Kothamasu, Virginia Smith, Chhavi Yadav"
+    ],
+    "abstract": "arXiv:2606.13994v1 Announce Type: new \nAbstract: LLM-based Agents are becoming increasingly capable and widely deployed, creating growing incentives for adversarial misuse in the real-world. A key emerging threat is Decomposition Attacks \\cite{glukhov2024breach, jones2024adversaries} in which a harmful task is broken into simpler, benign subtasks that evade safety mechanisms when executed separately but cumulatively fulfill the malicious intent. Although recent benchmarks assess agent safety in multi-turn and multi-tool-use settings, they do not explicitly capture this form of decompositional misuse and may not represent realistic adversarial execution flows. To this end, we introduce DeCompBench, a benchmark designed specifically to evaluate agentic safety under decomposition attacks. DeCompBench is created with a decomposition-by-design principle using a graphical framework and enables harmful task decomposition into individually benign and executable subtasks with realistic workflows. Our experiments using a custom decomposer show that state-of-the-art agents exhibit high refusal rates on monolithic harmful tasks, but significantly lower refusal rates on their decomposed variants, while often inadvertently fulfilling the adversarial objectives. These findings underscore the need for safety evaluations against decomposition attacks and corresponding defenses. Our dataset is publicly available and can be found at https://huggingface.co/datasets/decompositionbench/DeCompBench.",
+    "link": "https://arxiv.org/abs/2606.13994",
+    "published": "2026-06-15 07:24:28.496558",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496561",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13994v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "86e519c34a5b4da9",
+    "title": "Pseudonym Scheme Based on Hybrid Certificates for Security Credential Management System in Vehicular Communications",
+    "authors": [
+      "Abel C. H. Chen, F. J. Hwang, Yu-Chih Wei, Chin-Chen Chang, Bon-Yeh Lin"
+    ],
+    "abstract": "arXiv:2606.14008v1 Announce Type: new \nAbstract: In recent years, the Institute of Electrical and Electronics Engineers (IEEE) and the European Telecommunications Standards Institute (ETSI) have developed a series of security communication standards for vehicular communications. These standards include mechanisms such as the Security Credential Management System (SCMS) and Butterfly Key Expansion (BKE) to protect vehicle privacy. However, these standards are mainly based on the Elliptic-Curve Cryptography (ECC), which may be vulnerable to attacks from quantum computing in the future. In response to this potential risk, this study proposes a hybrid certificate that combines the ECC with Post-Quantum Cryptography (PQC). This approach enables infrastructure systems to be built on cryptographic foundations that are more resilient to quantum-based attacks. Furthermore, this study presents a generalized pseudonym scheme that is compatible with various cryptographic algorithms for generating pseudonym certificates. This design aims to eliminate the possibility of inferring any correlation between the public key in a pseudonym certificate and that in an enrollment certificate. This study also conducts a comprehensive performance evaluation of the RSA, ECC, and PQC algorithms, particularly those standardized by the National Institute of Standards and Technology (NIST). The comparison considers factors such as message length and computation time. Based on the findings, this study recommends suitable pseudonym schemes that adopt hybrid certificates for secure and efficient use in vehicular communications.",
+    "link": "https://arxiv.org/abs/2606.14008",
+    "published": "2026-06-15 07:24:28.496573",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496577",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14008v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.NI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.PF",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SY",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "d4e87ca1b3465fd0",
+    "title": "Same-Origin Policy for Agentic Browsers",
+    "authors": [
+      "Xilong Wang, Xiaoxing Chen, Patrick Li, Dawn Song, Neil Gong"
+    ],
+    "abstract": "arXiv:2606.14027v1 Announce Type: new \nAbstract: Agentic browsers integrate autonomous AI agents into web browsers, enabling users to accomplish web tasks through natural-language instructions. The same-origin policy (SOP) is a fundamental browser security mechanism that prevents unauthorized automated cross-origin data flows induced by scripts. However, whether SOP remains effective in agentic browsers is an open question that has not been systematically studied. In this work, we bridge this gap. We first observe that an agentic browser can itself serve as an automated channel for cross-origin data flows, potentially leading to SOP violations. To investigate this phenomenon, we construct SOPBench, a benchmark for evaluating SOP violations in agentic browsers. Our evaluation shows that existing agentic browsers frequently violate SOP, both in benign settings and under attacks. To address this problem, we propose SOPGuard, an SOP enforcement mechanism tailored to agentic browsers. We implement SOPGuard in BrowserOS, an open-source agentic browser. Extensive evaluations demonstrate that SOPGuard effectively enforces SOP while preserving utility and incurring only a small runtime overhead. Our code and data are available at https://github.com/wxl-lxw/BrowserOS-SOPGuard.",
+    "link": "https://arxiv.org/abs/2606.14027",
+    "published": "2026-06-15 07:24:28.496588",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496591",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14027v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CL",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SY",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "0e8be68b9fb0b8f9",
+    "title": "Defending the Core: A Centrality-Based Protection Strategy for Supply Chain Security in npm Dependency Network",
+    "authors": [
+      "Zixin Wang"
+    ],
+    "abstract": "arXiv:2606.14036v1 Announce Type: new \nAbstract: The modern software supply chain, taking Node Package Manager (npm) dependency network for example, relies heavily on shared open-source dependencies. While this promotes rapid development, it introduces systemic vulnerabilities as well. Concerning this potential risk, we analyze the npm dependency network by modeling 53,481 packages and 78,520 dependency edges, and classify the network as a scale-free topology. Thus, we demonstrate its inherent vulnerability to targeted attacks on high-degree hubs. To mitigate this, we propose and evaluate a dual-pronged defense strategy consisting of Centrality-Based Node-Hardening and Dependency Weight Warning system. Moreover, by simulating the network under various attack scenarios, we prove that applying strict security protocols to just the top 1% of nodes, combined with pruning 30% of structurally trivial edges, prevents catastrophic network collapse and neutralizes cascading malware infections. The source code can be found at https://github.com/5tarWhee1/Centrality-Based-Protection-Strategy-for-Supply-Chain-Security-in-npm-Dependency-Network.",
+    "link": "https://arxiv.org/abs/2606.14036",
+    "published": "2026-06-15 07:24:28.496603",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496606",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14036v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.NI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "bf3937141c3cd7dc",
+    "title": "Hierarchical Identity-Based Signature with Designated Aggregator from Lattices",
+    "authors": [
+      "Stuti Kumari, Kunal Dey, Vikas Srivastava, Sumit Kumar Debnath"
+    ],
+    "abstract": "arXiv:2606.14090v1 Announce Type: new \nAbstract: In hierarchical organizations, authenticating data from multiple users can be complex and resource-intensive. Hierarchical Identity-Based Signature with Designated Aggregator (HIBS-DA) provides an efficient solution by allowing users at different levels to generate signatures that can be combined into a single, compact signature. We first introduce the HIBS-DA framework and present the {\\em{first}} lattice-based construction of HIBS-DA. Our scheme allows users at different hierarchical levels to generate individual signatures that can be aggregated into a single, compact signature, reducing communication and verification costs. The proposed construction is secure, correct, and resistant to forgery, making it suitable for large-scale environments such as universities, corporations, and government agencies.",
+    "link": "https://arxiv.org/abs/2606.14090",
+    "published": "2026-06-15 07:24:28.496618",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496621",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14090v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "d85717499de7d180",
+    "title": "Two Observations on Metric Distortion and Condorcet Winning Sets",
+    "authors": [
+      "Jannik Peters"
+    ],
+    "abstract": "arXiv:2606.14144v1 Announce Type: new \nAbstract: In this research note we briefly connect two well-studied topics in computational social choice: metric distortion and the selection of undominated committees. In particular, we show that undominated committees are (in some sense) both necessary and sufficient to achieve bi-criteria metric distortion below $3$ (Banishashem et al., 2026). First, we show that any $\\alpha$-undominated committee with $\\alpha \\le 0.5 - \\Omega(1)$ has a bi-criteria metric distortion strictly of $3 - \\Omega(1)$. In particular, this implies that a committee of size $5$ with distortion at most $2.7384$ exists. Secondly, we show that if a committee has a bi-criteria metric distortion strictly of $3 - \\Omega(1)$, then it must also be $1 - \\Omega(1)$-undominated.",
+    "link": "https://arxiv.org/abs/2606.14144",
+    "published": "2026-06-15 07:24:28.496632",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496635",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14144v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "cf3ab3b08aa70c93",
+    "title": "SkillMutator: Benchmarking and Defending Language-and-Code Cross-modal Attacks on LLM Agent Skills",
+    "authors": [
+      "Youngduk Kim, Minkyoo Song, Seungwon Shin"
+    ],
+    "abstract": "arXiv:2606.14154v1 Announce Type: new \nAbstract: Large language model (LLM) agents increasingly extend their capabilities at runtime by loading Agent Skills, which pair natural-language specifications (SKILL.md) with executable scripts and resources. Because a skill's behavior relies on both natural-language instructions and executable code, assessing its safety requires cross-modal reasoning, creating a new language-and-code attack surface. Attackers can present a benign workflow in SKILL.md while embedding implicit directives that steer the agent to exfiltrate sensitive files, even if the scripts appear harmless. This attack surface remains understudied; prior work treats skills merely as prompt-injection vectors or static code artifacts, leaving attacks emerging from cross-modal interactions largely unmeasured. In our evaluation, open-source and commercial skill scanners detect only 2%-8% and 9%-17% of such attacks, respectively. To address this gap, we introduce SkillMutator, the first benchmark for install-time detection of language-and-code cross-modal attacks on Agent Skills. It emulates an adversarial mutation process across 13 attack categories, iteratively refining malicious skills using scanner feedback to make injected behaviors indistinguishable from legitimate workflows. We further propose a four-phase reasoning-trajectory distillation framework to distill frontier-teacher traces into smaller open-weight models. This produces a locally deployable scanner avoiding third-party data exposure and excessive API costs. On the strongest SkillMutator subset (n=76), our distilled model (Qwen2.5-Coder-7B-Instruct) improves detection from 17.1% to 88.2%, surpassing GPT-4o-mini (23.7%) and GPT-5.4-mini (79.0%), and reaching frontier-level GPT-5.4 (86.8%). These results show practical defense against cross-modal attacks is feasible without relying on costly frontier models.",
+    "link": "https://arxiv.org/abs/2606.14154",
+    "published": "2026-06-15 07:24:28.496646",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496650",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14154v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "b822e5e2e33f0736",
+    "title": "Security Evaluation of Mobile Banking Applications in Sudan",
+    "authors": [
+      "Abdelmonim Naway"
+    ],
+    "abstract": "arXiv:2606.14165v1 Announce Type: new \nAbstract: The rapid digitalization of the Sudanese financial sector has precipitated a surge in Mobile Banking Applications (MBAs); however, this growth has frequently outpaced rigorous security auditing. This study provides a comprehensive technical audit of the four most widely used Sudanese MBAs( Bankak, Fawry, Okash, and Sahil )collectively serving a user base of over 1.6 million. Utilizing Static Application Security Testing (SAST) via the Mobile Security Framework (MobSF) and Quixxi, the applications were evaluated against the OWASP Mobile Application Security Verification Standard (MASVS). Findings were mapped to Common Weakness Enumeration (CWE) identifiers to identify systemic vulnerabilities. Analysis revealed critical disparities in security posture. Bankak, the market leader, exhibited the highest risk profile (12 vulnerabilities), including a critical absence of SSL certificate pinning and unsafe TrustManager implementations, rendering it highly susceptible to Man-in-the-Middle (MitM) attacks. While Fawry demonstrated relative maturity (7 vulnerabilities), a universal failure was observed across all four applications regarding secure random number generation (CWE-330), potentially compromising session token integrity. Additionally, Bankak and Okash were found to utilize deprecated cryptographic algorithms (MD5/SHA-1). Notably, all applications successfully disabled ADB backups, yet 100% retained verbose debugging symbols in production APKs, significantly lowering the barrier for reverse engineering. This research addresses a critical gap in the national fintech ecosystem by providing actionable technical recommendations for developers and a strategic roadmap for implementing \"security-by-design\" principles across the sector.",
+    "link": "https://arxiv.org/abs/2606.14165",
+    "published": "2026-06-15 07:24:28.496661",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496664",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14165v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "42a147272ffa48f5",
+    "title": "Algebraic Circuits Over Sum and Shift and Existential Presburger Arithmetic with Divisibility",
+    "authors": [
+      "Ignacio Barros, Micha\\\"el Cadilhac, Guillermo A. P\\'erez"
+    ],
+    "abstract": "arXiv:2606.14167v1 Announce Type: new \nAbstract: We study existential Presburger arithmetic extended with divisibility predicates (EPAD). Its satisfiability problem has long been known to be NP-hard, and has often been expected to lie in NP. We prove that it is PP-hard, ruling out this expectation unless NP=PP. This also implies \\PP-hardness of satisfiability for positive Boolean combinations of word equations and length constraints.\n  The lower bound is compatible with a strong form of Lipshitz-style simplification. We define a polynomial-time recognizable fragment, called \\MergeAbs, in which the usual finite-quotient replacement of divisibility atoms can be repeated until no divisibility atom remains. Nevertheless, EPAD satisfiability is already PP-hard on this fully simplifiable fragment.\n  The reduction starts from a threshold coefficient problem for a class of arithmetic circuits using only addition and shifts. The same systems used in the reduction also expose a limitation of normalization. A polynomial-size scaling family, indexed by $j$, forces an endpoint relation $v=(2^{2^j}+1)u$, and the natural finite-quotient simplification records it as one equation with coprime coefficients whose largest coefficient has bit-size $\\Theta(2^j)$.",
+    "link": "https://arxiv.org/abs/2606.14167",
+    "published": "2026-06-15 07:24:28.496676",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496679",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14167v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "45ba9a37bfc91c80",
+    "title": "Practical Low-Weight Codes for Energy-Efficient Bus Encoding",
+    "authors": [
+      "Lorenzo Valentini, Marco Chiani"
+    ],
+    "abstract": "arXiv:2606.14203v1 Announce Type: new \nAbstract: We consider the transmission of data encoded into binary messages, with the goal of minimizing the Hamming distance, i.e., the number of bit-flips, between consecutive messages. This problem is relevant for enhancing the longevity of Non-Volatile Memories and reducing transition-induced energy consumption in data buses. Known as Write-Efficient Memory coding in the literature, this challenge has traditionally been addressed using optimal but complex schemes. In low-power computer systems the same topic is known as bus encoding. In this paper, we derive closed-form expressions to evaluate the average number of bit-flips for practical, sub-optimal encoding schemes, and propose two new schemes assisted by predefined random codebooks. We demonstrate that low-complexity solutions achieve performance very close to the optimal schemes, making them attractive for implementation in energy-sensitive and memory-critical applications. For instance, by adding 8 extra bits to 64-bits data, sub-optimal schemes can achieve a bit-flip reduction (related to energy saving) of approximately 24.7%, compared to the 26.4% reduction offered by the significantly more complex optimal scheme.",
+    "link": "https://arxiv.org/abs/2606.14203",
+    "published": "2026-06-15 07:24:28.496690",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496694",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14203v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.ins-det",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "b3c1b56665ba6cba",
+    "title": "Block Tensor Rank of Sum-Rank Metric Codes",
+    "authors": [
+      "Huimin Lao, Huy Pham, Hoang Ta, Van Khu Vu"
+    ],
+    "abstract": "arXiv:2606.14205v1 Announce Type: new \nAbstract: Sum-rank codes provide a generalized framework for Hamming and rank-metric codes, with codewords represented as tuples of matrices and weight given by the sum of the block ranks. In this paper, we introduce and study a block-tensor-rank invariant for sum-rank metric codes. To each code, we associate its \\emph{block tensor rank}: the smallest number of block-simple tensors, namely rank-one matrices supported inside single blocks, whose linear span contains the code. In general, determining the block tensor rank of a sum-rank code is challenging. Our main structural result shows that the block tensor rank decomposes additively across the blocks of the code, thereby reducing its computation to a tensor-rank problem on each block projection. Consequently, we derive two complementary lower bounds on the block tensor rank, referred to as the \\emph{projection-wise bound} and the \\emph{coordinate-code bound}. Moreover, by combining the coordinate-code bound with the classical Singleton and Griesmer bounds for codes in the Hamming metric, we obtain explicit lower bounds, called the \\emph{Singleton coordinate-code bound} and the \\emph{Griesmer coordinate-code bound}, respectively. We further construct families of sum-rank codes whose block tensor ranks attain the Singleton or Griesmer coordinate-code bounds. These constructions are based on Hamming-metric codes achieving the corresponding classical bounds. Finally, we show that, in certain cases, the block tensor ranks of two known families of sum-rank codes in the literature do not attain the Singleton coordinate-code bound.",
+    "link": "https://arxiv.org/abs/2606.14205",
+    "published": "2026-06-15 07:24:28.496705",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496708",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14205v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.CO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "164d4ba286dfe935",
+    "title": "From Prompts to Responses: Dual-Sided Data Leakage and Defense in Split Large Language Models",
+    "authors": [
+      "Zixuan Gu, Xiaojun Ye, Yang Liu"
+    ],
+    "abstract": "arXiv:2606.14210v1 Announce Type: new \nAbstract: Large language models (LLMs) are increasingly deployed in privacy-sensitive domains, where users must balance the risk of data exposure through external APIs against the high computational cost of local deployment. Split learning has therefore emerged as a promising paradigm for LLM fine-tuning and inference under limited local resources. However, it introduces new privacy risks. Prior work primarily studies leakage of private input prompts, typically via inversion attacks on intermediate representations, while the potential for sensitive information leakage through generative response outputs remains largely unexplored.\n  In this work, we unveil novel vulnerabilities of Split-LLM by presenting Patched Model Inversion with Dual-Sided Initialization (PIDI), a two-stage attack that simultaneously targets both private input prompts and output responses in Split-LLM settings. It combines dual-sided initialization with a patched inversion strategy to tackle long sequences, substantially outperforming prior inversion methods. To counter threats from both sides, we further propose the Adapter-based DualGuard with Mutual Information Defense (ADMI), which integrates an adapter-based local warmup strategy and mutual information regularization to provide a strong empirical privacy protection with minimal impact on task performance. Extensive experiments across diverse tasks and models demonstrate that ADMI effectively defends against PIDI and other state-of-the-art inversion attacks. Our code is publicly available at https://github.com/FLAIR-THU/VFLAIR-LLM.",
+    "link": "https://arxiv.org/abs/2606.14210",
+    "published": "2026-06-15 07:24:28.496719",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496722",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14210v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "02cdac51e3f6ceb0",
+    "title": "The Algebraic Limits of Polynomial Information Measures",
+    "authors": [
+      "Yuqing Kong"
+    ],
+    "abstract": "arXiv:2606.14225v1 Announce Type: new \nAbstract: The paper studies the existence of \\emph{polynomial} measures of dependence between two random variables: polynomial functions of the joint distribution that (i) vanish on independence and (ii) cannot increase under post-processing of either variable (the data processing inequality, DPI). Mutual information satisfies both properties but is transcendental in the joint distribution, making it impossible to estimate without bias from finitely many samples. A polynomial alternative would admit an exact finite-sample unbiased estimator, with the polynomial degree controlling the required sample size.\n  The main result is negative: in the asymmetric setting where the variables have different alphabet sizes (\\(|X| > |Y|\\)), no nonzero polynomial can simultaneously satisfy DPI on the larger-alphabet side and vanish on independence. In the symmetric case \\(|X| = |Y| = n\\), we establish a structural result: every such polynomial is divisible by \\((\\det U)^2\\), where \\(U\\) denotes the \\(n \\times n\\) joint distribution matrix. Consequently, any nontrivial candidate must have degree at least \\(2n\\). The determinant-based mutual information attains this lower bound.\n  These algebraic results have direct consequences for \\emph{multi-task peer prediction}, a mechanism-design problem in which a principal incentivizes honest reports from agents who observe correlated signals but no ground truth. Every such mechanism running on \\(\\ell\\) independent tasks gives rise to a polynomial measure of dependence of degree at most \\(\\ell\\), so our lower bounds on polynomial degree translate directly into lower bounds on the number of tasks: in the asymmetric case no finite-task mechanism exists on the larger-alphabet side at all, while the symmetric case requires at least \\(\\ell \\geq 2n\\) tasks.",
+    "link": "https://arxiv.org/abs/2606.14225",
+    "published": "2026-06-15 07:24:28.496733",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496736",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14225v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "0d990af76e2a2491",
+    "title": "Security in a Workflow: Exploring Role-Based Agentic Architectures for Vulnerability Handling",
+    "authors": [
+      "Srijita Basu, Miroslaw Staron"
+    ],
+    "abstract": "arXiv:2606.14261v1 Announce Type: new \nAbstract: Secure software engineering in practice is a multi-stage workflow involving vulnerability analysis, remediation, and fix verification. However, current LLM-based software security approaches often focus on isolated tasks such as detection or patch generation, with limited attention to agentic architectures reflecting industrial workflow. This creates a gap between existing LLM-based vulnerability-handling methods and real-world practices. In this paper, we study a role-based agentic workflow for vulnerability analysis and mitigation consisting of Planner, Analyzer, Fixer, and Verifier roles. To explore the effect of static analysis tool, the analyzer agent was integrated with the CodeQL in one of the workflows. The models used include nemotron-cascade-2:30b, qwen3-coder-next, and gpt-oss:120b. Our evaluation uses 25 real-world C/C++ vulnerabilities. The study reports 44% vulnerability detection accuracy comparable to GPT 5.5 and 19% fix accuracy. We also list implications from this study in context of software security practitioners.",
+    "link": "https://arxiv.org/abs/2606.14261",
+    "published": "2026-06-15 07:24:28.496747",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496751",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14261v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SE",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "f95b998956676f5b",
+    "title": "AgentCyberRange: Benchmarking Frontier AI Systems in Realistic Cyber Ranges",
+    "authors": [
+      "Fengyu Liu, Jiarun Dai, Yihe Fan, Wuyuao Mai, Ziao Li, Bofei Chen, Jie Zhang, Zheng Lou, Bocheng Xiang, Qiyi Zhang, Xudong Pan, Geng Hong, Yuan Zhang, Min Yang"
+    ],
+    "abstract": "arXiv:2606.14295v1 Announce Type: new \nAbstract: Frontier AI systems are increasingly capable of cybersecurity tasks, including codebase inspection, vulnerability detection, and exploitation. However, evaluating their offensive capabilities remains constrained by limited access to open, reproducible, multi-host cyber ranges. Existing public benchmarks capture isolated skills such as CTF solving, vulnerability reproduction, and exploit generation, but often abstract away realistic intrusion workflows: discovering exposed services, gaining a foothold, collecting internal information, and expanding compromise across hosts. This gap makes it difficult to observe emerging risks early, because frontier AI systems are rarely evaluated under realistic attack conditions.\n  We introduce AgentCyberRange, the first open, multi-range infrastructure for measuring autonomous cyber attack capability in realistic cyber ranges. It combines 110 vulnerabilities across 15 real web applications and 8 enterprise-like cyber ranges with 156 internal hosts, plus Cage, a toolchain for execution, orchestration, result collection, and verification. The benchmark covers two core stages: web exploitation, where agents explore exposed applications and validate vulnerabilities, and post exploitation, where agents turn an initial foothold into broader internal compromise. We evaluate six frontier AI systems under matched prompts and budgets. GPT-5.5 with Codex performs best, solving 16.1% of web exploitation tasks and 31.7% of post-exploitation tasks; with more concrete hints, these rates increase to 33.0% and 46.3%. We also observe out-of-benchmark findings, including unknown vulnerabilities in popular projects, and payload mutation that bypasses host defenses. These results show that open cyber-range evaluation is necessary for observing emerging offensive capabilities under realistic and reproducible conditions.",
+    "link": "https://arxiv.org/abs/2606.14295",
+    "published": "2026-06-15 07:24:28.496761",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496765",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14295v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "639051f4ca1bf60d",
+    "title": "REPOSE: Quantifying the Price of Security in Weakly-Hard Real-Time Cyber-Physical Systems",
+    "authors": [
+      "Vijay Banerjee, Monowar Hasan"
+    ],
+    "abstract": "arXiv:2606.14395v1 Announce Type: new \nAbstract: In contemporary IoT edge devices with real-time requirements, security is primarily enforced through design-time parameters associated with security tasks, leading to mechanisms that operate in an \\emph{opportunistic} manner. As a result, security checks are often performed as secondary operations. This approach can result in systems where no security tasks are executed due to high utilization by other tasks. An alternative approach taken in prior work is to add security mechanisms to every task in the system, resulting in substantially lower performance than that of a system with no security. These approaches have resulted in an \\emph{all-or-nothing} scenario for edge device security, motivating numerous studies on the safety-security trade-off in real-time cyber-physical systems (RT-CPS). This study introduces an analytical framework -- REPOSE -- for evaluating the security feasibility of real-time control systems at runtime. REPOSE is developed for \\textit{weakly-hard} real-time control systems that facilitate a ``bounded trade-off'' between safety and security. In contrast to imposing additional (pessimistic) design-time overhead as considered in some real-time security literature, REPOSE performs security operations in both \\textit{proactive} and \\textit{reactive} manners based on the task's current behavior. Our evaluations show that REPOSE can effectively add security operations to RT-CPS with a feasibility overhead of $0.06\\%$ at $80\\%$ utilization, compared to a $ 29\\%$ overhead observed in systems with hard constraints. Through a case study of a classic control system, we also demonstrate that REPOSE provides a robust framework to \\textit{analyze and calculate} the safety-security tradeoff.",
+    "link": "https://arxiv.org/abs/2606.14395",
+    "published": "2026-06-15 07:24:28.496776",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496779",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14395v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "9e2af6fe61e13232",
+    "title": "Noncoherent ISAC over Block-Fading Channels: Asymptotic Performance Analysis",
+    "authors": [
+      "Hao Yang, Kai Wan, Giuseppe Caire"
+    ],
+    "abstract": "arXiv:2606.14400v1 Announce Type: new \nAbstract: This paper investigates the fundamental limits and optimal signal distribution design for Integrated Sensing and Communication (ISAC) systems operating under strictly noncoherent conditions. Unlike conventional coherent frameworks that rely on perfect channel state information, we consider a block-fading MIMO channel where the channel realizations are unknown to both the transmitter and the receiver. We adopt a realization-wise perspective to characterize the noncoherent performance tradeoff across different signal-to-noise ratio (SNR) regimes. In the high-SNR regime, we derive a lower bound for the noncoherent mutual information and define a metric, termed sensing-induced rate loss, to quantify the communication penalty incurred by sensing-oriented beamforming. We then employ a projected gradient algorithm to optimize the spatial power allocation, balancing the conflict between the unitary space-time modulation-based structure for communication and the task-oriented spatial power allocation for sensing. Conversely, in the low-SNR regime, we perform a first-order asymptotic analysis of the ergodic minimum mean squared error (EMMSE). Our theoretical derivation reveals a fundamental synergy: the sensing-optimal strategy collapses to a rank-one transmission along the dominant eigenvector of the target response, which incurs no first-order communication loss in the low-SNR regime. This result demonstrates that the conflicting tradeoff observed at high SNR vanishes asymptotically at low SNR, enabling perfect alignment between sensing and communication objectives.",
+    "link": "https://arxiv.org/abs/2606.14400",
+    "published": "2026-06-15 07:24:28.496790",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496793",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14400v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "f06fa18e8beff9cd",
+    "title": "Breaking TinyML: Why Quantized Neural Networks Need Domain-Specific Security Analysis",
+    "authors": [
+      "Jacob Huckelberry, Andrea Mattia Garavagno, Yuke Zhang, Peter A. Beerel, James Mickens, Vijay Janapa Reddi"
+    ],
+    "abstract": "arXiv:2606.14427v1 Announce Type: new \nAbstract: Most TinyML hardware accelerators focus on supporting Quantized Neural Networks (QNNs) to meet stringent constraints on power consumption and size. Despite this, the security aspects of quantization within TinyML hardware remain largely unexplored. Although previous studies indicate that QNNs demonstrate similar or enhanced robustness when compared to full-precision Deep Neural Networks (DNNs) against typical evasion attacks, no attack strategies tailored specifically for TinyML hardware have been proposed yet. This paper addresses this shortfall by demonstrating how a two-step attack pipeline can surpass the current state-of-the-art in the QNN context and shows the need for more hardware-aware security research.",
+    "link": "https://arxiv.org/abs/2606.14427",
+    "published": "2026-06-15 07:24:28.496804",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496807",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14427v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "7349d45e3faad2be",
+    "title": "An Entropy Potential for Type-Composition Games",
+    "authors": [
+      "Morteza Alimi, Merlin de la Haye, Pascal Lenzner, \\v{S}imon Schierreich, Alexander Skopalik, Marcus Wunderlich"
+    ],
+    "abstract": "arXiv:2606.14428v1 Announce Type: new \nAbstract: Potential functions are a key tool in theoretical computer science with applications ranging from the runtime analysis of algorithms and data structures, through the analysis of the expected behavior of random processes and search heuristics, to proving the existence of equilibrium states in strategic games. Typically, proofs that employ potential functions are short, elegant, and easy to verify, yet very powerful. Moreover, potential functions are essential ingredients for constructive proofs, in particular in algorithmic game theory. There, a key question is the existence of equilibrium states, but the most powerful theorem in the field -- Nash's theorem -- is unfortunately non-constructive. For many strategic games, potential functions come to the rescue by enabling constructive proofs that sometimes even yield efficient algorithms for finding equilibria.\n  We add to this by providing a novel class of entropy-inspired log-multinomial potential functions for natural game-theoretic settings where rational agents of different types strategically choose actions to maximize their utility. In particular, we consider utility functions that are based on the fraction of same- and other-type agents taking the same action. We demonstrate the versatility of the new potential function class by presenting simple equilibrium existence proofs for two recent game-theoretic models, for which only involved technical proofs were previously known. Even better, the new potential function class yields efficient algorithms for constructing equilibria for much more general models. Thereby, we positively resolve several open problems.",
+    "link": "https://arxiv.org/abs/2606.14428",
+    "published": "2026-06-15 07:24:28.496818",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496821",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14428v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "fcae7318fc3c77cf",
+    "title": "Generalized Framework for a Fair Comparison of Cellular and Cooperative Massive MIMO Systems",
+    "authors": [
+      "Leonard Paul Schulz, Stefan Schwarz, Gerhard Bauch"
+    ],
+    "abstract": "arXiv:2606.14448v1 Announce Type: new \nAbstract: Cooperative massive multiple-input multiple-output (MIMO) promises large gains over cellular deployments, but existing comparisons of different architectures often mix antenna distribution, inter-site coordination, and processing assumptions. This paper introduces a graph-based framework for fair comparison of cellular, coordinated, and cell-free massive-MIMO systems. We differentiate between two key properties, namely antenna distribution and inter-site cooperation, which yields seven representative system types. We derive compatible uplink and downlink spectral efficiency (SE) expressions, including an uplink bound for detectors with mixed instantaneous and statistical effective channel state information (CSI), and adapt scalable user association and processing rules to all considered architectures. We evaluate these systems using extensive numerical simulations and show that for a fair comparison much larger simulation areas (at least 2.5 $\\times$ 2.5 km2) than commonly used are required. We introduce the relative capacity, which measures how closely each architecture approaches centralized cell-free processing. The results show that coordinated, phase-aligned beamforming across spatially distributed antennas is the main source of cooperation gains. In dense deployments with few antennas per access point (AP), coordinated Distributed Antenna System (DAS) and hybrid cell-free architectures achieve much of the centralized cell-free performance while requiring substantially weaker midhaul assumptions.",
+    "link": "https://arxiv.org/abs/2606.14448",
+    "published": "2026-06-15 07:24:28.496833",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496836",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14448v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "2f719e73a793c1e0",
+    "title": "Nonlinear Two-Time-Scale Stochastic Approximation: A Sharp Phase Transition and How to Beat It",
+    "authors": [
+      "Dhruv Sarkar, Vaneet Aggarwal"
+    ],
+    "abstract": "arXiv:2606.14488v1 Announce Type: new \nAbstract: Recent finite-time analyses of nonlinear two-time-scale stochastic approximation show that under contractive assumptions the slow iterate $Y_k$ with stepsizes $\\beta_k=\\Theta(k^{-1})$ and $\\alpha_k=\\Theta(k^{-a})$, $a\\in(1/2,1)$, generally satisfies a mean-square rate of order $k^{-a}$; decoupled $k^{-1}$ rates require strong local linearity. We identify a sharp regularity-dependent boundary. In a rate-determining normal form where the slow drift contains a locally linear leakage and a nonlinear remainder of order $1+\\rho$ ($\\rho\\in[0,1]$), the uncorrected recursion satisfies \\[ \\mathbb{E}\\|Y_k\\|^2 \\le C\\bigl(k^{-1}+k^{-a(1+\\rho)}\\bigr), \\] and a matching scalar Gaussian lower bound shows that the slower term is unavoidable without modifying the update. Thus the decoupled $k^{-1}$ rate is guaranteed for the uncorrected recursion exactly when $a(1+\\rho)\\ge 1$. This lower bound concerns only the naive update; it is not an information-theoretic obstruction. We demonstrate this by equipping the normal-form recursion with an auxiliary online bias estimator \\[ M_{k+1}=M_k+\\gamma_k(R(X_k)-M_k),\\qquad \\beta_k\\ll\\gamma_k\\ll\\alpha_k, \\] and subtracting $M_k$ from the slow update. Under the same stability, moment, and remainder assumptions, the corrected recursion achieves $\\mathbb{E}\\|\\widetilde Y_k\\|^2=O(k^{-1})$ for every $\\rho\\in[0,1]$, including regimes where the uncorrected update provably suffers the slower rate. Finally, we prove localized transfer theorems that extend the phase-transition mechanism to general nonlinear TTSA in fast-manifold coordinates. The proofs are non-asymptotic and rely on two Abel-transform cancellations: one for the locally linear fast-error leakage, and one for the tracked nonlinear bias.",
+    "link": "https://arxiv.org/abs/2606.14488",
+    "published": "2026-06-15 07:24:28.496848",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496851",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14488v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "c3a81c024486f94c",
+    "title": "Securing the Future of IoMT in the Post-Quantum Era: An Edge-Native Federated Learning Approach",
+    "authors": [
+      "Taym Alshoghri, Deemah H. Tashman, Mohammad Reza Gerami, Soumaya Cherkaoui"
+    ],
+    "abstract": "arXiv:2606.14515v1 Announce Type: new \nAbstract: Internet of Medical Things (IoMT) devices operate under strict resource constraints while handling highly sensitive health data, making security and privacy critical concerns. Federated learning (FL) further complicates this landscape, as model updates exchanged during training may unintentionally expose private medical information. Emerging quantum computing capabilities threaten the long-term viability of conventional lightweight cryptographic mechanisms, motivating the integration of Post-Quantum Cryptography (PQC) into IoMT systems. This article discusses key enabling technologies for quantum-resilient IoMT, including post-quantum key establishment, lightweight encryption, and edge-native orchestration. We propose a scalable Kubernetes-based framework that integrates PQC into FL-enabled IoMT environments and validate it on a Raspberry Pi testbed. Results demonstrate that distributed cryptographic processing significantly reduces latency compared to sequential designs while maintaining feasible resource overhead. The primary contribution of this work lies in the design and validation of a secure orchestration and communication framework for FL-enabled IoMT systems. We conclude by outlining future directions toward energy-aware architectures, intelligent security optimization, and resilient next-generation Intelligent Internet of Medical Things (IIoMT) ecosystems.",
+    "link": "https://arxiv.org/abs/2606.14515",
+    "published": "2026-06-15 07:24:28.496862",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496865",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14515v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "0f4561823428c49e",
+    "title": "From Shield to Target: Denial-of-Service Attacks on LLM-Based Agent Guardrails",
+    "authors": [
+      "Yuguang Zhou, Xunguang Wang, Pingchuan Ma, Zhantong Xue, Zhaoyu Wang, Shuai Wang"
+    ],
+    "abstract": "arXiv:2606.14517v1 Announce Type: new \nAbstract: LLM-based guardrails have emerged as a highly effective defense against prompt injection and jailbreak attacks in autonomous agents. However, we reveal that the very reasoning and task-following capabilities enabling this protection introduce a novel vulnerability: attackers can inject crafted data to trap the guardrail in extended reasoning loops, effectuating a systematic denial-of-service (DoS) attack. To systematically expose this threat, we design a beam-search optimization framework that crafts natural-language payloads to maximize guardrail reasoning length, utilizing an LLM proposer guided by a strategy bank. Based on the observation of guardrail's schema-following nature, we also provide another attack framework driven by mechanism-aware structural mutations with less computational load. The attack efficacy is systematically evaluated in two parts. First, in standalone evaluations, the attack generalizes across diverse guardrail architectures, safety templates, and agent benchmarks. Payloads optimized on a single open-source surrogate successfully transfer to eight leading model backbones (e.g., Claude, GPT, Gemini, DeepSeek, and Qwen), achieving a 13--63$\\times$ token amplification. Second, in end-to-end real-world agent deployments (web, desktop, code, and multi-agent systems), the attack reveals up to a 148$\\times$ latency amplification. We show that a single poisoned document can saturate shared guardrail infrastructures, effectively starving co-located agents and paralyzing the entire system. By uncovering this availability flaw, our work underscores the urgent need to develop cost-bounded, reasoning-robust guardrails.",
+    "link": "https://arxiv.org/abs/2606.14517",
+    "published": "2026-06-15 07:24:28.496876",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496879",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14517v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "76692be76671d9ba",
+    "title": "Detecting Bot Detection: Prevalence, Techniques, and Implications for Web Measurement Research",
+    "authors": [
+      "Ralf Gundelach, Michael M\\\"uhlhauser, Dominik Herrmann"
+    ],
+    "abstract": "arXiv:2606.14525v1 Announce Type: new \nAbstract: Browser automation frameworks are essential tools for security and privacy research on the web, yet bot detection scripts increasingly probe their artifacts, threatening measurement validity as automated browsers may be blocked or served different content. Prior work measures detection deployment, while we measure blocking-induced sample loss. Through a literature survey of top-tier security, privacy, and web measurement venues, we find that 83% of papers omit any discussion of bot detection blocking. To address this gap, we conduct a measurement study of 10,000 websites across four browser configurations (40K page visits in total) to quantify detection prevalence and employed techniques. Using custom instrumentation to detect when sites probe for automation, we develop a taxonomy of bot detection techniques and measure how often they appear in practice. Chromium headless encounters a 15% soft block rate compared to 7% for other configurations. Across all conditions, 82% of blocks are attributable to bot detection (59% vendor-confirmed, 23% inferred from condition-dependent blocking), predominantly by providers with integrated bot detection such as Cloudflare (37% block rate) and Akamai (26%). A header spoofing experiment establishes that 75% of Chromium-headless-only blocks are caused by header-level signals alone, yet JavaScript-based environment probing is more extensive than current blocking rates suggest. These findings demonstrate that bot detection creates systematic, provider-correlated sample loss that the web measurement community neither measures nor reports. The downstream effect on specific measurement outcomes remains future work.",
+    "link": "https://arxiv.org/abs/2606.14525",
+    "published": "2026-06-15 07:24:28.496891",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496894",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14525v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CY",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "6e852f02b955dcda",
+    "title": "Asymptotically Optimal Codes for Correcting Burst Deletions and Insertions in Labeled DNA Sequences",
+    "authors": [
+      "Wenhao Liu, Zhengyi Jiang, Zhongyi Huang, Hanxu Hou"
+    ],
+    "abstract": "arXiv:2606.14573v1 Announce Type: new \nAbstract: Fluorescent labeling is a cornerstone of DNA visualization and a key enabler of random access in DNA-based data storage. However, the stochastic nature of biochemical processes, including synthesis, hybridization, and optical readout, induces \\emph{burst} synchronization errors within the resulting labeling sequences. To address this critical challenge, we formally introduce \\emph{burst $t$-deletion/insertion $\\mathcal{A}$-labeling codes,} designed to correct a single burst of $t$ deletions or insertions in the label domain. Our contributions are threefold.\n  \\begin{itemize}\n  \\item \\textbf{Fundamental limit.} We establish an information-theoretic lower bound of $\\log_4 n + \\mathcal{O}(1)$ on the redundancy of any such code for all $t \\ge 1$ with $t \\mid n$. To the best of our knowledge, this resolves the first information-theoretic lower bound even for the single-error case \\(t=1\\).\n  \\item \\textbf{Explicit construction.} For $t \\ge 2$, $t \\mid n$, and $n \\ge 7t + 3$, we propose explicit encoding and decoding algorithms, both running in $\\mathcal{O}(n^2)$ time. A novel generalized Run-Length Limited (RLL) constraint is introduced to bridge the structural mismatch between the DNA encoding domain and the label error domain.\n  \\item \\textbf{Asymptotic optimality.} The proposed scheme achieves redundancy $\\log_4 n + (t-1)\\log_4 \\log_{8/3} n + \\mathcal{O}(1)$, matching the dominant term of the lower bound up to a small $\\mathcal{O}(\\log\\log n)$ overhead, rendering the construction asymptotically optimal for fixed $t$.\n  \\end{itemize}",
+    "link": "https://arxiv.org/abs/2606.14573",
+    "published": "2026-06-15 07:24:28.496905",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496908",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14573v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "5eb3173dbf762148",
+    "title": "When Good Verifiers Go Bad: Self-Improving VLMs Can Regress on New Tasks",
+    "authors": [
+      "Jianzhe Lin"
+    ],
+    "abstract": "arXiv:2606.14629v1 Announce Type: new \nAbstract: Verifier-driven self-DPO is a common recipe for self-improving production visual-language models. In this setup, a frozen verifier scores candidate generations, the top- and bottom-scoring candidates form a preference example, and DPO updates the learner. The deployment-time assumption is monotone: a stronger verifier should yield a stronger student. We show that this assumption can fail because verifier quality is highly task-specific. On a four-rung open-source verifier ladder across MathVista, MMMU, and BLINK, the same verifiers that are above-threshold and improve a Qwen-3-VL-2B student on MathVista become sub-threshold on MMMU, where their task-rubric accuracy drops to 8% to 23%.\n  In this regime, every verifier we tested silently regresses the student, producing drops of 3.4 to 10.9 percentage points below the frozen baseline while the DPO training loss continues to decrease. The regression replicates on a second student, Qwen-2.5-VL-3B. Moreover, within the failure regime, damage is confidence-inverted: the more accurate-but-still-wrong verifier causes larger regression than a near-random verifier, suggesting that progress-gated replay amplifies confidently wrong preference pairs. We give a compact mechanistic explanation via a variance theorem for progress-gated replay and its direction-mismatch failure mode.\n  The deployment message is operational rather than purely diagnostic: before running any verifier-driven loop, teams should measure target-task rubric accuracy, rank verifiers by target-task rubric quality rather than parameter count, and treat diminishing returns in above-threshold regimes as a verifier-side compute budget cap.",
+    "link": "https://arxiv.org/abs/2606.14629",
+    "published": "2026-06-15 07:24:28.496919",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496922",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14629v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "0d620d15b3218db8",
+    "title": "Syntax and semantics of focalisation with relative monads and comonads",
+    "authors": [
+      "\\'El\\'eonore Mangel, Paul-Andr\\'e Melli\\`es, Guillaume Munch-Maccagnoni"
+    ],
+    "abstract": "arXiv:2606.14652v1 Announce Type: new \nAbstract: The logical principles of focalisation and polarisation can be used to design well-behaved term syntaxes for sequent calculus, which play a role as meta-languages for describing effectful computation. On the semantics side, this corresponds to an axiomatic and polarised notion of model of computation stated in terms of adjunctions over non-associative categories.\n  In this paper, we study the special and delicate cases of resource and effect modalities in a general intuitionistic and linear setting: an exponential comonad $!$ (refining $\\square$) and a strong monad $\\lozenge$. The starting point of our contribution is noticing that the completeness for a polarised syntax for $!$ and $\\lozenge$ with respect to (co)monads in linear call-by-push-value models can be achieved if we move to relative (co)monads: more precisely, comonads relative to $\\downarrow$ (the positive shift functor) for $!$ and monads relative to $\\uparrow$ (the negative shift functor) for $\\lozenge$.\n  These specialisations of the concept of relative (co)monad to call-by-push-value adjunctions recently appeared. Yet the syntax we present arose from proof-theoretic consideration, without the link with relative (co)monads being noticed at the time. Our first remark is thus that (co)monads relative to a call-by-push-value adjunction have been motivated previously from a proof-theoretic perspective in the context of focalisation, which also provides a meta-language for these concepts in an effectful setting.\n  We carry out the study of these modalities from the axiomatic, non-associative point of view. We recall the notion of adjunction over non-associative categories, and establish correspondence results between this notion of adjunction and that of relative adjunction. This correspondence is then extended to linear-non-linear and strong versions of adjunctions as needed to model $!$ and $\\lozenge$.",
+    "link": "https://arxiv.org/abs/2606.14652",
+    "published": "2026-06-15 07:24:28.496933",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496936",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14652v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.PL",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "b6715faece4f59fc",
+    "title": "An Exposition of Five Candidates Suffice for a Majority",
+    "authors": [
+      "Moses Charikar, Prasanna Ramakrishnan, Kangning Wang"
+    ],
+    "abstract": "arXiv:2606.14666v1 Announce Type: new \nAbstract: We give a brief exposition of a result of Song, Nguyen, and Lin (2026) that every election (with ranked preferences) has a Condorcet winning set of at most five candidates.",
+    "link": "https://arxiv.org/abs/2606.14666",
+    "published": "2026-06-15 07:24:28.496947",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496950",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14666v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.CO",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "9dc2a2291d5efebd",
+    "title": "History of the Muddy Children Puzzle",
+    "authors": [
+      "Hans van Ditmarsch"
+    ],
+    "abstract": "arXiv:2606.13703v1 Announce Type: cross \nAbstract: The Muddy Children Puzzle is a puzzle about knowledge and ignorance that has been inspiring for the development of epistemic logic. Who came up with it first? This is unclear. We trace the origin of the Muddy Children Puzzle through logical and literary publications over the past two centuries. The puzzle inspired a numerous variations such as involving numbers or coloured hats. We also present a novel hats puzzle involving self-reference.",
+    "link": "https://arxiv.org/abs/2606.13703",
+    "published": "2026-06-15 07:24:28.496961",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496964",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13703v1",
+      "categories": [
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.GL",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "70cac5421f4f2a1d",
+    "title": "A Modern Large-Scale Memory Characterization Laboratory",
+    "authors": [
+      "Ataberk Olgun, Haocong Luo, Ismail Emir Yuksel, F. Nisa Bostanci, A. Giray Yaglikci, Onur Mutlu"
+    ],
+    "abstract": "arXiv:2606.13725v1 Announce Type: cross \nAbstract: Real memory chip characterization yields insights into fundamental operational characteristics of modern memory, enabling new mechanisms that improve memory performance, robustness, security, and energy efficiency. We describe our large-scale DRAM characterization laboratory for understanding DRAM. A key building block of this laboratory is DRAM Bender, a versatile and easy-to-use modern DRAM characterization infrastructure. We have updated DRAM Bender to i) introduce support for new types of characterization experiments, ii) expand on its DRAM interface standard support, and iii) make it easier to use at large scale. This paper introduces these updates for the first time. We hope our infrastructure enables the community to discover new problems and solve critical memory scaling issues, enabling the overcoming of the huge memory bottleneck that plagues modern computing systems.",
+    "link": "https://arxiv.org/abs/2606.13725",
+    "published": "2026-06-15 07:24:28.496975",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496978",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13725v1",
+      "categories": [
+        {
+          "term": "cs.AR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.DC",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.PF",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "f625d62feb1516f0",
+    "title": "Beyond LoRA: Is Sparsity-Induced Adaptation Better?",
+    "authors": [
+      "Elijah Cadenhead, Cristian McGee, Xin Li, El Houcine Bergou, Aritra Dutta"
+    ],
+    "abstract": "arXiv:2606.13767v1 Announce Type: cross \nAbstract: Low-rank adaptation (LoRA) and its variants provide a memory- and compute-efficient alternative to full fine-tuning of pre-trained models. However, questions remain about the comparative generalizability of these approaches and how the structural restrictions on low-rank updates preserve effective adaptation performance. We present a historical framing, covering the past (full fine-tuning and original LoRA), the present (different variants of LoRA), and propose simpler, cheaper, parameter-efficient extensions by inducing sparsity within existing LoRA variants: Cheap LoRA (cLA), training a single low-rank factor with the other fixed (deterministically or, in its randomized variant, stochastically), and the chained circulant variant, ${c}^3$LA. We frame cLA as a structured instance of asymmetric LoRA, serving as a controlled column-subspace restriction of full fine-tuning. We derive information-theoretic generalization error bounds for these variants, marking one of the first endeavors in this area. Empirically, we evaluate 11 fine-tuning methods across 10 pre-trained models and 14 datasets, analyzing the fine-tuned models' performance and generalization using tools such as loss landscapes and spectral analysis. Despite the sensitivity of fine-tuned models to the pre-trained model, datasets, and other factors, our study suggests that restricting LoRA-based PEFT methods' adaptation to a sparse, structured column space remains competitive across tasks with their parameter-matched baselines while reducing up to 10% training time and peak GPU memory up to 15%, even with a na\\\"ive, non-optimized, sparse implementation. Our theoretical and empirical generalization measures provide a more consistent and principled approach to their cost-effective adaptation than commonly used analytical tools. Overview and code are available at: https://elicaden.github.io/Beyond_LoRA/.",
+    "link": "https://arxiv.org/abs/2606.13767",
+    "published": "2026-06-15 07:24:28.496989",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.496992",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13767v1",
+      "categories": [
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "d624a0a66704e12c",
+    "title": "Safety-Contract Graph Multi-Agent Reinforcement Learning for Autonomous Network Security Response",
+    "authors": [
+      "Jose Luis Lima de Jesus Silva"
+    ],
+    "abstract": "arXiv:2606.13832v1 Announce Type: cross \nAbstract: Autonomous network-security response systems promise to reduce Security Operations Centre (SOC) reaction latency, but reward-only multi-agent reinforcement learning (MARL) can improve security reward while remaining non-deployable. We present a safety-contract graph MARL framework and instantiate it as ACD$^3$-GAT (Adaptive Constrained Counterfactual Decisioning with a Graph Attention Network encoder), an architecture that separates simulator observations from reusable operational budgets, constrained optimization, graph state encoding, and counterfactual action screening. We evaluate the method in CAGE Challenge 4, where agents operate under budgets for Mean Time to Recover (MTTR), false-positive response, and firewall change-management disruption. Across the benchmark, every unconstrained method violates the SOC downtime budget in 100% of evaluated episodes, with mean downtime proxy costs of 311-430 against a budget of 50. This complements prior CAGE Challenge 4 findings by showing that reward-only learning lacks operational discipline. Constrained MAPPO-GAT (C-MAPPO-GAT) isolates Lagrangian operational-cost control and budget-aware screening, while ACD$^3$-GAT adds budget context, CVaR tail-risk estimation, opponent-belief state, and Graph Counterfactual Risk Propagation (G-CRP). The replicated comparison includes three 200-episode seeds for IPPO, MAPPO-GAT, C-MAPPO-GAT, and ACD$^3$-GAT. C-MAPPO-GAT reduces downtime violation from 100% to 0.3% and mean downtime cost from 355.4 to 15.5 relative to MAPPO-GAT. ACD$^3$-GAT reduces mean downtime cost to 48.2 with a 13.8% violation rate, placing it on the safety-contract frontier rather than at the most conservative compliance point. Topology-seed and coupled adaptive Red-process stress tests preserve this contrast and show lower worst adaptive degradation for safety-constrained policies than reward-only MAPPO-GAT.",
+    "link": "https://arxiv.org/abs/2606.13832",
+    "published": "2026-06-15 07:24:28.497003",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.497006",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13832v1",
+      "categories": [
+        {
+          "term": "cs.MA",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "df2a26109b2209c0",
+    "title": "Degree-Four Vector-Coordinate SoS Cannot Detect the MUB Upper Bound",
+    "authors": [
+      "Shreyhaan Sarkar"
+    ],
+    "abstract": "arXiv:2606.13903v1 Announce Type: cross \nAbstract: We prove a degree-four Sum-of-Squares lower bound for the standard vector-coordinate formulations of mutually unbiased bases. For every dimension $d$ and every proposed number $m$ of bases, we construct a degree-four pseudoexpectation satisfying the orthonormality constraints and the cross-unbiasedness constraints in the quartic equality formulation. The construction is expectation over $m$ independent Haar-random orthonormal bases. We also prove that the same pseudoexpectation satisfies the degree-four localizing constraints for the natural $2\\times 2$ Hermitian semidefinite formulation of the cross-coherence inequalities. Consequently, degree-four vector-coordinate SoS cannot refute the existence of $m$ mutually unbiased bases, even when $m>d+1$. In particular, under the two vector-coordinate encodings explicitly described in Randomstrasse101 Open Problem 23, degree-four SoS cannot prove that seven mutually unbiased bases do not exist in $\\mathbb C^6$. We contrast this with a centered projector-coordinate Gram formulation, where degree-four SoS already recovers the elementary upper bound $m\\le d+1$, giving a simple separation between vector-coordinate and projector-coordinate degree-four relaxations.",
+    "link": "https://arxiv.org/abs/2606.13903",
+    "published": "2026-06-15 07:24:28.497017",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.497019",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13903v1",
+      "categories": [
+        {
+          "term": "math.CO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.OC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "fdd0a35ab8b2a46e",
+    "title": "Bayesian-Calibrated Detection of Hallucinated Package Imports in AI-Assisted Code",
+    "authors": [
+      "Lom M. Hillah (NewCo Partners, Paris, France, Sorbonne Universit\\'e, CNRS, LIP6, Paris, France), Jean-Marc Richard (NewCo Partners, Paris, France), Ryan Hasnaoui (NewCo Partners, Paris, France)"
+    ],
+    "abstract": "arXiv:2606.13918v1 Announce Type: cross \nAbstract: We present a Bayesian calibration layer for slopsquat detectors -- those that flag hallucinated package imports in code produced by large language models (LLMs). Where existing pipelines emit binary decisions (flag / do-not-flag), our layer emits a Beta-posterior probability per detection, derived from a 3-category epistemic taxonomy that explicitly classifies each prior as empirically calibrated, constructively argued, or engineering-judgement-traced. Beyond the primary 200/404 registry channel, the calibrated layer exploits PyPI metadata signals -- package age, release count, author descriptor, summary -- to surface registered-but-suspicious packages that a binary registry detector misses, which is the realistic post-LLM-emission attacker regime. The resulting risk-aware primitive is directly consumable by downstream CI gates and supports principled threshold decisions across detection rules. We evaluate the calibration on a merged corpus of 1,734 Python snippets -- a stratified 189-prompt BigCodeBench slice plus a 100-prompt niche-library stress-test set, generated across a six-model panel spanning four cloud models (Claude-Sonnet-4.6, Mistral-Large, DeepSeek-v4-pro, DeepSeek-R1) and two local open-weight code models (Mistral Codestral, Meta CodeLlama). Against a re-implemented binary baseline inspired by Mahmud et al. -- which shares its registry oracle with our ground truth and therefore serves as a degenerate upper bound rather than a genuine competitor -- the calibrated layer reproduces the strict-registry detections and introduces well-calibrated additional flags on the metadata channel. We assess detector asymmetry with a McNemar paired test and calibration with both a flagged-subset Expected Calibration Error and a strictly proper full-corpus Brier score.",
+    "link": "https://arxiv.org/abs/2606.13918",
+    "published": "2026-06-15 07:24:28.497030",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.497034",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.13918v1",
+      "categories": [
+        {
+          "term": "cs.SE",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "a1f9366ff34c41d2",
+    "title": "HARBOR: Heading Analysis and Reconstruction from Behavioral Observation and Radar",
+    "authors": [
+      "Joao P. A. Dantas, Paulo F. Silva Filho, Jelton A. Cunha, Gabriel Dietzsch"
+    ],
+    "abstract": "arXiv:2606.14006v1 Announce Type: cross \nAbstract: Maritime situational awareness often relies on Automatic Identification System (AIS) transmissions to track vessel movements. However, in operational or conflict scenarios, these data may be unavailable due to signal loss, deliberate deactivation, or intentional spoofing. In such conditions, synthetic aperture radar (SAR) imagery becomes a critical sensing alternative for wide-area maritime monitoring, despite providing only static scene snapshots. This work introduces HARBOR (Heading Analysis and Reconstruction from Behavioral Observation and Radar), a complete pipeline for transforming a single SAR image into predictive motion information without requiring any auxiliary data source at inference time. The method begins with SAR image preprocessing to enhance and segment vessel candidates, followed by automatic detection, size-based classification, and heading estimation using skeleton geometry and local intensity patterns. AIS data are used exclusively during an offline calibration phase to derive vessel-type-dependent motion parameters, which are then applied to generate probabilistic heatmaps of candidate future vessel positions. A case study using real COSMO-SkyMed SAR imagery demonstrates the pipeline on a maritime scene in southern Brazil, showing its ability to extract motion tendencies and generate probabilistic projections of vessel positions in data-denied environments.",
+    "link": "https://arxiv.org/abs/2606.14006",
+    "published": "2026-06-15 07:24:28.497044",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-06-15 07:24:28.497047",
+    "tags": [],
+    "raw_data": {
+      "arxiv_id": "oai:arXiv.org:2606.14006v1",
+      "categories": [
+        {
+          "term": "cs.CV",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.ET",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  }
+]
