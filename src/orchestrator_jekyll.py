@@ -26,7 +26,7 @@ from .normalizer import normalize_papers, enrich_paper_metadata
 from .deduplicate import deduplicate_papers
 from .semantic_analyzer import SemanticAnalyzer
 from .arxiv_deep_reader import deep_read_high_score_papers
-from .reference_paper_analyzer import run_reference_paper_analysis
+from .reference_paper_analyzer import run_reference_paper_analysis, generate_research_directions_from_papers
 from .data_exporter import DataExporter
 from .database import RadarDatabase
 from .email_sender import send_daily_email
@@ -80,12 +80,26 @@ class QuantumRSSRadarJekyll:
             self.sources = load_sources(self.config_dir)
             self.research_directions = load_research_directions(self.config_dir)
 
+            # Auto-generate research_directions.md from PDFs if it doesn't exist
+            # but config/papers/ has PDFs
+            rd_path = Path(self.config_dir) / "research_directions.md"
+            if not rd_path.exists() or rd_path.stat().st_size < 50:
+                papers_dir = Path(self.config_dir) / "papers"
+                if papers_dir.exists() and any(papers_dir.rglob("*.pdf")):
+                    logger.info("research_directions.md missing or empty — auto-generating from PDFs...")
+                    generated = generate_research_directions_from_papers(self.config_dir, self.config)
+                    if generated:
+                        self.research_directions = generated
+                        logger.info(f"Auto-generated research_directions.md ({len(generated)} chars)")
+                    else:
+                        logger.warning("Could not auto-generate research_directions.md — pipeline may produce poor results")
+
             logger.info(f"Loaded {len(self.feeds)} RSS feeds")
             logger.info(f"Loaded {len(self.sources)} source configurations")
             logger.info(f"Research directions loaded: {len(self.research_directions)} characters")
 
-            # Initialize semantic analyzer
-            self.analyzer = SemanticAnalyzer(self.config)
+            # Initialize semantic analyzer (pass config_dir for prompt template loading)
+            self.analyzer = SemanticAnalyzer(self.config, config_dir=self.config_dir)
             self.analyzer.load_research_directions(self.research_directions)
             self.analyzer.load_curated_papers(self.config_dir)
 
@@ -201,7 +215,10 @@ class QuantumRSSRadarJekyll:
             pipeline_ts = datetime.now().isoformat()
             try:
                 self.db = RadarDatabase()
-                db_saved = self.db.save_papers(all_papers_with_analyses, self.sources, pipeline_ts)
+                feed_configs = {feed.name: feed for feed in self.feeds} if self.feeds else None
+                db_saved = self.db.save_papers(
+                    all_papers_with_analyses, self.sources, pipeline_ts, feed_configs,
+                )
                 logger.info(f"Saved {db_saved} papers to database")
             except Exception as e:
                 logger.warning(f"Failed to save to database: {e}")
@@ -209,7 +226,11 @@ class QuantumRSSRadarJekyll:
             # Step 12: Send daily email (if enabled)
             if self.config.email_enabled:
                 logger.info("Sending daily email digest...")
-                email_success = send_daily_email(all_papers_with_analyses, self.sources, self.config)
+                # Build feed-level config lookup (feed_name → FeedConfig)
+                feed_configs = {feed.name: feed for feed in self.feeds}
+                email_success = send_daily_email(
+                    all_papers_with_analyses, self.sources, self.config, feed_configs,
+                )
                 if email_success:
                     logger.info("Daily email sent successfully")
                     if results:
@@ -266,7 +287,8 @@ class QuantumRSSRadarJekyll:
             Dictionary with export results
         """
         exporter = DataExporter(self.config.output_dir if self.config else "data")
-        results = exporter.export_all(papers_with_analyses, self.sources)
+        feed_configs = {feed.name: feed for feed in self.feeds} if self.feeds else None
+        results = exporter.export_all(papers_with_analyses, self.sources, feed_configs=feed_configs)
         return results
 
     def _copy_to_jekyll_site(self, results: Dict[str, Any]):

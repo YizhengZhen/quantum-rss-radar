@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import List, Optional, Dict
 import logging
 
-from .models import Paper, PaperAnalysis, PaperSource, Config, SourceConfig
+from .models import Paper, PaperAnalysis, PaperSource, Config, SourceConfig, FeedConfig
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +35,35 @@ _SOURCE_PRIORITY: Dict[str, int] = {
     "springer": 5,
     "acm": 5,
 }
+
+
+def _resolve_feed_config(
+    paper: Paper,
+    sources: Dict[str, SourceConfig],
+    feed_configs: Dict[str, FeedConfig],
+) -> tuple[str, str]:
+    """Resolve display name and colour for a paper.
+
+    Priority:
+      1. Feed-level display_name/color (from feed_configs, keyed by feed_name)
+      2. Source-level display_name/color (from sources, keyed by source value)
+      3. Hard-coded fallback
+
+    Returns:
+        (display_name, color) tuple
+    """
+    # Try feed-level config first
+    feed_cfg = feed_configs.get(paper.feed_name) if feed_configs else None
+    if feed_cfg and feed_cfg.display_name and feed_cfg.color:
+        return feed_cfg.display_name, feed_cfg.color
+
+    # Fall back to source-level config
+    src_cfg = sources.get(paper.source.value) if sources else None
+    if src_cfg:
+        return src_cfg.display_name, src_cfg.color
+
+    # Hard fallback
+    return paper.source.value.upper(), "#757575"
 
 
 def _email_sort_key(pair: tuple) -> tuple:
@@ -68,11 +97,10 @@ def format_single_paper_html(
     paper: Paper,
     analysis: PaperAnalysis,
     sources: Optional[Dict[str, SourceConfig]] = None,
+    feed_configs: Optional[Dict[str, FeedConfig]] = None,
     rank: Optional[int] = None,
 ) -> str:
-    src_cfg = sources.get(paper.source.value) if sources else None
-    src_display = src_cfg.display_name if src_cfg else paper.source.value.upper()
-    src_color = src_cfg.color if src_cfg else ("#7ED321" if analysis.recommendation else "#F5A623")
+    src_display, src_color = _resolve_feed_config(paper, sources or {}, feed_configs or {})
 
     src_tag = _source_tag_html(paper.source.value, src_display, src_color)
     dir_badge = _direction_badge_html(analysis.direction or "General / Other")
@@ -131,6 +159,7 @@ def build_email_html(
     papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
     sources: Dict[str, SourceConfig],
     config: Config,
+    feed_configs: Optional[Dict[str, FeedConfig]] = None,
 ) -> str:
     date_str = datetime.now().strftime("%B %d, %Y")
     total = len(papers_with_analyses)
@@ -159,7 +188,7 @@ def build_email_html(
     )
 
     papers_html = "".join(
-        format_single_paper_html(p, a, sources, rank=i + 1)
+        format_single_paper_html(p, a, sources, feed_configs, rank=i + 1)
         for i, (p, a) in enumerate(top_papers)
     )
 
@@ -265,6 +294,7 @@ def build_email_text(
     papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
     sources: Dict[str, SourceConfig],
     config: Config,
+    feed_configs: Optional[Dict[str, FeedConfig]] = None,
 ) -> str:
     date_str = datetime.now().strftime("%B %d, %Y")
     total = len(papers_with_analyses)
@@ -294,8 +324,7 @@ def build_email_text(
     ]
 
     for i, (paper, analysis) in enumerate(top_papers, 1):
-        src_cfg = sources.get(paper.source.value)
-        src_display = src_cfg.display_name if src_cfg else paper.source.value.upper()
+        src_display, _ = _resolve_feed_config(paper, sources, feed_configs or {})
         rec = "[RECOMMENDED]" if analysis.recommendation else ""
         authors = ", ".join(paper.authors[:3])
         if len(paper.authors) > 3:
@@ -329,6 +358,7 @@ def send_daily_email(
     papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
     sources: Dict[str, SourceConfig],
     config: Config,
+    feed_configs: Optional[Dict[str, FeedConfig]] = None,
 ) -> bool:
     if not config.email_enabled:
         logger.info("Email sending is disabled in configuration")
@@ -350,8 +380,8 @@ def send_daily_email(
         date_str = datetime.now().strftime("%Y-%m-%d")
         subject = f"Quantum RSS Radar — Daily Research Digest ({date_str})"
 
-        html = build_email_html(papers_with_analyses, sources, config)
-        text = build_email_text(papers_with_analyses, sources, config)
+        html = build_email_html(papers_with_analyses, sources, config, feed_configs)
+        text = build_email_text(papers_with_analyses, sources, config, feed_configs)
 
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject

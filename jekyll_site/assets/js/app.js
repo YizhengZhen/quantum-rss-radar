@@ -177,21 +177,19 @@ function app() {
             return paperDate.includes(filterDate);
         },
 
-        // Source tag helpers (replaces previous category helpers)
-        getSourceName(sourceId) {
-            return this.sources[sourceId]?.name || sourceId;
+        // Source tag helpers — uses per-paper source_display_name / source_color
+        // (set by data_exporter.py from feed-level config, falling back to source-level)
+        getSourceName(paper) {
+            return paper.source_display_name || paper.source || 'Other';
         },
 
-        sourceStyle(sourceId) {
-            const src = this.sources[sourceId];
-            if (src && src.color) {
-                return {
-                    'background-color': `${src.color}20`,
-                    'color': src.color,
-                    'border': `1px solid ${src.color}`
-                };
-            }
-            return {};
+        sourceStyle(paper) {
+            const color = paper.source_color || '#757575';
+            return {
+                'background-color': `${color}20`,
+                'color': color,
+                'border': `1px solid ${color}`
+            };
         },
 
         // Date formatting

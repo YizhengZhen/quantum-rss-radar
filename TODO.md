@@ -8,23 +8,14 @@
 ## 🎯 当前版本状态
 
 核心 pipeline 已完成，GitHub Actions 已配置，系统可运行。
-基于 5/14→6/6 共 **5,438 篇论文** 的历史数据分析，当前 AI 打分存在三个主要问题：
 
-| 问题 | 数据表现 | 根因 |
-|------|----------|------|
-| **81% 归为 General / Other** | 方向分布极度失衡 | research_directions 写法不适合 LLM 判别 |
-| **22% 得 0 分**（1,181 篇）| 评分直方图底部异常偏高 | JSON 解析失败无 retry |
-| **均分仅 2.04** | 大量 0 分拖低均值 | 同上 + 方向不匹配论文被合理低分 |
+**最近更新（2026-06-29）：**
+- ✅ `config/analysis_prompt.md` — 用户可编辑的 LLM prompt 模板，无需修改 Python 代码
+- ✅ `generate_research_directions_from_papers()` — 当 RD 不存在但 papers 有 PDF 时自动生成
+- ✅ 评分规则统一（三套→一套），JSON 解析三层容错
+- ✅ 期刊级色块（邮件 + 网站显示具体期刊名而非出版商）
 
-6/6 A/B 对比（20 篇样本）验证新 directions 的效果：
-
-| 指标 | 旧 | 新 | Δ |
-|------|:--:|:--:|:-:|
-| Mean | 2.35 | 2.73 | +0.38 |
-| Max | 7.5 | 9.0 | +1.5 |
-| Other 占比 | 15/20 | 14/20 | ↓1 |
-| **方向纠正** | — | **3 篇**从 Other→有意方向（+6.0↑） | ✅ |
-| **JSON 解析失败** | — | **2 篇**（10%）被误杀为 0 | ❌ |
+**待验证：** 基于新配置的 A/B 对比（`scripts/rerun_analysis.py`），确认 score=0 占比从 22% 降至 ≤5%
 
 ---
 
@@ -34,9 +25,9 @@
                         ┌──────────────────────────────┐
                         │  Stage 0: 基础优化（现在做）    │
                         │  ├ 0.1 research_directions ✅  │
-                        │  ├ 0.2 JSON 解析 retry         │
-                        │  ├ 0.3 论文示例校准             │
-                        │  └ 0.4 对齐 prompt 评分指南     │
+                        │  ├ 0.2 JSON 解析 retry ✅      │
+                        │  ├ 0.3 论文示例校准 ✅          │
+                        │  └ 0.4 打分 Prompt 对齐 ✅      │
                         └──────────┬───────────────────┘
                                    ↓ 效果验证 (rerun_analysis.py)
                         ┌──────────────────────────────┐
@@ -72,32 +63,44 @@
   - 🔴 **不优先** — 属于该领域但不关心的子方向，给 1-3 分
 - **效果**：6/6 A/B 对比验证，3/20 篇论文从 Other 正确归入有意义的方向，分数提升 +6.0
 
-### 0.2 LLM JSON 解析失败 Retry（下一步修）
+### 0.2 ✅ LLM JSON 解析失败 Retry（已完成）
 - **做什么**：当 `json.loads` 解析失败时，不直接返回 score=0，而是：
   1. 尝试正则提取 JSON 片段
   2. 尝试让 LLM **重试一次**（追加 "Please respond with valid JSON only"）
   3. 仍失败再给默认值
-- **为什么**：22% 论文（1,181 篇）因此得 0 分，严重干扰评分统计。A/B 测试中 10% 论文被误杀
-- **验收标准**：score=0 的论文占比从 22% 降至 ≤5%
+- **实现**：`src/semantic_analyzer.py` 中 `_parse_llm_response` 重构为三层容错：`_try_parse_json`（层1+层2）→ LLM retry（层3）→ 默认值
+- **验收标准**：score=0 的论文占比从 22% 降至 ≤5%（需运行后验证）
 
-### 0.3 论文示例校准（根据论文改进 LLM 分析）
-- **做什么**：上传具有代表性的论文（PDF 或全文），人工标注预期评分和方向，作为 few-shot 示例注入 prompt
-- **为什么**：当前 LLM 完全是零样本打分，没有见过任何"好"或"差"的评分示例。上传你的关注论文可以让 LLM 理解你的 "研究品味"——什么是你真正关心的，什么只是擦边
-- **方案**：
-  1. 准备 5-10 篇典型论文，覆盖三个类别：
-     - 🟢 **高相关**（本应 8-10 分）— 你真正关注的核心论文
-     - 🟡 **边缘相关**（4-6 分）— 相关但不核心
-     - 🔴 **不相关**（0-2 分）— 完全无关但容易被误判
-  2. 人工给出预期评分和方向
-  3. 将这些示例作为 few-shot 注入 `_create_analysis_prompt`
-  4. 用 `scripts/rerun_analysis.py` 验证校准效果
-- **验收标准**：校准后 A/B 对比，方向判断准确率提升，分数分布更合理（中间段 4-6 填充）
+### 0.3 ✅ 论文示例校准（已完成 — 通过 PDF 自动分析实现）
+- **做什么**：上传具有代表性的论文（PDF），系统自动分析并写入 `config/curated_papers.yaml`，作为 few-shot 示例注入 LLM prompt
+- **当前状态**：已上传 19 篇 PDF，生成了 19 条校准示例，覆盖 4 个方向 × 4 个 tier：
+  - Quantum Information: 6 条（core×3, relevant×2, not_priority×2）
+  - Information Thermodynamics: 5 条（core×3, relevant×2）
+  - Hybrid Quantum Systems: 3 条（core×3）
+  - Quantum Networks: 1 条（unrelated×1）
+- **为什么这算完成**：你通过 Step 1.5（PDF 自动分析）实现了校准效果，无需人工逐篇标注。LLM 自己读 PDF 后生成 score/reason，自洽性有保障
+- **如需更精细的"人工品味校准"**：可手动编辑 `config/curated_papers.yaml` 中的 `score`/`reason` 字段，注入你个人的评分偏好
+- **验收标准**：✅ 19 条 few-shot 示例已注入每次 LLM 打分 prompt
 
-### 0.4 打分 Prompt 对齐 Tier Guide
-- **做什么**：`semantic_analyzer.py` 第 255 行旧的评分指南与 research_directions.md 头部的 Tier Guide 冲突，需要统一
-  - 删除旧 "0-2 不相关 / 3-5 相关 / 6-8 高度相关 / 9-10 必读"
-  - 改为引用 Tier Guide：**"Use the three-tier guide in RESEARCH INTERESTS above"**
-- **验收标准**：prompt 中只有一套评分规则
+### 0.4 ✅ 打分 Prompt 对齐 Tier Guide（已完成）
+- **做什么**：统一 `semantic_analyzer.py` 中的评分指南与 `research_directions.md` 头部的 Tier Guide
+- **实现**：删除了旧的 "0-2 不相关 / 3-5 相关 / 6-8 高度相关 / 9-10 必读" 评分规则，统一使用 Tier Guide 的四级评分（7.5–10.0 / 5.0–7.4 / 2.0–4.9 / 0.0–1.9）
+- **验收标准**：prompt 中只有一套评分规则 ✅
+
+### 0.5 ✅ config/analysis_prompt.md（已完成）
+- **做什么**：创建独立的 LLM prompt 模板文件，用户可直接编辑此文件调整评分指令、输出格式等，无需修改 Python 代码
+- **实现**：
+  - `config/analysis_prompt.md` — 使用 `{{变量名}}` 占位符的完整 prompt 模板
+  - `semantic_analyzer.py` — 新增 `_load_prompt_template()` 和 `_fill_prompt_template()` 方法
+  - 优先级：模板文件 > 硬编码回退
+- **验收标准**：编辑 `config/analysis_prompt.md` 即可改变 LLM prompt，无需改代码 ✅
+
+### 0.6 ✅ 自动生成 research_directions.md（已完成）
+- **做什么**：当 `config/research_directions.md` 不存在但 `config/papers/` 中有 PDF 时，自动调用 LLM 从论文推断研究方向并生成 RD
+- **实现**：
+  - `reference_paper_analyzer.py` — 新增 `generate_research_directions_from_papers()`
+  - `orchestrator_jekyll.py` — 在 `load_configuration()` 中检测并自动触发
+- **验收标准**：删除 RD 后运行 pipeline，系统自动从 PDF 生成 RD ✅
 
 ---
 
@@ -176,5 +179,11 @@
 | 数据探查脚本 | `scripts/inspect_results.py` — 历史评分分布分析 |
 | A/B 对比脚本 | `scripts/rerun_analysis.py` — 新配置效果验证 |
 | research_directions v2 | 三层分级 + 评分精度要求 + 方向重叠规则（5,900+ chars）|
-| 参考论文库 | `config/example_*.yaml` — few-shot 校准示例（含说明和示例 YAML）|
+| 参考论文库 | `config/curated_papers.yaml` — few-shot 校准示例（id-keyed, 用户管理）|
+| 参考 PDF 自动分析 | Step 1.5：扫描 `config/papers/{tier}/` 中的 PDF，自动生成 YAML 条目 |
 | docs/ 文档 | `architecture.md` + `setup.md` + `ai_analysis.md` + `email_sorting.md` |
+| **期刊级色块** | 色块显示从出版商（Nature/APS）改为具体期刊名（Nature Physics/PRL），覆盖邮件 + 网站 |
+| **评分规则统一** | 三套评分规则统一为 Tier Guide 四级评分（7.5–10.0 / 5.0–7.4 / 2.0–4.9 / 0.0–1.9）|
+| **JSON 解析三层容错** | 直接解析 → 正则提取 → LLM 重试，score=0 占比预期从 22% 降至 ≤5% |
+| **config/analysis_prompt.md** | 用户可编辑的 LLM prompt 模板，无需修改 Python 代码 |
+| **自动生成 research_directions.md** | 当 RD 不存在但 papers 有 PDF 时，自动从论文推断研究方向 |

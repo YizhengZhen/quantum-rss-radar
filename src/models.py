@@ -204,10 +204,16 @@ class FeedConfig(BaseModel):
 
     Note: 'category' has been removed.  The LLM assigns a
     research 'direction' during semantic analysis.
+
+    Each feed can optionally specify its own display_name and color
+    for per-journal colour tags in email and website.  Falls back to
+    the source-level config if not provided.
     """
     name: str = Field(..., description="Feed display name")
     url: str = Field(..., description="RSS feed URL")
     source: PaperSource = Field(..., description="Source type")
+    display_name: Optional[str] = Field(None, description="Journal display name (overrides source-level display_name)")
+    color: Optional[str] = Field(None, description="Hex colour for this journal's tag (overrides source-level color)")
     max_items: int = Field(-1, description="Maximum items to fetch (-1 for unlimited)")
     update_frequency: Dict[str, Any] = Field(default_factory=dict, description="Update frequency configuration")
 

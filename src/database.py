@@ -19,7 +19,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
-from .models import Paper, PaperAnalysis, DeepReadResult, SourceConfig
+from .models import Paper, PaperAnalysis, DeepReadResult, SourceConfig, FeedConfig
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +120,8 @@ class RadarDatabase:
     def save_papers(self,
                     papers_with_analyses: List[Tuple[Paper, PaperAnalysis]],
                     sources: Dict[str, SourceConfig],
-                    pipeline_run_timestamp: str) -> int:
+                    pipeline_run_timestamp: str,
+                    feed_configs: Optional[Dict[str, FeedConfig]] = None) -> int:
         """
         Insert or update papers in the database.
 
@@ -132,6 +133,7 @@ class RadarDatabase:
             papers_with_analyses: List of (paper, analysis) tuples
             sources: Source configs (for display name + colour)
             pipeline_run_timestamp: ISO timestamp of this pipeline run
+            feed_configs: Feed-level configs (for per-journal display name + colour)
 
         Returns:
             Number of papers saved
@@ -140,9 +142,15 @@ class RadarDatabase:
         saved = 0
         try:
             for paper, analysis in papers_with_analyses:
-                src_cfg = sources.get(paper.source.value)
-                src_display = src_cfg.display_name if src_cfg else paper.source.value
-                src_color = src_cfg.color if src_cfg else "#757575"
+                # Resolve display name and colour: feed-level first, then source-level
+                feed_cfg = feed_configs.get(paper.feed_name) if feed_configs else None
+                if feed_cfg and feed_cfg.display_name and feed_cfg.color:
+                    src_display = feed_cfg.display_name
+                    src_color = feed_cfg.color
+                else:
+                    src_cfg = sources.get(paper.source.value)
+                    src_display = src_cfg.display_name if src_cfg else paper.source.value
+                    src_color = src_cfg.color if src_cfg else "#757575"
 
                 deep_read_json = None
                 if analysis.deep_read:

@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
 
-from .models import Paper, PaperAnalysis, SourceConfig
+from .models import Paper, PaperAnalysis, SourceConfig, FeedConfig
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,8 @@ class DataExporter:
     def export_jsonl(self,
                      papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
                      sources: Dict[str, SourceConfig],
-                     timestamp: Optional[datetime] = None) -> Path:
+                     timestamp: Optional[datetime] = None,
+                     feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Path:
         """
         Export **all** papers to a JSONL file under data/all/.
 
@@ -78,7 +79,7 @@ class DataExporter:
         written = 0
         with open(output_path, "w", encoding="utf-8") as f:
             for paper, analysis in sorted_pairs:
-                record = self._paper_to_flat_dict(paper, analysis, sources, timestamp)
+                record = self._paper_to_flat_dict(paper, analysis, sources, timestamp, feed_configs)
                 f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
                 written += 1
 
@@ -92,7 +93,8 @@ class DataExporter:
     def export_markdown(self,
                         papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
                         sources: Dict[str, SourceConfig],
-                        timestamp: Optional[datetime] = None) -> Path:
+                        timestamp: Optional[datetime] = None,
+                        feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Path:
         """
         Export **all** papers as a single Markdown file under data/reports/.
 
@@ -124,8 +126,13 @@ class DataExporter:
         lines.append("")
 
         for idx, (paper, analysis) in enumerate(sorted_pairs, 1):
-            src_cfg = sources.get(paper.source.value)
-            src_display = src_cfg.display_name if src_cfg else paper.source.value
+            # Resolve display name: feed-level first, then source-level
+            feed_cfg = feed_configs.get(paper.feed_name) if feed_configs else None
+            if feed_cfg and feed_cfg.display_name:
+                src_display = feed_cfg.display_name
+            else:
+                src_cfg = sources.get(paper.source.value)
+                src_display = src_cfg.display_name if src_cfg else paper.source.value
 
             lines.append(f"## {idx}. {paper.title}")
             lines.append("")
@@ -227,11 +234,18 @@ class DataExporter:
     def _paper_to_flat_dict(paper: Paper,
                             analysis: PaperAnalysis,
                             sources: Dict[str, SourceConfig],
-                            run_timestamp: datetime) -> Dict[str, Any]:
+                            run_timestamp: datetime,
+                            feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Dict[str, Any]:
         """Flatten a Paper + PaperAnalysis into a single dict for JSONL."""
-        src_cfg = sources.get(paper.source.value)
-        src_display = src_cfg.display_name if src_cfg else paper.source.value
-        src_color = src_cfg.color if src_cfg else "#757575"
+        # Resolve display name and colour: feed-level first, then source-level
+        feed_cfg = feed_configs.get(paper.feed_name) if feed_configs else None
+        if feed_cfg and feed_cfg.display_name and feed_cfg.color:
+            src_display = feed_cfg.display_name
+            src_color = feed_cfg.color
+        else:
+            src_cfg = sources.get(paper.source.value)
+            src_display = src_cfg.display_name if src_cfg else paper.source.value
+            src_color = src_cfg.color if src_cfg else "#757575"
 
         return {
             # — paper metadata —
@@ -354,7 +368,8 @@ class DataExporter:
     def export_all(self,
                    papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
                    sources: Dict[str, SourceConfig],
-                   timestamp: Optional[datetime] = None) -> Dict[str, str]:
+                   timestamp: Optional[datetime] = None,
+                   feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Dict[str, str]:
         """
         Run JSONL export + Markdown export + Jekyll copy in one call.
 
@@ -364,8 +379,8 @@ class DataExporter:
         if timestamp is None:
             timestamp = datetime.now()
 
-        jsonl_path = self.export_jsonl(papers_with_analyses, sources, timestamp)
-        md_path = self.export_markdown(papers_with_analyses, sources, timestamp)
+        jsonl_path = self.export_jsonl(papers_with_analyses, sources, timestamp, feed_configs)
+        md_path = self.export_markdown(papers_with_analyses, sources, timestamp, feed_configs)
         self.copy_to_jekyll_site()
 
         return {"jsonl": str(jsonl_path), "markdown": str(md_path)}

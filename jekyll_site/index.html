@@ -56,8 +56,8 @@ window.siteData = {
                             </a>
                         </h3>
                         <span class="row-badge" x-show="paper.recommended">⭐ Recommended</span>
-                        <span class="row-source" :style="sourceStyle(paper.source)"
-                              x-text="getSourceName(paper.source)"></span>
+                        <span class="row-source" :style="sourceStyle(paper)"
+                              x-text="getSourceName(paper)"></span>
                     </div>
                     <p class="row-authors">
                         <span x-text="paper.authors.join(', ')"></span>
@@ -98,8 +98,8 @@ window.siteData = {
                 <div class="paper-header">
                     <span class="paper-score" x-text="paper.score.toFixed(1)"></span>
                     <span class="paper-badge" x-show="paper.recommended">Recommended</span>
-                    <span class="paper-source" :style="sourceStyle(paper.source)"
-                          x-text="getSourceName(paper.source)"></span>
+                    <span class="paper-source" :style="sourceStyle(paper)"
+                          x-text="getSourceName(paper)"></span>
                 </div>
                 
                 <h3 class="paper-title">

@@ -137,6 +137,8 @@ def load_feeds(config_dir: str = "config") -> List[FeedConfig]:
             name=feed_data["name"],
             url=feed_data["url"],
             source=source,
+            display_name=feed_data.get("display_name"),
+            color=feed_data.get("color"),
             max_items=feed_data.get("max_items", -1),
             update_frequency=feed_data.get("update_frequency", {}),
         )

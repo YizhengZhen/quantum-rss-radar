@@ -103,14 +103,16 @@ class LLMAnalysisCache:
 class SemanticAnalyzer:
     """LLM-based analyzer for research papers."""
     
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, config_dir: str = "config"):
         """
         Initialize the semantic analyzer.
         
         Args:
             config: System configuration
+            config_dir: Path to configuration directory (for loading prompt template)
         """
         self.config = config
+        self.config_dir = config_dir
         self.llm_client = None
         self._initialize_llm_client()
         
@@ -264,19 +266,43 @@ class SemanticAnalyzer:
             paper.tags = extract_keywords_from_text(f"{paper.title} {paper.abstract}", max_keywords=5)[:5]
     
     def _create_analysis_prompt(self, paper: Paper, research_directions: str) -> str:
-        """Create LLM prompt for paper analysis."""
+        """Create LLM prompt for paper analysis.
+
+        Priority:
+          1. config/analysis_prompt.md (if exists) — user-editable template
+          2. Hardcoded fallback below — built-in default
+        """
         few_shot_block = self._build_few_shot_block()
+
+        # Try loading from config/analysis_prompt.md first
+        prompt_template = self._load_prompt_template()
+        if prompt_template:
+            return self._fill_prompt_template(
+                prompt_template,
+                research_directions=research_directions,
+                few_shot_examples=few_shot_block,
+                title=paper.title,
+                authors=', '.join(paper.authors) if paper.authors else 'Unknown',
+                abstract=paper.abstract,
+                published=paper.published.strftime('%Y-%m-%d') if paper.published else 'Unknown',
+                source=paper.source.value,
+                link=paper.link,
+            )
+
+        # Fallback: hardcoded prompt
         return f"""You are an expert research assistant specializing in quantum computing, condensed matter physics, and machine learning. Your task is to evaluate a research paper based on the user's research interests and provide a structured analysis.
 
 RESEARCH INTERESTS:
 {research_directions}
 {few_shot_block}
 
-SCORING GUIDE (use these tier boundaries — output a float, not an integer):
-  core         8.0 – 10.0  (papers you would read in full; directly relevant)
-  relevant     6.0 –  8.0  (related but not central; worth skimming)
-  not_priority 4.0 –  6.0  (in-field but not your focus; low priority)
-  unrelated    0.0 –  4.0  (completely unrelated; includes most papers)
+SCORING GUIDE:
+  Core focus      7.5 – 10.0  (directly aligned; novel, technically deep, clearly advances the field)
+  Also relevant   5.0 –  7.4  (related in topic or method, but not the primary focus or contribution is incremental)
+  Not priority    2.0 –  4.9  (broadly in the field but too applied, too narrow, or not directly useful)
+  General/Other   0.0 –  1.9  (does not fit any of the four directions)
+
+Scoring precision: output a float with 1 decimal place (e.g. 7.4, 8.2, 5.6). Do NOT round to integers or 0.5 steps.
 
 PAPER TO ANALYZE:
 Title: {paper.title}
@@ -290,7 +316,7 @@ INSTRUCTIONS:
 1. Direction: Identify which one of the user's research directions this paper belongs to.
    Use the exact H2 heading name from RESEARCH INTERESTS (strip "## N. " prefix).
    If it doesn't fit any, use "General / Other".
-2. Relevance Score: Score against the SCORING GUIDE above. Output a float (e.g. 7.4, not 7 or 7.5).
+2. Relevance Score: Score against the SCORING GUIDE above. Output a float with 1 decimal place (e.g. 7.4, not 7 or 7.5).
 3. Recommendation: "yes" if score ≥ 6.0, otherwise "no".
 4. Structured Summary (5 fields: tldr / motivation / method / result / conclusion).
 5. Keywords: 3-5 key technical terms.
@@ -311,6 +337,34 @@ OUTPUT FORMAT (JSON only, no markdown):
 }}
 
 Your analysis:"""
+
+    def _load_prompt_template(self) -> Optional[str]:
+        """Load prompt template from config/analysis_prompt.md.
+
+        Returns the template string if the file exists, None otherwise.
+        """
+        from pathlib import Path
+        template_path = Path(self.config_dir) / "analysis_prompt.md" if hasattr(self, 'config_dir') else Path("config") / "analysis_prompt.md"
+        if template_path.exists():
+            try:
+                with template_path.open("r", encoding="utf-8") as f:
+                    content = f.read()
+                logger.info(f"Loaded prompt template from {template_path}")
+                return content
+            except Exception as e:
+                logger.warning(f"Failed to load prompt template from {template_path}: {e}")
+        return None
+
+    def _fill_prompt_template(self, template: str, **kwargs) -> str:
+        """Fill {{variable}} placeholders in the template with actual values.
+
+        Uses simple string replacement. Unknown placeholders are left as-is.
+        """
+        result = template
+        for key, value in kwargs.items():
+            placeholder = "{{" + key + "}}"
+            result = result.replace(placeholder, str(value))
+        return result
     
     def _call_llm(self, prompt: str, max_retries: int = 3) -> str:
         """Call LLM API with retry logic.
@@ -357,63 +411,106 @@ Your analysis:"""
                     raise
     
     def _parse_llm_response(self, response_text: str, paper_id: str) -> PaperAnalysis:
-        """Parse LLM response into PaperAnalysis object."""
+        """Parse LLM response into PaperAnalysis object.
+
+        Three-layer fallback:
+          1. Direct json.loads
+          2. Regex extraction of JSON block
+          3. LLM retry with "respond with valid JSON only" prompt
+        """
+        data = self._try_parse_json(response_text, paper_id)
+        if data is not None:
+            return data
+
+        # Layer 3: LLM retry — ask the model to reformat as valid JSON
+        logger.warning(f"JSON parse failed for {paper_id[:20]}... — requesting LLM retry")
+        retry_prompt = (
+            "Your previous response was not valid JSON. "
+            "Please respond with ONLY valid JSON, no markdown, no extra text.\n\n"
+            f"Previous response:\n{response_text}"
+        )
+        try:
+            retry_response = self._call_llm(retry_prompt, max_retries=1)
+            data = self._try_parse_json(retry_response, paper_id)
+            if data is not None:
+                logger.info(f"LLM retry succeeded for {paper_id[:20]}...")
+                return data
+        except Exception as e:
+            logger.warning(f"LLM retry also failed for {paper_id[:20]}...: {e}")
+
+        # Final fallback: return default (score=0)
+        logger.error(f"All JSON parse attempts failed for {paper_id[:20]}... — returning score=0")
+        return PaperAnalysis(
+            paper_id=paper_id,
+            relevance_score=0.0,
+            recommendation=False,
+            summary={
+                "tldr": "Analysis failed",
+                "motivation": "",
+                "method": "",
+                "result": "",
+                "conclusion": ""
+            },
+            keywords=[]
+        )
+
+    def _try_parse_json(self, response_text: str, paper_id: str) -> Optional[PaperAnalysis]:
+        """Attempt to parse LLM response as JSON. Returns PaperAnalysis or None."""
+        import re
+
+        # Layer 1: direct json.loads
         try:
             data = json.loads(response_text)
-            
-            # Validate required fields
-            required_fields = ["relevance_score", "recommendation", "summary"]
-            for field in required_fields:
-                if field not in data:
-                    raise ValueError(f"Missing required field: {field}")
-            
-            # Convert recommendation string to boolean
-            recommendation = data["recommendation"].lower() == "yes"
-            
-            # Ensure summary has all required fields
-            summary = data.get("summary", {})
-            required_summary_fields = ["tldr", "motivation", "method", "result", "conclusion"]
-            for field in required_summary_fields:
-                if field not in summary:
-                    summary[field] = ""
-            
-            # Get keywords
-            keywords = data.get("keywords", [])
-            if not isinstance(keywords, list):
-                keywords = []
+            return self._validate_and_build(data, paper_id)
+        except (json.JSONDecodeError, ValueError, KeyError):
+            pass
 
-            # Get direction
-            direction = data.get("direction", "")
-            if not direction:
-                direction = "General / Other"
+        # Layer 2: regex extract JSON block
+        match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if match:
+            try:
+                data = json.loads(match.group())
+                return self._validate_and_build(data, paper_id)
+            except (json.JSONDecodeError, ValueError, KeyError):
+                pass
 
-            return PaperAnalysis(
-                paper_id=paper_id,
-                relevance_score=float(data["relevance_score"]),
-                recommendation=recommendation,
-                summary=summary,
-                keywords=keywords,
-                direction=direction
-            )
-            
-        except (json.JSONDecodeError, ValueError, KeyError) as e:
-            logger.error(f"Failed to parse LLM response: {e}")
-            logger.debug(f"Raw response: {response_text}")
-            
-            # Return a default analysis on error
-            return PaperAnalysis(
-                paper_id=paper_id,
-                relevance_score=0.0,
-                recommendation=False,
-                summary={
-                    "tldr": "Analysis failed",
-                    "motivation": "",
-                    "method": "",
-                    "result": "",
-                    "conclusion": ""
-                },
-                keywords=[]
-            )
+        return None
+
+    def _validate_and_build(self, data: dict, paper_id: str) -> PaperAnalysis:
+        """Validate parsed JSON and build PaperAnalysis. Raises on failure."""
+        required_fields = ["relevance_score", "recommendation", "summary"]
+        for field in required_fields:
+            if field not in data:
+                raise ValueError(f"Missing required field: {field}")
+
+        # Convert recommendation string to boolean
+        recommendation = data["recommendation"].lower() == "yes"
+
+        # Ensure summary has all required fields
+        summary = data.get("summary", {})
+        required_summary_fields = ["tldr", "motivation", "method", "result", "conclusion"]
+        for field in required_summary_fields:
+            if field not in summary:
+                summary[field] = ""
+
+        # Get keywords
+        keywords = data.get("keywords", [])
+        if not isinstance(keywords, list):
+            keywords = []
+
+        # Get direction
+        direction = data.get("direction", "")
+        if not direction:
+            direction = "General / Other"
+
+        return PaperAnalysis(
+            paper_id=paper_id,
+            relevance_score=float(data["relevance_score"]),
+            recommendation=recommendation,
+            summary=summary,
+            keywords=keywords,
+            direction=direction
+        )
     
     def analyze_papers_batch(self, papers: List[Paper], research_directions: str) -> List[PaperAnalysis]:
         """

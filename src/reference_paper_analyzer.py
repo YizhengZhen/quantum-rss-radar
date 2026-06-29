@@ -41,36 +41,37 @@ logger = logging.getLogger(__name__)
 CURATED_FILE = "curated_papers.yaml"
 
 # Score ranges per tier (for PDF-added papers)
+# These MUST match the Tier Guide in config/research_directions.md
 TIER_SCORE_DEFAULTS = {
     "core":         9.0,
-    "relevant":     7.0,
-    "not_priority": 5.0,
+    "relevant":     6.0,
+    "not_priority": 3.5,
     "unrelated":    1.0,
 }
 
 TIER_SCORE_RANGES = {
-    "core":         (8.0, 10.0),
-    "relevant":     (6.0,  8.0),
-    "not_priority": (4.0,  6.0),
-    "unrelated":    (0.0,  4.0),
+    "core":         (7.5, 10.0),
+    "relevant":     (5.0,  7.4),
+    "not_priority": (2.0,  4.9),
+    "unrelated":    (0.0,  1.9),
 }
 
 TIER_DESCRIPTIONS = {
     "core": (
-        "Papers you would read in full and consider highly relevant to your "
-        "research directions. These are the gold standard for high scores (8–10)."
+        "Papers you would read in full — directly aligned, novel, technically deep, "
+        "clearly advances the field. Score range: 7.5–10.0."
     ),
     "relevant": (
-        "Papers related to your research but not central. "
-        "Worth reading the abstract and skimming (6–8)."
+        "Papers related in topic or method, but not the primary focus or contribution "
+        "is incremental. Score range: 5.0–7.4."
     ),
     "not_priority": (
-        "Papers that belong to your research field but address sub-topics "
-        "you do not actively follow. Low score even if technically solid (4–6)."
+        "Papers broadly in the field but too applied, too narrow, or not directly "
+        "useful. Score range: 2.0–4.9."
     ),
     "unrelated": (
         "Papers completely unrelated to your research. "
-        "Used to anchor the bottom of the scoring scale (0–4)."
+        "Score range: 0.0–1.9."
     ),
 }
 
@@ -131,12 +132,19 @@ def existing_ids(data: dict) -> set:
 
 
 def score_to_tier(score: float) -> str:
-    """Map a relevance score to the corresponding tier name."""
-    if score >= 8.0:
+    """Map a relevance score to the corresponding tier name.
+
+    Tiers and boundaries MUST match the Tier Guide in config/research_directions.md:
+      core          7.5 – 10.0
+      relevant      5.0 –  7.4
+      not_priority  2.0 –  4.9
+      unrelated     0.0 –  1.9
+    """
+    if score >= 7.5:
         return "core"
-    elif score >= 6.0:
+    elif score >= 5.0:
         return "relevant"
-    elif score >= 4.0:
+    elif score >= 2.0:
         return "not_priority"
     else:
         return "unrelated"
@@ -342,6 +350,100 @@ def run_reference_paper_analysis(
     if added:
         logger.info(f"Reference paper analysis complete: {added} new entry/entries added")
     return added
+
+
+def generate_research_directions_from_papers(
+    config_dir: str,
+    config: "Config",
+) -> Optional[str]:
+    """
+    Auto-generate research_directions.md from PDFs in config/papers/{tier}/.
+
+    Called when config/research_directions.md does NOT exist but config/papers/
+    has PDFs. Uses LLM to infer research directions from the papers.
+
+    Returns the generated markdown content as a string, or None on failure.
+    """
+    papers_dir = Path(config_dir) / "papers"
+    if not papers_dir.exists():
+        logger.warning("config/papers/ not found — cannot auto-generate research directions")
+        return None
+
+    # Collect all PDFs across all tiers
+    all_pdfs = []
+    for tier in ("core", "relevant", "not_priority", "unrelated"):
+        tier_dir = papers_dir / tier
+        if tier_dir.exists():
+            for pdf in sorted(tier_dir.glob("*.pdf")):
+                all_pdfs.append((tier, pdf))
+
+    if not all_pdfs:
+        logger.warning("No PDFs found in config/papers/ — cannot auto-generate research directions")
+        return None
+
+    logger.info(f"Auto-generating research directions from {len(all_pdfs)} PDF(s)")
+
+    # Extract text from up to 5 PDFs (first pages only, to keep prompt small)
+    excerpts = []
+    for tier, pdf_path in all_pdfs[:5]:
+        text = _extract_pdf_text(pdf_path, max_chars=2000)
+        if text:
+            excerpts.append(f"--- PDF: {pdf_path.name} (tier: {tier}) ---\n{text[:1500]}")
+
+    if not excerpts:
+        logger.warning("Could not extract text from any PDF — cannot auto-generate")
+        return None
+
+    # Build LLM prompt
+    prompt = (
+        "You are a research analyst. A user has placed the following PDFs into a reference paper library.\n\n"
+        + "\n\n".join(excerpts)
+        + "\n\n"
+        + "Based on these papers, generate a research_directions.md file that defines the user's research interests.\n"
+        + "Use this exact format:\n\n"
+        + "# Research Interests\n\n"
+        + "## 🟢 Tier Guide\n\n"
+        + "| Tier | Score Range | Meaning |\n"
+        + "|---|---|---|\n"
+        + "| **Core focus** | **7.5 – 10.0** | Directly aligned. Novel, technically deep, clearly advances the field. |\n"
+        + "| **Also relevant** | **5.0 – 7.4** | Related in topic or method, but not the primary focus or contribution is incremental. |\n"
+        + "| **Not priority** | **2.0 – 4.9** | Broadly in the field but too applied, too narrow, or not directly useful. |\n"
+        + "| **General / Other** | **0.0 – 1.9** | Does not fit any of the directions below. |\n\n"
+        + "Then define 2-4 research directions as H2 headings (`## N. Direction Name`).\n"
+        + "Each direction must have three subsections:\n"
+        + "  - `**🟢 Core focus**` — topics directly aligned\n"
+        + "  - `**🟡 Also relevant**` — related but not core\n"
+        + "  - `**🔴 Not priority**` — in the field but not of interest\n\n"
+        + "Output ONLY the markdown content, no extra text."
+    )
+
+    try:
+        from openai import OpenAI
+        client = OpenAI(
+            api_key=config.llm_api_key,
+            base_url=config.llm_base_url or None,
+        )
+        resp = client.chat.completions.create(
+            model=config.llm_model or "deepseek-chat",
+            messages=[
+                {"role": "system", "content": "You are a research analyst. Output ONLY the requested markdown, no extra text."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.3,
+            max_tokens=4096,
+        )
+        content = resp.choices[0].message.content.strip()
+
+        # Write to research_directions.md
+        rd_path = Path(config_dir) / "research_directions.md"
+        with rd_path.open("w", encoding="utf-8") as f:
+            f.write(content)
+        logger.info(f"Auto-generated research_directions.md from {len(all_pdfs)} PDF(s)")
+        return content
+
+    except Exception as e:
+        logger.error(f"Failed to auto-generate research directions: {e}")
+        return None
 
 
 def append_pipeline_papers(
