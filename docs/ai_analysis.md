@@ -1,304 +1,242 @@
 # Quantum RSS Radar — AI 分析与评分机制
 
-> 本文档详细说明系统的评分逻辑、研究方向配置规范、参考论文库格式，以及两阶段打分流水线的设计。
+> 本文档说明系统的评分逻辑、prompt 生成流程、以及各配置文件的角色。
+>
+> **核心思路**：系统通过两个配置文件（`research_directions.md` + `curated_papers.yaml`）共同指导 LLM 打分。前者提供粗略的评分区间和方向定义，后者提供精细的 few-shot 校准示例。两者结合，让 LLM 的打分对齐到你的研究品味。
 
 ---
 
-## 1. 研究方向配置 (`config/research_directions.md`)
+## 1. 评分体系总览
 
-### 1.1 写法规范
+### 1.1 四级评分区间（硬编码，不可配置）
 
-研究方向文件采用**三层分级结构**，向 LLM 提供判别边界而非单纯的主题列表：
+> ⚠️ 以下评分区间**硬编码在 `src/semantic_analyzer.py` 的 prompt 中**，不随 `research_directions.md` 变化。这是有意为之——保持评分区间稳定，避免用户误改导致分数分布异常。
 
-```
-## [方向名称]
-> 一句话描述该方向的核心问题
+| Tier | 分值区间 | 含义 |
+|------|:--------:|------|
+| **Core focus** | **7.5 – 10.0** | 直接对齐。新颖、技术深入、明显推动领域发展。 |
+| **Also relevant** | **5.0 – 7.4** | 主题或方法相关，但不是主要关注点，或贡献是增量式的。 |
+| **Not priority** | **2.0 – 4.9** | 属于该领域但过于应用、过于狭窄、或没有直接用处。 |
+| **General / Other** | **0.0 – 1.9** | 不属于任何研究方向。 |
 
-**🟢 Core focus** (7.0–10.0):
-- 直接关联的核心子方向（LLM 应给高分，输出小数）
+**评分精度**：LLM 默认输出精确到 **0.1** 的小数（如 7.4, 8.2, 5.6）。如需调整（如改为 0.05），可编辑 `config/analysis_prompt.md` 中的 `SCORING GUIDE` 段。
 
-**🟡 Also relevant** (4.0–6.9):
-- 相关但不核心的方向（LLM 应给中分）
+**方向重叠规则**：方向 1（Quantum Information）和方向 2（Information Thermodynamics）有重叠。优先原则：
+- 信息论结果 → 方向 1
+- 物理/热力学结果 → 方向 2
 
-**🔴 Not priority** (1.0–3.9):
-- 属于该领域但不关注的子方向（LLM 给低分而非跳过）
-```
+### 1.2 两个校准维度
 
-**评分精度**：LLM 必须输出小数（如 7.4, 8.2, 5.6），不得四舍五入为整数或 0.5 步长。
+| 维度 | 文件 | 角色 | 粒度 |
+|------|------|------|:----:|
+| **研究方向定义** | `config/research_directions.md` | 定义"什么是你关注的领域"，提供三层分级（Core / Also relevant / Not priority） | 粗略（0.5 步长） |
+| **参考论文校准** | `config/curated_papers.yaml` | 提供具体论文作为 few-shot 示例，让 LLM 理解你的"研究品味" | 精细（0.1 步长） |
 
-**方向重叠规则**：方向 1 和方向 2 有重叠。优先原则：
-- 信息论结果 → 方向 1 (Quantum Information Theory)
-- 物理/热力学结果 → 方向 2 (Quantum Thermodynamics)
-
-### 1.2 四个研究方向（精确名称）
-
-方向名称由 `config/research_directions.md` 中的 **H2 标题**决定（去掉编号前缀 `## N. `）。
-LLM 输出的 `direction` 字段**必须**与以下名称完全一致（包括大小写、标点、连字符）：
-
-| # | 精确方向名称（`direction` 字段的合法值）| 核心关键词 |
-|---|------|----------|
-| 1 | `Quantum Information Theory & Foundations` | 纠缠理论、Bell 非局域、量子熵/信道容量、量子纠错、资源理论 |
-| 2 | `Quantum Thermodynamics & Many-Body Physics` | 非平衡热力学、量子热机、ETH/MBL、量子相变、张量网络、开放量子系统 |
-| 3 | `Quantum Communication & Networks` | 量子中继、纠缠分发、量子网络、MDI-QKD / TF-QKD、卫星量子通信 |
-| 4 | `Quantum Hardware & Hybrid Systems` | 超导 qubit、Circuit QED、量子转导、Tavis-Cummings / superradiance、硬件层纠错 |
-
-> ⚠️ **常见错误**：`Many‑Body` (en-dash `‑`) ≠ `Many-Body` (hyphen `-`)。请确保使用连字符 `-`。  
-> 如需修改方向名称，需同时修改：`research_directions.md` 的 H2 标题 + 所有 `config/ref_*.yaml` 的 `direction` 字段 + `semantic_analyzer.py` 的 prompt（如有硬编码）。
-
-### 1.3 General / Other 的使用
-
-若论文**完全不属于以上四个方向**，LLM 使用 `General / Other` 并给 **0–2 分**。  
-历史数据显示约 60-70% 论文属于此类，这是正常现象。
+**两者关系**：
+- `research_directions.md` 是**主要评分依据**——LLM 根据其中的三层分级判断论文属于哪个方向、大致在哪个分数段
+- `curated_papers.yaml` 是**精细校准工具**——通过具体论文示例，让 LLM 在分数段内做出更精确的区分（如同一方向下 8.2 vs 9.0 的区别）
 
 ---
 
-## 2. 参考论文库
+## 2. 配置文件详解
 
-### 2.1 作用
+### 2.1 `config/research_directions.md` — 研究方向定义
 
-参考论文库存放用户亲自精选的代表性论文，作为 LLM 打分的 **few-shot 校准示例**。  
-这些论文代表个人研究品味的"标尺"，让 LLM 打分结果对齐到你真实的判断。
+**角色**：定义你的研究兴趣领域，LLM 据此判断论文方向和粗略分数。
 
-### 2.2 单一文件 `config/curated_papers.yaml` — 用户主导
+**格式要求**：
+- 每个方向用 `## N. 方向名称` 作为 H2 标题（`N` 为编号）
+- 方向名称**必须唯一**，LLM 输出的 `direction` 字段使用去掉 `## N. ` 后的名称
+- 每个方向下分三层：
+  - `**🟢 Core focus**` — 直接相关的核心子方向
+  - `**🟡 Also relevant**` — 相关但不核心
+  - `**🔴 Not priority**` — 属于该领域但不关注的子方向
+- 文件头部必须包含 **Tier Guide** 表格（见 §1.1）
 
-`config/curated_papers.yaml` 是 **用户手动管理** 的校准文件。Pipeline 不会自动往里写入每日论文（这样做会引入未经审阅的样本，降低 few-shot 质量）。
+**配置场景**：
+
+| 场景 | 行为 |
+|------|------|
+| **只有 RD** | LLM 仅根据 RD 的三层分级打分，无 few-shot 校准 |
+| **RD + papers** | RD 提供方向定义和粗略区间，papers 提供精细校准 |
+| **只有 papers** | Pipeline 自动从 papers 中的 PDF 生成一份 `research_directions.md` |
+| **两者都无** | Pipeline 报错退出 |
+
+### 2.2 `config/curated_papers.yaml` — 参考论文校准库
+
+**角色**：存放你亲自精选的代表性论文，作为 LLM 打分的 **few-shot 校准示例**。这些论文代表你的"研究品味标尺"。
+
+**管理方式**：**用户手动管理**。Pipeline 不会自动写入每日论文（未审阅的样本会降低 few-shot 质量）。
 
 **两种写入方式**：
 
 | 来源 | 触发时机 | `source` 字段 |
 |------|----------|:-------------:|
-| PDF 自动分析 | Pipeline Step 1.5：用户把 PDF 丢入 `config/papers/{tier}/` | `pdf` |
+| PDF 自动分析 | 把 PDF 放入 `config/papers/{tier}/`，下次运行自动分析 | `pdf` |
 | 手动编辑 | 直接编辑 `config/curated_papers.yaml` | 任意 |
 
-> ⚠️ **Pipeline 不写入 curated_papers.yaml**：每日 RSS 分析结果（Step 7 之后）不会追加到此文件。若需将某篇论文加入校准集，请手动编辑或放入对应 PDF 文件夹。
+**条目格式**：
 
-**PDF 自动写入流程**：
+```yaml
+papers:
+  - id: "arxiv_2401.12345"       # 唯一主键
+    title: "论文完整标题"
+    direction: "Quantum Information"  # 必须匹配 RD 中的 H2 标题
+    score: 9.0                   # 实际打分 (0.0–10.0)
+    tier: "core"                 # 由 score 自动推断
+    reason: |
+      2-3 句说明：为什么这篇论文属于此 tier。
+      被注入 LLM few-shot prompt 中。
+    abstract_snippet: |
+      100-150 词直接引用自摘要或引言。
+    source: "pdf"                # pdf | pipeline | manual
+    added_at: "2026-06-07"       # ISO 日期
+```
 
-```
-用户将 PDF 放入：
-config/papers/core/entropy_accumulation.pdf
-    ↓ Pipeline Step 1.5 (reference_paper_analyzer.py)
-config/curated_papers.yaml  ← 追加新条目（id=local_entropy_accumulation）
-```
+**Score → Tier 映射**：
+
+| Score Range | Tier |
+|:-----------:|------|
+| 7.5 – 10.0 | `core` |
+| 5.0 – 7.4 | `relevant` |
+| 2.0 – 4.9 | `not_priority` |
+| 0.0 – 1.9 | `unrelated` |
 
 **幂等性规则**：
 - 主键为 `id` 字段，同一 `id` 不会被写入两次
 - **手动删除条目后，该条目永远不会被重新添加**（包括 PDF 仍存在）
 - 删除 PDF 源文件 → curated_papers.yaml 中对应条目保留不变
 
-### 2.3 条目格式
-
-```yaml
-papers:
-  - id: "arxiv_2401.12345"       # 唯一主键；pipeline 论文用 arxiv ID，PDF 用 local_{stem}
-    title: "论文完整标题"
-    direction: "Quantum Communication & Networks"  # 精确匹配 research_directions.md 的 H2 标题
-    score: 9.0                   # 实际打分 (0.0–10.0)，决定 tier
-    tier: "core"                 # 由 score 自动推断：core/relevant/not_priority/unrelated
-    reason: |
-      2-3 句说明：为什么这篇论文属于此 tier，结合研究方向具体说明。
-      被注入 LLM few-shot prompt 中。
-    abstract_snippet: |
-      100-150 词直接引用自摘要或引言，代表该类论文的典型输入。
-    source: "pdf"                # pdf | pipeline | manual
-    added_at: "2026-06-07"       # ISO 日期
-```
-
-### 2.4 Tier 说明
-
-| Tier | 分值区间 | 含义 |
-|------|:--------:|------|
-| `core` | **8.0–10.0** | 你会精读的高价值论文 |
-| `relevant` | **6.0–8.0** | 相关但不核心，值得浏览摘要 |
-| `not_priority` | **4.0–6.0** | 属于领域但不关注（校准 LLM 不要高估此类）|
-| `unrelated` | **0.0–4.0** | 完全无关（防止 LLM 误判为高分）|
-
-### 2.5 建议的参考论文组合
-
-**推荐总数：10–12 篇**，每个方向侧重不同：
+**建议的参考论文组合（10–12 篇）**：
 
 | 来源方向 | Tier | 数量 | 说明 |
 |---------|------|:----:|------|
-| 方向 1（QI Theory）| `core` | 2 | 覆盖纠缠/Bell + 信道/纠错两个核心子领域 |
-| 方向 2（QThermo）| `core` | 2 | 覆盖量子热机/热力学 + 多体物理/MBL 两个子领域 |
-| 方向 3（QComm）| `core` | 1 | QKD 或量子网络的代表性论文 |
-| 方向 4（QHardware）| `core` | 1 | 超导 qubit 或 Circuit QED 的代表性论文 |
-| 任意方向 | `relevant` | 2 | 相关但不核心的边缘案例，帮助 LLM 校准中间分段 |
-| 任意方向 | `not_priority` | 1 | 同领域但不关注的子方向（防止 LLM 对此类给高分）|
-| 无关领域 | `unrelated` | 1–2 | 听起来"量子"但完全无关的论文 |
+| 方向 1（Quantum Information）| `core` | 2 | 覆盖两个核心子领域 |
+| 方向 2（Information Thermodynamics）| `core` | 2 | 同上 |
+| 方向 3（Quantum Networks）| `core` | 1 | 代表性论文 |
+| 方向 4（Hybrid Quantum Systems）| `core` | 1 | 代表性论文 |
+| 任意方向 | `relevant` | 2 | 边缘案例，校准中间分段 |
+| 任意方向 | `not_priority` | 1 | 防止 LLM 对此类给高分 |
+| 无关领域 | `unrelated` | 1–2 | 防止 LLM 误判 |
 
-**总计：约 10–11 篇**
+> 💡 **最小可用集合**：每个方向各 1 篇 `core` + 1 篇 `unrelated` = 5 篇即可启动。
 
-> 💡 **最小可用集合**：若刚开始，每个方向各 1 篇 `core` + 1 篇通用 `unrelated` = 5 篇即可启动。
-> 随着使用增加，逐步补充 `relevant` 和 `not_priority` 来填充中间分段。
+#### 人工品味校准（手动编辑）
 
----
+PDF 自动分析生成的 score/reason 是 LLM 自评的，不一定完全对齐你的个人偏好。如需更精细的校准：
 
-## 3. 两阶段打分流水线
+1. **直接编辑 `config/curated_papers.yaml`** 中的 `score` 和 `reason` 字段
+2. 例如：你觉得某篇论文被 LLM 打了 9.5 但实际只值 8.0，就把 `score: 9.5` 改为 `score: 8.0`，`tier` 会自动由 `score_to_tier()` 重新计算
+3. 修改后清空 LLM 缓存（`data/llm_cache.json`），下次运行即生效
+4. 建议在 `reason` 中注明人工修改的原因，方便日后回顾
 
-```
-RSS 抓取（每日论文）
-        │
-        ▼
- ┌─────────────────────────────────────────────────────────┐
- │  Stage 1: Abstract 粗筛（当前已实现）                      │
- │                                                         │
- │  输入: 论文标题 + 摘要 (~300 词)                           │
- │  LLM: 快速判断方向 + 粗略相关性                            │
- │  输出: stage1_score (0–10，小数)                        │
- │                                                         │
- │  Prompt 要素:                                           │
- │    - research_directions.md (三层分级)                  │
- │    - few-shot 参考论文示例 (来自 config/ 中的 yaml)      │
- │    - 统一 Tier Guide (取代旧的 0-2/3-5/6-8/9-10 描述)   │
- └──────────────┬──────────────────────────────────────────┘
-                │ stage1_score ≥ STAGE1_THRESHOLD (默认 5.0)
-                ▼
- ┌─────────────────────────────────────────────────────────┐
- │  Stage 2: Full-text 精筛（待实现）                         │
- │                                                         │
- │  获取全文（按优先级）:                                      │
- │    1. arXiv → arxiv_deep_reader.py（已有）               │
- │    2. OA 论文 → Unpaywall API / 直接 PDF URL 探测        │
- │    3. 其他 → 跳过，保持 stage1_score                      │
- │                                                         │
- │  LLM: 深度阅读全文，多维度打分                              │
- │  输出: stage2_score = 加权和（小数）                       │
- │                                                         │
- │  打分维度（全文）:                                          │
- │    novelty          — 30%  (新颖性/贡献度)                │
- │    technical_rigor  — 30%  (技术严谨性/方法论)            │
- │    alignment        — 25%  (与研究方向匹配度)             │
- │    practical_impact — 15%  (对实际研究的价值)             │
- └──────────────┬──────────────────────────────────────────┘
-                │ stage2_score ≥ EMAIL_MIN_SCORE (默认 7.0)
-                ▼
-          邮件推送 + 网站展示
-```
+**为什么需要人工校准**：LLM 自评的 score 反映的是"LLM 认为这篇论文有多好"，而人工校准可以注入"你认为这篇论文有多好"——两者可能不同。例如：
+- LLM 可能给一篇经典综述打高分，但你已经读过且不需要再关注
+- LLM 可能低估一篇冷门但对你研究至关重要的论文
+- 你想让 LLM 学会你对某些子方向的"偏见"（比如你特别关注量子热机，不关注量子纠错）
 
-### 3.1 Stage 1 Prompt 设计原则
 
-1. **仅使用摘要**：不调用全文，控制 API 成本
-2. **嵌入三层分级**：research_directions.md 全文注入
-3. **few-shot 示例**：从 config/ 中加载所有参考论文 yaml，覆盖 core/relevant/unrelated 三个 tier
-4. **统一评分指南**：引用 Tier Guide，不再使用旧的 0-2/3-5/6-8/9-10 描述
-5. **JSON 解析 retry**：解析失败时先尝试正则提取，再重试一次 LLM 调用
+### 2.3 `config/analysis_prompt.md` — LLM Prompt 模板（已实现 ✅）
 
-Stage 1 的 JSON 输出格式：
+**角色**：这是**完整的 LLM prompt 模板**，包含评分指令、输出格式要求等。用户可以直接编辑此文件来调整 prompt 措辞，无需修改 Python 代码。
 
-```json
-{
-  "direction": "Quantum Information Theory & Foundations",
-  "stage1_score": 8.3,
-  "recommendation": "yes",
-  "summary": {
-    "tldr": "一句话摘要",
-    "motivation": "研究动机 1-2 句",
-    "method": "方法论 1-2 句",
-    "result": "关键发现 1-2 句",
-    "conclusion": "结论和未来方向 1-2 句"
-  },
-  "keywords": ["keyword1", "keyword2", "keyword3"]
-}
-```
+**设计原则**：
+- 模板使用 `{{变量名}}` 占位符，pipeline 运行时填充实际内容
+- 变量包括：`{{research_directions}}`、`{{few_shot_examples}}`、`{{title}}`、`{{authors}}`、`{{abstract}}`、`{{published}}`、`{{source}}`、`{{link}}` 等
+- 用户可在此文件中调整：
+  - 评分精度（如将 0.1 改为 0.05）
+  - 输出格式要求
+  - 指令措辞
 
-### 3.2 Stage 2 Prompt 设计原则（待实现）
-
-1. **使用全文**：分段 chunk + 重点提取（Introduction / Conclusion / Key Results）
-2. **四维度加权打分**：明确要求 LLM 输出精确小数，不得取整数或 0.5 步长
-3. **参考 few-shot 示例**：与 Stage 1 一致
-4. **与 Stage 1 对比**：输出最终分值 = Stage 2 加权分（Stage 1 分数仅供参考）
-
-Stage 2 的 JSON 输出格式：
-
-```json
-{
-  "stage2_score": 8.35,
-  "subscores": {
-    "novelty": 9.0,
-    "technical_rigor": 8.5,
-    "alignment": 7.8,
-    "practical_impact": 7.5
-  },
-  "deep_summary": {
-    "key_contribution": "核心贡献",
-    "methodology_detail": "方法论细节",
-    "limitations": "局限性",
-    "future_work": "未来工作"
-  }
-}
-```
-
-最终分值：`stage2_score = novelty×0.30 + technical_rigor×0.30 + alignment×0.25 + practical_impact×0.15`
-
-### 3.3 分值使用规则
-
-| 情况 | 使用的分值 | 说明 |
-|------|----------|------|
-| 仅完成 Stage 1 | `stage1_score` | 大多数非 arXiv 论文（无法获取全文）|
-| 完成 Stage 2 | `stage2_score` | arXiv + OA 论文（有全文）|
-| Stage 2 失败 | `stage1_score` | 降级使用粗筛分 |
+**优先级**：`config/analysis_prompt.md` 存在时优先使用 → 不存在时回退到 `src/semantic_analyzer.py` 中的硬编码 prompt。
 
 ---
 
-## 4. JSON 解析容错（待实现）
+## 3. Pipeline 流程
 
-当前问题：`_parse_llm_response` 中 `json.loads` 失败直接返回 `score=0`，导致约 22% 论文被误判。
+### 3.1 完整流程
 
-改进方案（三层容错）：
-
-```python
-def _parse_llm_response(self, response_text, paper_id):
-    # 层 1：直接解析
-    try:
-        return json.loads(response_text)
-    except json.JSONDecodeError:
-        pass
-
-    # 层 2：正则提取 JSON 片段
-    import re
-    match = re.search(r'\{.*\}', response_text, re.DOTALL)
-    if match:
-        try:
-            return json.loads(match.group())
-        except json.JSONDecodeError:
-            pass
-
-    # 层 3：让 LLM 重试一次
-    retry_prompt = response_text + "\n\nPlease reformat your previous response as valid JSON only."
-    retry_response = self._call_llm(retry_prompt, max_retries=1)
-    try:
-        return json.loads(retry_response)
-    except json.JSONDecodeError:
-        pass
-
-    # 最终降级：返回默认值（score=0）
-    return default_analysis(paper_id)
 ```
+                    ┌──────────────────────────────┐
+                    │  Step 0: 加载配置              │
+                    │  ├ config/research_directions.md │
+                    │  ├ config/rss_sources.yaml      │
+                    │  └ config/curated_papers.yaml   │
+                    └──────────┬───────────────────┘
+                               │
+                    ┌──────────────────────────────┐
+                    │  Step 1.5: 检查参考 PDF       │
+                    │  config/papers/{tier}/ 中的新  │
+                    │  PDF → 分析 → 追加到           │
+                    │  curated_papers.yaml           │
+                    └──────────┬───────────────────┘
+                               │
+                    ┌──────────────────────────────┐
+                    │  Step 2-5: RSS 抓取 → 标准化   │
+                    │  → 去重                        │
+                    └──────────┬───────────────────┘
+                               │
+                    ┌──────────────────────────────┐
+                    │  Step 6: LLM 打分              │
+                    │  ├ 构建 prompt:                │
+                    │  │  ├ research_directions.md  │
+                    │  │  ├ curated_papers.yaml     │
+                    │  │  │  (few-shot 示例)         │
+                    │  │  └ 硬编码 Tier Guide       │
+                    │  ├ 调用 LLM → JSON 解析       │
+                    │  └ 缓存到 llm_cache.json       │
+                    └──────────┬───────────────────┘
+                               │ score ≥ 5.0
+                               ▼
+                    ┌──────────────────────────────┐
+                    │  Step 8: arXiv 深度阅读        │
+                    │  (仅 arXiv 论文，score ≥ 5.0)  │
+                    │  下载 PDF → 全文 LLM 分析      │
+                    └──────────┬───────────────────┘
+                               │
+                    ┌──────────────────────────────┐
+                    │  Step 9-12: 导出 → 数据库 →    │
+                    │  邮件推送 → 网站部署            │
+                    └──────────────────────────────┘
+```
+
+### 3.2 Prompt 构建逻辑
+
+每次运行 Step 6 时，系统按以下顺序构建 LLM prompt：
+
+1. **检查 `config/analysis_prompt.md`**（如果存在）→ 使用模板，填充变量
+2. **否则使用硬编码 prompt**（`src/semantic_analyzer.py` 中的 `_create_analysis_prompt()`）
+3. **注入 `research_directions.md`** 全文
+4. **注入 `curated_papers.yaml`** 中的 few-shot 示例（最多 5 篇，覆盖不同 tier）
+5. **注入硬编码的 Tier Guide**（§1.1 的四级评分区间）
+
+### 3.3 缓存机制
+
+- **`data/llm_cache.json`**：以 `paper.id` 为 key 缓存 LLM 分析结果。同一篇论文跨天出现时跳过 API 调用，节省 50-80% 成本。
+- **缓存失效**：修改 `research_directions.md` 或 `curated_papers.yaml` 后，建议清空缓存重新运行（`scripts/rerun_analysis.py`）。
 
 ---
 
-## 5. 论文相关性工具参考
+## 4. JSON 解析容错（已实现 ✅）
 
-以下工具/方法可用于论文相关性计算，从轻量到重量排列：
+`src/semantic_analyzer.py` 中的 `_parse_llm_response` 实现了三层容错：
 
-| 工具/方法 | 原理 | 适用场景 |
-|----------|------|----------|
-| **TF-IDF 余弦相似度** | 词频-逆文档频率 | 快速关键词匹配，无需 GPU |
-| **Sentence-BERT** | 句子级语义嵌入 | 摘要语义相似度，本地可运行 |
-| **OpenAI text-embedding-3-small** | API 嵌入 | 高质量，按 token 计费 |
-| **Semantic Scholar API** | 引用图 + 相关论文推荐 | 免费，返回"相关论文"列表 |
-| **arXiv Recommender** | arXiv 内置推荐 | 仅限 arXiv 论文 |
-| **LLM few-shot** | 参考论文作为上下文 | **当前方案**，无需额外模型 |
+1. **直接 `json.loads`** — 标准解析
+2. **正则提取 JSON 块** — 当 LLM 返回了 markdown 代码块或多余文本时，用 `re.search(r'\{.*\}', ...)` 提取
+3. **LLM 重试** — 前两层都失败时，让 LLM 重新输出一次（追加 "respond with valid JSON only" 指令）
 
-**当前选择：LLM few-shot（Stage 1 prompt 注入 config/ 中的参考论文）**
+所有三层都失败后才返回 `score=0` 的默认分析。
 
-理由：
-- 不需要额外的 embedding 模型或 API
-- 参考论文可以精确表达"研究品味"，比关键词更准确
-- 维护成本低：只需往 `config/` 里加文件
+---
 
-未来可选升级：若论文量扩大，可用 Sentence-BERT 对参考论文建立向量索引，先做向量相似度预筛，再做 LLM 精判。
+## 5. 深度阅读（仅 arXiv）
+
+对于 score ≥ `MIN_RELEVANCE_SCORE`（默认 5.0）的 **arXiv 论文**，系统自动：
+1. 下载 PDF
+2. 调用 LLM 进行全文分析
+3. 生成 `DeepReadResult`（含详细摘要、关键贡献、方法论分析、结果分析、优缺点、与研究方向的关联）
+
+非 arXiv 论文（Nature / Science / APS 等）不做深度阅读——这些期刊的论文通常有付费墙，且摘要已足够判断相关性。
 
 ---
 
@@ -308,6 +246,37 @@ def _parse_llm_response(self, response_text, paper_id):
 |------|:---:|:---:|
 | General / Other 占比 | 81% | ≤ 60% |
 | score = 0 占比 | 22% | ≤ 5% |
-| 均分 | 2.04 | ≥ 3.5（剔除完全无关论文） |
-| Stage 2 覆盖率（arXiv）| 0% | ≥ 80%（score≥5 的 arXiv 论文）|
+| 均分 | 2.04 | ≥ 3.5（剔除完全无关论文）|
+| 深度阅读覆盖率（arXiv）| 0% | ≥ 80%（score≥5 的 arXiv 论文）|
 | 邮件推送精准率 | 未定义 | 主观评估：≥70% 推送论文值得阅读 |
+
+---
+
+## 附录 A：文件目录说明
+
+```
+quantum-rss-radar/
+├── config/                    ← 设置文件（用户只需关心这里）
+│   ├── research_directions.md    研究方向定义
+│   ├── rss_sources.yaml          RSS 源配置
+│   ├── curated_papers.yaml       参考论文校准库
+│   ├── analysis_prompt.md        LLM prompt 模板（待实现）
+│   └── papers/                   参考论文 PDF（按 tier 分类）
+│
+├── data/                      ← 数据文件（自动生成）
+│   ├── radar.db                  SQLite 历史数据库
+│   ├── llm_cache.json            LLM 分析缓存
+│   ├── all/                      JSONL 全量数据
+│   └── reports/                  Markdown 报告
+│
+└── code/                      ← 代码（用户不需要看）
+    ├── src/                      Python 源码
+    ├── scripts/                  辅助脚本
+    ├── jekyll_site/              Jekyll 网站源码
+    ├── docs/                     文档
+    ├── .github/workflows/        GitHub Actions 配置
+    ├── Dockerfile / docker-compose.yaml
+    └── ...
+```
+
+> 当前实际目录结构尚未完全对齐此图。`code/` 目录尚未创建。详见 TODO.md。
