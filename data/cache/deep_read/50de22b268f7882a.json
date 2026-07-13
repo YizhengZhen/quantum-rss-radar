@@ -1,0 +1,24 @@
+{
+  "detailed_summary": "This comment paper responds to a recent study (Science 388, 199-204, 2025) that compared numerical methods and a quantum processor for simulating a quantum annealing protocol. The original study claimed that Neural Quantum States (NQS), a variational ansatz based on artificial neural networks, failed to achieve the same accuracy as the quantum processor. The comment revisits this conclusion by analyzing the Monte-Carlo noise and autocorrelation times in the NQS sampling. It demonstrates that when these statistical factors are properly accounted for, NQS can produce competitive results in certain cases, challenging the original study's negative assessment of NQS. The comment is brief (3 pages, 1 figure) and focuses on methodological corrections rather than new experimental data.",
+  "key_contributions": [
+    "Identifies that the original study's comparison between NQS and quantum processor may have been biased by inadequate handling of Monte-Carlo noise and autocorrelation times.",
+    "Demonstrates that NQS can achieve competitive accuracy when statistical uncertainties are properly quantified.",
+    "Provides a methodological critique that highlights the importance of error analysis in variational quantum simulations.",
+    "Reopens the discussion on the viability of NQS for quantum annealing simulations."
+  ],
+  "methodology_analysis": "The comment reanalyzes the NQS results from the original study by focusing on the Monte-Carlo sampling noise and autocorrelation times. It likely uses standard statistical techniques to estimate the variance of the NQS estimates and the effective sample size, accounting for correlations between successive samples. The authors probably recompute the NQS accuracy metrics (e.g., energy or fidelity) with proper error bars, showing that the original study's reported NQS errors may have been underestimated. The methodology is primarily analytical and statistical, not introducing new algorithms but correcting the interpretation of existing data.",
+  "results_analysis": "The comment does not present new numerical results but reinterprets the original data. It shows that when Monte-Carlo noise and autocorrelation are accounted for, the NQS results are statistically consistent with the quantum processor results in some cases. The specific numbers or figures from the original study are not reproduced in the comment, but the argument hinges on the fact that the original study's NQS error bars were too small, leading to an overstatement of the discrepancy. The comment likely includes a figure illustrating the corrected error bars.",
+  "strengths": [
+    "Addresses a critical methodological oversight in a high-profile comparison between classical and quantum methods.",
+    "Provides a clear and concise correction that can influence future benchmarks of NQS.",
+    "Highlights the importance of rigorous statistical analysis in variational Monte Carlo methods.",
+    "Constructive in tone, aiming to improve rather than dismiss the original work."
+  ],
+  "limitations": [
+    "The comment is very brief (3 pages) and does not provide extensive new data or a full reanalysis of all cases from the original study.",
+    "It focuses only on the NQS aspect, not addressing other numerical methods compared in the original paper.",
+    "The argument relies on the assumption that the original study's Monte-Carlo sampling was suboptimal; the comment does not propose a specific improved NQS implementation."
+  ],
+  "connections_to_research": "This work directly relates to quantum physics and information theory by examining the accuracy of classical variational methods (NQS) versus quantum processors in simulating quantum annealing. It touches on fundamental questions of quantum simulation, the power of neural-network-based wave functions, and the reliability of numerical benchmarks. For a researcher interested in quantum physics, this comment underscores the need for careful statistical analysis when comparing classical and quantum approaches, and it highlights ongoing debates about the practical advantages of quantum devices.",
+  "overall_assessment": "This comment is a valuable methodological correction to a high-profile paper, but its impact is limited by its brevity and narrow focus. It successfully points out a flaw in the original comparison but does not provide a comprehensive reanalysis or new results. The significance lies in reminding the community that statistical rigor is essential in variational Monte Carlo studies. The paper is well-written and targeted, but it is more of a technical note than a major contribution. It will be of interest to researchers working on NQS and quantum annealing benchmarks."
+}

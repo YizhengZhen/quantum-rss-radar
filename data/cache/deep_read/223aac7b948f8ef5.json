@@ -1,0 +1,24 @@
+{
+  "detailed_summary": "This paper investigates adversarial bandit learning for entanglement-based quantum network routing, specifically for the Ekert-91 (E91) protocol. Alice selects end-to-end repeater routes while Eve chooses attack surfaces (intercept-resend or memory degradation). Payoffs are derived from simulated E91 transcripts using SeQUeNCe, and Alice accepts a turn when the CHSH bound is violated. The study uses 50 structured topologies and finds that learned retention closely matches a full-matrix minimax reference (Pearson r=0.99). Under a one-surface Eve model, bottleneck families exhibit zero retention, while non-bottleneck families follow a 1-1/N coverage principle. Decision-tree explanation models are fitted to graph, attack, and route-level targets, and prompt records are used for local language model summarization, resulting in an open-source explanation workflow.",
+  "key_contributions": [
+    "Formulation of adversarial bandit learning for E91-based quantum network routing with two attack surfaces.",
+    "Demonstration that learned retention matches minimax reference with Pearson r=0.99 across 50 topologies.",
+    "Discovery of zero retention for bottleneck families and 1-1/N coverage for non-bottleneck families under one-surface Eve.",
+    "Development of decision-tree explanation models and a language-model-based summarization workflow for quantum repeater network games."
+  ],
+  "methodology_analysis": "The methodology combines adversarial bandit learning with quantum network simulation. Alice's actions are E91 routes, Eve's actions are attack surfaces (intercept-resend or memory degradation). Payoffs are obtained from cached SeQUeNCe-simulated E91 transcripts, and Alice accepts a turn when the CHSH bound is violated. The learning is performed across 50 structured topologies, and retention is compared to a full-matrix minimax reference. Decision-tree models are fitted to explain the learned policies, and prompt records are used to generate natural language summaries via local language models. The approach is computationally efficient but relies on simulated data and assumes a simplified attack model.",
+  "results_analysis": "The key result is that learned retention correlates extremely well with the minimax reference (Pearson r=0.99). Under a one-surface Eve model, bottleneck families (edges or nodes that are critical for connectivity) have zero retention, meaning they are always attacked successfully. Non-bottleneck families follow a 1-1/N coverage principle, where N is the number of non-bottleneck elements, indicating that Alice's retention probability decreases as the number of options increases. The decision-tree models achieve high faithfulness on graph, attack, and route-level targets. The paper does not report exact accuracy or fidelity numbers for the explanation models.",
+  "strengths": [
+    "Novel integration of adversarial bandit learning with quantum network routing and E91 protocol.",
+    "Strong empirical correlation (r=0.99) between learned and minimax retention, validating the approach.",
+    "Clear identification of bottleneck vs. non-bottleneck behavior with a simple coverage principle.",
+    "Open-source explanation workflow combining decision trees and language models for interpretability."
+  ],
+  "limitations": [
+    "Relies on simulated data from SeQUeNCe, which may not capture all real-world noise and imperfections.",
+    "Assumes only two attack surfaces (intercept-resend and memory degradation), limiting generality.",
+    "The explanation workflow's faithfulness is claimed but not quantified with specific metrics."
+  ],
+  "connections_to_research": "This work directly connects to quantum physics and information theory by studying entanglement-based quantum networks (E91 protocol) and the CHSH inequality. It applies adversarial bandit learning, a machine learning technique, to optimize routing under attacks, bridging quantum communication and classical decision theory. The use of CHSH violation as a payoff signal ties to foundational quantum nonlocality. The results on bottleneck retention and coverage principles provide insights into network resilience, relevant to quantum key distribution and quantum internet research.",
+  "overall_assessment": "This paper presents a focused and technically sound study on adversarial bandit learning for quantum network routing. The strong correlation with minimax reference and the discovered coverage principle are significant contributions. However, the work is limited by its reliance on simulation and simplified attack models. The explanation workflow is a nice addition but lacks rigorous evaluation. Overall, it is a solid contribution to the intersection of quantum networking and machine learning, suitable for a workshop venue like QCE26."
+}
