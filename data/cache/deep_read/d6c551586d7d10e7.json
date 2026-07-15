@@ -1,0 +1,25 @@
+{
+  "detailed_summary": "This comment critiques a recent paper (Phys. Rev. A 113, 012420, 2026) that claimed a quantum resource accounting of one thermal query followed by many statistically useful probe samples for distinguishing two hypotheses. The comment argues that the readout analysis in the original paper is flawed: a CNOT fanout of a diagonal post-query probe does not produce independent copies but rather perfectly correlated registers, so repeated measurements yield only one Bernoulli observation. It also points out that the sample lower bound derived from Pinsker's inequality is reversed—the inequality gives the opposite ordering for the reciprocal relative entropy. The comment acknowledges that the thermal-kickback mechanism may still encode the decision in the probe temperature, but the one-query readout claim and the quoted necessity of approximately 116 samples require correction.",
+  "key_contributions": [
+    "Identifies that a CNOT fanout of a diagonal post-query probe produces perfectly correlated registers, not independent copies.",
+    "Shows that neither trace distance nor relative entropy between hypotheses increases with fanout, so repeated measurements yield only one Bernoulli observation.",
+    "Demonstrates that the sample lower bound from Pinsker's inequality is reversed in the original paper.",
+    "Clarifies that independent samples require repeated preparation and heat exchange, which count as repeated queries.",
+    "Calls for correction of the one-query readout claim and the necessity of approximately 116 samples."
+  ],
+  "methodology_analysis": "The comment uses a logical and mathematical critique approach. It examines the original paper's claim about using a CNOT fanout to broadcast a one-qubit marginal, and shows that the resulting registers are perfectly correlated, not independent. It then analyzes the implications for trace distance and relative entropy, concluding that these quantities do not increase with the number of ancillas. The comment also applies Pinsker's inequality correctly to show that the original paper's sample lower bound is reversed. The methodology is rigorous and relies on standard quantum information theory concepts.",
+  "results_analysis": "The comment does not present new experimental or numerical results but provides a theoretical correction. It states that the original paper's claim of one thermal query followed by many statistically useful probe samples is invalid because the fanout produces only one Bernoulli observation. The sample lower bound of approximately 116 samples is shown to be incorrectly derived from Pinsker's inequality; the inequality actually gives the opposite ordering for the reciprocal relative entropy. The comment does not provide a corrected sample count but emphasizes that independent samples require repeated queries.",
+  "strengths": [
+    "Precise identification of a logical error in the original paper's readout analysis.",
+    "Clear demonstration of the correlation issue with CNOT fanout using standard quantum information principles.",
+    "Correct application of Pinsker's inequality to refute the sample lower bound.",
+    "Concise and focused critique that directly addresses the core claims."
+  ],
+  "limitations": [
+    "Does not provide an alternative readout scheme or corrected sample count.",
+    "Assumes the original paper's definition of a query; the comment's own definition may be contested.",
+    "Limited scope: only addresses the readout analysis and sample bound, not other aspects of the original paper."
+  ],
+  "connections_to_research": "This comment directly engages with quantum information theory and quantum thermodynamics, specifically the resource accounting of queries in hypothesis testing. It relates to the researcher's interest in quantum physics by analyzing the validity of claims about quantum advantage in thermal query settings. The critique involves fundamental concepts such as trace distance, relative entropy, and Pinsker's inequality, which are central to quantum information theory.",
+  "overall_assessment": "This comment is a well-argued and technically sound critique that identifies a significant flaw in a published paper. It correctly points out that the claimed one-query readout is invalid due to correlation issues and that the sample lower bound is reversed. The comment is concise and focused, making it a valuable contribution to the literature. However, it does not offer a constructive alternative, which limits its impact. Overall, it is a necessary correction that should prompt the original authors to revise their claims."
+}
