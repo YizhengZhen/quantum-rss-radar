@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List
 
 from .models import (
     DeepReadResult,
@@ -150,6 +150,90 @@ def _merge_by_doi(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
         merged.append(_pick_best(group))
     return merged
 
+# ── Re-keying & canonical merge (used by historical archive cleanup) ──
+
+def _doi_from_link(link: str) -> str:
+    """Extract a raw DOI from a link, if present."""
+    if not link:
+        return ""
+    import re
+    m = re.search(r"(10\.\d{4,9}/[^\s&?#]+)", link, re.IGNORECASE)
+    return m.group(1) if m else ""
+
+
+def compute_record_key(record: Dict[str, Any]) -> str:
+    """Deterministic identity key for a flat record (doi → arxiv id → title hash).
+
+    Matches the new per-paper id scheme so historical records merge cleanly
+    with future pipeline runs.
+    """
+    import hashlib
+    from .rss_fetcher import normalize_doi as _norm, extract_arxiv_id as _ex
+
+    doi = _norm(record.get("doi") or _doi_from_link(record.get("link", "")))
+    if doi:
+        return f"doi:{doi}"
+
+    arx = _ex(record.get("link", ""))
+    if arx:
+        return f"arx:{arx}"
+
+    norm_title = " ".join((record.get("title") or "").lower().split())
+    return f"title:{hashlib.sha256(norm_title.encode()).hexdigest()[:16]}"
+
+
+_ANALYSIS_FIELDS = [
+    "score", "recommended", "direction", "tldr", "motivation", "method",
+    "result", "conclusion", "keywords", "analysis_timestamp", "deep_read",
+    "abstract", "authors",
+]
+
+
+def canonical_record(group: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Merge a group of records sharing one key into a canonical record.
+
+    Identity (source / link / doi) prefers the journal version; the analysis
+    content (score, summary, …) comes from the newest analysis in the group.
+    """
+    def is_journal(r):
+        return (r.get("source") or "").lower() != "arxiv"
+
+    def ts(r):
+        d = _parse_datetime(r.get("analysis_timestamp"))
+        return d.timestamp() if d else 0.0
+
+    best_id = max(group, key=lambda r: (is_journal(r), r.get("score", 0), ts(r)))
+    newest = max(group, key=lambda r: ts(r))
+
+    out = dict(best_id)
+    for field in _ANALYSIS_FIELDS:
+        if newest.get(field) is not None:
+            out[field] = newest[field]
+
+    for member in group:
+        if member is best_id:
+            continue
+        if is_journal(best_id) and not is_journal(member) and not out.get("alternate_link"):
+            if "arxiv.org" in (member.get("link") or ""):
+                out["alternate_link"] = member.get("link")
+        if not out.get("doi") and member.get("doi"):
+            out["doi"] = member["doi"]
+        if len(str(member.get("abstract", ""))) > len(str(out.get("abstract", ""))):
+            out["abstract"] = member["abstract"]
+        if len(member.get("authors", [])) > len(out.get("authors", [])):
+            out["authors"] = member["authors"]
+
+    # Populate the doi field from the link-derived DOI (normalized) so the
+    # archive loader's DOI merge works on re-keyed historical records.
+    if not out.get("doi"):
+        from .rss_fetcher import normalize_doi as _norm
+
+        link_doi = _norm(_doi_from_link(out.get("link", "")))
+        if link_doi:
+            out["doi"] = link_doi
+
+    out["id"] = compute_record_key(out)
+    return out
 
 # ── Filtering ────────────────────────────────────────────────
 
