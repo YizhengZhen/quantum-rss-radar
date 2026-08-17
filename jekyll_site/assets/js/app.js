@@ -19,6 +19,13 @@ function app() {
         sources: {},
         directions: {},
 
+        // Quarterly view data (pages/quarterly.html)
+        quarterlyTab: 'preprints',
+        quarterlyPreprints: [],
+        quarterlyPublications: [],
+        quarterlyWindowStart: '',
+        quarterlyGenerated: '',
+
         // Computed properties
         get filteredPapers() {
             let papers = [...this.allPapers];
@@ -87,6 +94,14 @@ function app() {
                 this.allPapers = window.siteData.papers.papers || [];
                 this.sources = window.siteData.papers.sources || {};
                 this.directions = window.siteData.papers.directions || {};
+            }
+
+            // Load quarterly view data (if present)
+            if (window.quarterlyData) {
+                this.quarterlyPreprints = window.quarterlyData.preprints || [];
+                this.quarterlyPublications = window.quarterlyData.publications || [];
+                this.quarterlyWindowStart = window.quarterlyData.window_start || '';
+                this.quarterlyGenerated = window.quarterlyData.generated || '';
             }
 
             // Set initial theme

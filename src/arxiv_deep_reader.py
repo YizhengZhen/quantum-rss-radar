@@ -13,18 +13,16 @@ Copyright (c) 2026 Yizheng Zhen
 Licensed under the MIT License
 """
 
+import hashlib
+import json
 import logging
 import re
 import time
-import json
-import hashlib
 from pathlib import Path
-from typing import Optional, List
-from urllib.parse import urlparse
 
 import requests
 
-from .models import Paper, PaperAnalysis, DeepReadResult, Config
+from .models import Config, DeepReadResult, Paper, PaperAnalysis, PaperSource
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +36,8 @@ ARXIV_API_DELAY = 3.0
 
 # ── Helpers ───────────────────────────────────────────────────
 
-def extract_arxiv_id(link: str) -> Optional[str]:
+
+def extract_arxiv_id(link: str) -> str | None:
     """
     Extract arXiv ID from a paper link.
 
@@ -52,19 +51,19 @@ def extract_arxiv_id(link: str) -> Optional[str]:
         return None
 
     # Try direct arXiv ID pattern first (e.g. "2301.12345" or "2301.12345v1")
-    match = re.search(r'arxiv\.org/(?:abs|pdf)/(\d+\.\d+)(?:v\d+)?', link)
+    match = re.search(r"arxiv\.org/(?:abs|pdf)/(\d+\.\d+)(?:v\d+)?", link)
     if match:
         return match.group(1)
 
     # Try arxiv: prefix
-    match = re.search(r'arxiv:(\d+\.\d+)', link)
+    match = re.search(r"arxiv:(\d+\.\d+)", link)
     if match:
         return match.group(1)
 
     return None
 
 
-def fetch_arxiv_metadata(arxiv_id: str) -> Optional[dict]:
+def fetch_arxiv_metadata(arxiv_id: str) -> dict | None:
     """
     Fetch full metadata from arXiv API for a given paper ID.
 
@@ -85,7 +84,7 @@ def fetch_arxiv_metadata(arxiv_id: str) -> Optional[dict]:
     meta = {}
 
     def extract_tag(tag: str) -> str:
-        m = re.search(rf'<{tag}[^>]*>(.*?)</{tag}>', text, re.DOTALL)
+        m = re.search(rf"<{tag}[^>]*>(.*?)</{tag}>", text, re.DOTALL)
         return m.group(1).strip() if m else ""
 
     meta["title"] = extract_tag("title")
@@ -99,17 +98,19 @@ def fetch_arxiv_metadata(arxiv_id: str) -> Optional[dict]:
     meta["updated"] = extract_tag("updated")
 
     # Extract authors
-    authors = re.findall(r'<author><name>(.*?)</name></author>', text, re.DOTALL)
+    authors = re.findall(r"<author><name>(.*?)</name></author>", text, re.DOTALL)
     meta["authors"] = [a.strip() for a in authors]
 
     # PDF URL
     meta["pdf_url"] = ARXIV_PDF_URL.format(arxiv_id)
 
-    logger.info(f"Fetched arXiv metadata for {arxiv_id}: comments={meta['comments'][:50] if meta['comments'] else 'N/A'}")
+    logger.info(
+        f"Fetched arXiv metadata for {arxiv_id}: comments={meta['comments'][:50] if meta['comments'] else 'N/A'}"
+    )
     return meta
 
 
-def download_and_extract_text(pdf_url: str, max_chars: int = 30000) -> Optional[str]:
+def download_and_extract_text(pdf_url: str, max_chars: int = 30000) -> str | None:
     """
     Download a PDF and extract its text content.
 
@@ -168,13 +169,15 @@ def download_and_extract_text(pdf_url: str, max_chars: int = 30000) -> Optional[
         return None
 
 
-def _extract_text_fallback(pdf_content: bytes, max_chars: int = 30000) -> Optional[str]:
+def _extract_text_fallback(pdf_content: bytes, max_chars: int = 30000) -> str | None:
     """
     Fallback text extraction using pdfminer.six (lighter dependency).
     """
     try:
         from io import BytesIO
+
         from pdfminer.high_level import extract_text as pdfminer_extract
+
         text = pdfminer_extract(BytesIO(pdf_content))
         if text:
             return text[:max_chars]
@@ -233,12 +236,13 @@ OUTPUT FORMAT (JSON only, no markdown):
 
 # ── Cache ─────────────────────────────────────────────────────
 
+
 def _cache_key(arxiv_id: str) -> str:
     """Generate a cache key for a given arXiv paper."""
     return hashlib.sha256(arxiv_id.encode()).hexdigest()[:16]
 
 
-def _load_cache(cache_dir: Path, arxiv_id: str) -> Optional[dict]:
+def _load_cache(cache_dir: Path, arxiv_id: str) -> dict | None:
     """Load a cached deep read result."""
     key = _cache_key(arxiv_id)
     cache_file = cache_dir / f"{key}.json"
@@ -268,13 +272,14 @@ def _save_cache(cache_dir: Path, arxiv_id: str, data: dict):
 
 # ── Main Deep Read Function ───────────────────────────────────
 
+
 def deep_read_paper(
     paper: Paper,
     analysis: PaperAnalysis,
     config: Config,
     llm_client,
-    cache_dir: Optional[Path] = None,
-) -> Optional[DeepReadResult]:
+    cache_dir: Path | None = None,
+) -> DeepReadResult | None:
     """
     Perform a deep reading analysis of a high-score arXiv paper.
 
@@ -305,7 +310,9 @@ def deep_read_paper(
     # Step 3: Fetch arXiv metadata
     meta = fetch_arxiv_metadata(arxiv_id)
     if not meta:
-        logger.warning(f"Failed to fetch arXiv metadata for {arxiv_id}, skipping deep read")
+        logger.warning(
+            f"Failed to fetch arXiv metadata for {arxiv_id}, skipping deep read"
+        )
         return None
 
     # Throttle: respect arXiv API rate limits
@@ -316,7 +323,9 @@ def deep_read_paper(
     full_text = download_and_extract_text(pdf_url)
 
     if not full_text:
-        logger.warning(f"No text extracted for {arxiv_id}, trying abstract-only analysis")
+        logger.warning(
+            f"No text extracted for {arxiv_id}, trying abstract-only analysis"
+        )
         # Fallback: use arXiv abstract + metadata instead of full PDF
         full_text = meta.get("abstract", paper.abstract)
 
@@ -353,16 +362,25 @@ def deep_read_paper(
             result_data = json.loads(result_text)
 
             # Validate required fields
-            required = ["detailed_summary", "key_contributions", "methodology_analysis",
-                        "results_analysis", "strengths", "limitations",
-                        "connections_to_research", "overall_assessment"]
+            required = [
+                "detailed_summary",
+                "key_contributions",
+                "methodology_analysis",
+                "results_analysis",
+                "strengths",
+                "limitations",
+                "connections_to_research",
+                "overall_assessment",
+            ]
             for field in required:
                 if field not in result_data:
                     raise ValueError(f"Missing field: {field}")
 
             # Ensure lists
             if not isinstance(result_data.get("key_contributions"), list):
-                result_data["key_contributions"] = [result_data.get("key_contributions", "")]
+                result_data["key_contributions"] = [
+                    result_data.get("key_contributions", "")
+                ]
             if not isinstance(result_data.get("strengths"), list):
                 result_data["strengths"] = [result_data.get("strengths", "")]
             if not isinstance(result_data.get("limitations"), list):
@@ -373,13 +391,15 @@ def deep_read_paper(
                 _save_cache(cache_dir, arxiv_id, result_data)
 
             result = DeepReadResult(paper_id=paper.id, **result_data)
-            logger.info(f"Deep read complete for arXiv:{arxiv_id} (score={analysis.relevance_score})")
+            logger.info(
+                f"Deep read complete for arXiv:{arxiv_id} (score={analysis.relevance_score})"
+            )
             return result
 
         except Exception as e:
             logger.warning(f"Deep read LLM call failed (attempt {attempt + 1}): {e}")
             if attempt < 2:
-                time.sleep(2 ** attempt)
+                time.sleep(2**attempt)
 
     logger.error(f"Deep read failed after 3 attempts for arXiv:{arxiv_id}")
     return None
@@ -409,7 +429,11 @@ def deep_read_high_score_papers(
         return papers_with_analyses
 
     min_score = config.min_relevance_score
-    cache_dir = Path(config.output_dir) / "cache" / "deep_read" if config.output_dir else Path("data/cache/deep_read")
+    cache_dir = (
+        Path(config.output_dir) / "cache" / "deep_read"
+        if config.output_dir
+        else Path("data/cache/deep_read")
+    )
 
     updated_pairs = []
     deep_read_count = 0
@@ -424,3 +448,77 @@ def deep_read_high_score_papers(
 
     logger.info(f"Deep reading complete: {deep_read_count} papers analyzed")
     return updated_pairs
+
+
+# ── arXiv DOI enrichment (cross-source dedup support) ─────────
+
+
+def _fetch_arxiv_dois_batch(arxiv_ids: list[str]) -> dict[str, str]:
+    """Query arXiv API for a batch of IDs, returning {arxiv_id: doi}."""
+    ids = ",".join(arxiv_ids)
+    url = ARXIV_API_URL.format(ids)
+    try:
+        resp = requests.get(url, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        logger.warning(f"arXiv API DOI batch failed ({len(arxiv_ids)} ids): {e}")
+        return {}
+
+    text = resp.text
+    result: dict[str, str] = {}
+    entries = re.findall(r"<entry>(.*?)</entry>", text, re.DOTALL)
+    for entry in entries:
+        idm = re.search(r"<id[^>]*>(.*?)</id>", entry, re.DOTALL)
+        doim = re.search(r"<arxiv:doi[^>]*>(.*?)</arxiv:doi>", entry, re.DOTALL)
+        if not idm or not doim:
+            continue
+        arx = extract_arxiv_id(idm.group(1).strip())
+        doi = doim.group(1).strip().lower()
+        if arx and doi:
+            result[arx] = doi
+    return result
+
+
+def enrich_arxiv_dois(
+    papers: list[Paper], config: Config, batch_size: int = 100
+) -> int:
+    """Best-effort: query arXiv API to fill in DOIs for arXiv preprints.
+
+    Enables arXiv ↔ journal cross-source dedup by DOI.  Updates ``paper.doi`` in
+    place and rewrites ``paper.id`` to ``doi:<doi>`` when a DOI is found.
+    Fully resilient: any failure only skips enrichment.
+    """
+    if not getattr(config, "_arxiv_doi_enrich", True):
+        logger.info("arXiv DOI enrichment disabled (ARXIV_DOI_ENRICH=false)")
+        return 0
+
+    candidates: list[tuple] = []
+    seen = set()
+    for p in papers:
+        if p.source != PaperSource.ARXIV or getattr(p, "doi", None):
+            continue
+        arx = extract_arxiv_id(p.link) or p.raw_data.get("arxiv_id", "")
+        if arx and arx not in seen:
+            seen.add(arx)
+            candidates.append((arx, p))
+
+    if not candidates:
+        return 0
+
+    logger.info(f"Enriching DOIs for {len(candidates)} arXiv papers...")
+    found = 0
+    for i in range(0, len(candidates), batch_size):
+        batch = candidates[i : i + batch_size]
+        id_to_doi = _fetch_arxiv_dois_batch([arx for arx, _ in batch])
+        for arx, paper in batch:
+            doi = id_to_doi.get(arx)
+            if doi:
+                paper.doi = doi
+                paper.id = f"doi:{doi}"
+                found += 1
+        # Throttle arXiv API between batches
+        if i + batch_size < len(candidates):
+            time.sleep(ARXIV_API_DELAY)
+
+    logger.info(f"arXiv DOI enrichment: {found}/{len(candidates)} papers got a DOI")
+    return found

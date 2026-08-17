@@ -17,11 +17,32 @@ jobs:
   run-pipeline:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # 允许 push 到 data 分支
+      contents: write # 允许 push 到 data 分支
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # ─────────────────────────────────────────────────────────────────
+      # Fetch the JSONL archive (history) from the `data` branch so the
+      # digest engine and quarterly web view can aggregate previous runs.
+      # This is the ONLY history that persists across CI runs.
+      # ─────────────────────────────────────────────────────────────────
+      - name: Fetch archive from data branch
+        run: |
+          mkdir -p data/all
+          if git ls-remote --heads origin data | grep -q "refs/heads/data"; then
+            git fetch origin data:data --depth=1
+            if git cat-file -e data:data/all 2>/dev/null; then
+              git archive data data/all | tar -x -C .
+              COUNT=$(ls data/all/data_*.jsonl 2>/dev/null | wc -l)
+              echo "✅ Fetched $COUNT archive file(s) from data branch"
+            else
+              echo "data branch exists but has no data/all yet — starting fresh"
+            fi
+          else
+            echo "data branch does not exist yet — starting fresh archive"
+          fi
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -57,6 +78,13 @@ jobs:
           EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
           EMAIL_SMTP_USERNAME: ${{ secrets.EMAIL_SMTP_USERNAME }}
           EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
+
+          # Optional Digest / Quarterly settings
+          DIGEST_ENABLED: ${{ secrets.DIGEST_ENABLED }}
+          ARCHIVE_DIR: ${{ secrets.ARCHIVE_DIR }}
+          QUARTER_WINDOW_DAYS: ${{ secrets.QUARTER_WINDOW_DAYS }}
+          QUARTERLY_TOP_N: ${{ secrets.QUARTERLY_TOP_N }}
+          ARXIV_DOI_ENRICH: ${{ secrets.ARXIV_DOI_ENRICH }}
         run: |
           source .venv/bin/activate
           echo "Running Quantum RSS Radar with environment variable configuration:"
@@ -124,7 +152,6 @@ jobs:
             echo "Error: Jekyll site not built properly"
             exit 1
           fi
-
 
       - name: Upload pipeline artifacts
         if: always()

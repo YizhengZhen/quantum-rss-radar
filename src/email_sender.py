@@ -6,14 +6,13 @@ and structured paper summaries.  Integrated directly into the
 pipeline — called by orchestrator_jekyll.py after data export.
 """
 
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from datetime import datetime
-from typing import List, Optional, Dict
 import logging
+import smtplib
+from datetime import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
-from .models import Paper, PaperAnalysis, PaperSource, Config, SourceConfig, FeedConfig
+from .models import Config, FeedConfig, Paper, PaperAnalysis, PaperSource, SourceConfig
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Primary sort: source priority (ascending = most important first)
 # Secondary sort: relevance score (descending = highest first)
 # See docs/email_sorting.md for full rationale.
-_SOURCE_PRIORITY: Dict[str, int] = {
+_SOURCE_PRIORITY: dict[str, int] = {
     "arxiv": 1,
     # Nature & sub-journals
     "nature": 2,
@@ -39,8 +38,8 @@ _SOURCE_PRIORITY: Dict[str, int] = {
 
 def _resolve_feed_config(
     paper: Paper,
-    sources: Dict[str, SourceConfig],
-    feed_configs: Dict[str, FeedConfig],
+    sources: dict[str, SourceConfig],
+    feed_configs: dict[str, FeedConfig],
 ) -> tuple[str, str]:
     """Resolve display name and colour for a paper.
 
@@ -75,11 +74,12 @@ def _email_sort_key(pair: tuple) -> tuple:
 
 # ── Helpers ─────────────────────────────────────────────────
 
+
 def _source_tag_html(source_key: str, source_display: str, source_color: str) -> str:
     return (
         f'<span style="display:inline-block; padding:2px 10px; border-radius:12px;'
         f' font-size:0.85em; font-weight:600; color:#fff; background:{source_color};">'
-        f'{source_display}</span>'
+        f"{source_display}</span>"
     )
 
 
@@ -87,20 +87,23 @@ def _direction_badge_html(direction: str) -> str:
     return (
         f'<span style="display:inline-block; padding:2px 10px; border-radius:12px;'
         f' font-size:0.85em; font-weight:500; color:#495057; background:#e9ecef;">'
-        f'{direction}</span>'
+        f"{direction}</span>"
     )
 
 
 # ── Single paper card ───────────────────────────────────────
 
+
 def format_single_paper_html(
     paper: Paper,
     analysis: PaperAnalysis,
-    sources: Optional[Dict[str, SourceConfig]] = None,
-    feed_configs: Optional[Dict[str, FeedConfig]] = None,
-    rank: Optional[int] = None,
+    sources: dict[str, SourceConfig] | None = None,
+    feed_configs: dict[str, FeedConfig] | None = None,
+    rank: int | None = None,
 ) -> str:
-    src_display, src_color = _resolve_feed_config(paper, sources or {}, feed_configs or {})
+    src_display, src_color = _resolve_feed_config(
+        paper, sources or {}, feed_configs or {}
+    )
 
     src_tag = _source_tag_html(paper.source.value, src_display, src_color)
     dir_badge = _direction_badge_html(analysis.direction or "General / Other")
@@ -112,10 +115,14 @@ def format_single_paper_html(
     pub_str = paper.published.strftime("%b %d, %Y") if paper.published else "Unknown"
 
     rec_badge = (
-        '<span style="background:#7ED321; color:#fff; padding:2px 10px;'
-        ' border-radius:12px; font-size:0.85em; font-weight:700; margin-left:8px;">'
-        "RECOMMENDED</span>"
-    ) if analysis.recommendation else ""
+        (
+            '<span style="background:#7ED321; color:#fff; padding:2px 10px;'
+            ' border-radius:12px; font-size:0.85em; font-weight:700; margin-left:8px;">'
+            "RECOMMENDED</span>"
+        )
+        if analysis.recommendation
+        else ""
+    )
 
     score_color = "#7ED321" if analysis.recommendation else "#F5A623"
 
@@ -155,11 +162,12 @@ def format_single_paper_html(
 
 # ── Full HTML email ────────────────────────────────────────
 
+
 def build_email_html(
-    papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-    sources: Dict[str, SourceConfig],
+    papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+    sources: dict[str, SourceConfig],
     config: Config,
-    feed_configs: Optional[Dict[str, FeedConfig]] = None,
+    feed_configs: dict[str, FeedConfig] | None = None,
 ) -> str:
     date_str = datetime.now().strftime("%B %d, %Y")
     total = len(papers_with_analyses)
@@ -167,16 +175,20 @@ def build_email_html(
 
     # Filter by minimum score for email — send ALL papers scoring >= email_min_score
     email_min = config.email_min_score
-    scored_pairs = sorted(papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True)
+    scored_pairs = sorted(
+        papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True
+    )
     top_papers = [(p, a) for p, a in scored_pairs if a.relevance_score >= email_min]
     if not top_papers:
-        logger.info(f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}")
-        top_papers = scored_pairs[:min(config.top_n_recommendations, total)]
+        logger.info(
+            f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}"
+        )
+        top_papers = scored_pairs[: min(config.top_n_recommendations, total)]
     # Two-level sort: source priority first, then score descending
     top_papers = sorted(top_papers, key=_email_sort_key)
 
     # Direction stats
-    direction_counts: Dict[str, int] = {}
+    direction_counts: dict[str, int] = {}
     for _, a in papers_with_analyses:
         d = a.direction or "General / Other"
         direction_counts[d] = direction_counts.get(d, 0) + 1
@@ -269,7 +281,7 @@ def build_email_html(
     </div>
 
     <div style="text-align:center; margin-top:24px;">
-      <a href="{config.public_website_url if config.public_website_url else 'https://yizhengzhen.github.io/quantum-rss-radar/'}"
+      <a href="{config.public_website_url if config.public_website_url else "https://yizhengzhen.github.io/quantum-rss-radar/"}"
          style="display:inline-block; background:#4A90E2; color:#fff; padding:12px 28px;
                 text-decoration:none; border-radius:4px; font-weight:700; font-size:14px;">
         View Full Website &rarr;
@@ -290,11 +302,12 @@ def build_email_html(
 
 # ── Plain-text fallback ─────────────────────────────────────
 
+
 def build_email_text(
-    papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-    sources: Dict[str, SourceConfig],
+    papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+    sources: dict[str, SourceConfig],
     config: Config,
-    feed_configs: Optional[Dict[str, FeedConfig]] = None,
+    feed_configs: dict[str, FeedConfig] | None = None,
 ) -> str:
     date_str = datetime.now().strftime("%B %d, %Y")
     total = len(papers_with_analyses)
@@ -302,11 +315,15 @@ def build_email_text(
 
     # Filter by minimum score for email — send ALL papers scoring >= email_min_score
     email_min = config.email_min_score
-    scored_pairs = sorted(papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True)
+    scored_pairs = sorted(
+        papers_with_analyses, key=lambda x: x[1].relevance_score, reverse=True
+    )
     top_papers = [(p, a) for p, a in scored_pairs if a.relevance_score >= email_min]
     if not top_papers:
-        logger.info(f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}")
-        top_papers = scored_pairs[:min(config.top_n_recommendations, total)]
+        logger.info(
+            f"No papers score >= {email_min} for email — falling back to top {config.top_n_recommendations}"
+        )
+        top_papers = scored_pairs[: min(config.top_n_recommendations, total)]
     # Two-level sort: source priority first, then score descending
     top_papers = sorted(top_papers, key=_email_sort_key)
 
@@ -342,7 +359,13 @@ def build_email_text(
 
     lines += [
         "-" * 40,
-        "Full website: " + (config.public_website_url if config.public_website_url else "https://github.com/YizhengZhen/quantum-rss-radar") + "",
+        "Full website: "
+        + (
+            config.public_website_url
+            if config.public_website_url
+            else "https://github.com/YizhengZhen/quantum-rss-radar"
+        )
+        + "",
         "-" * 40,
         "",
         "Auto-generated by Quantum RSS Radar.",
@@ -354,35 +377,26 @@ def build_email_text(
 
 # ── Sending ─────────────────────────────────────────────────
 
-def send_daily_email(
-    papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-    sources: Dict[str, SourceConfig],
-    config: Config,
-    feed_configs: Optional[Dict[str, FeedConfig]] = None,
-) -> bool:
-    if not config.email_enabled:
-        logger.info("Email sending is disabled in configuration")
-        return False
-    if not papers_with_analyses:
-        logger.warning("No papers to send in email")
-        return False
 
+def _send_smtp(subject: str, html: str, text: str, config: Config) -> bool:
+    """Send an HTML + plain-text email via SMTP using the given config.
+
+    Shared by the legacy daily email and the digest engine.
+    Port 465 → SMTP_SSL (immediate TLS); other ports → SMTP + STARTTLS.
+    """
     required = [
-        config.email_sender, config.email_recipient,
-        config.email_smtp_server, config.email_smtp_port,
-        config.email_smtp_username, config.email_smtp_password,
+        config.email_sender,
+        config.email_recipient,
+        config.email_smtp_server,
+        config.email_smtp_port,
+        config.email_smtp_username,
+        config.email_smtp_password,
     ]
     if not all(required):
         logger.error("Email configuration incomplete — check .env or GitHub Secrets")
         return False
 
     try:
-        date_str = datetime.now().strftime("%Y-%m-%d")
-        subject = f"Quantum RSS Radar — Daily Research Digest ({date_str})"
-
-        html = build_email_html(papers_with_analyses, sources, config, feed_configs)
-        text = build_email_text(papers_with_analyses, sources, config, feed_configs)
-
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
         msg["From"] = config.email_sender
@@ -392,14 +406,17 @@ def send_daily_email(
         msg.attach(MIMEText(html, "html"))
 
         port = config.email_smtp_port
-        logger.info(f"Sending email via {config.email_smtp_server}:{port} -> {config.email_recipient}")
+        logger.info(
+            f"Sending email via {config.email_smtp_server}:{port} -> {config.email_recipient}"
+        )
 
-        # Port 465 → SMTP_SSL (immediate TLS)
-        # Port 587 / others → SMTP + STARTTLS
         if port == 465:
             import ssl as _ssl
+
             ctx = _ssl.create_default_context()
-            with smtplib.SMTP_SSL(config.email_smtp_server, port, context=ctx) as server:
+            with smtplib.SMTP_SSL(
+                config.email_smtp_server, port, context=ctx
+            ) as server:
                 server.login(config.email_smtp_username, config.email_smtp_password)
                 server.send_message(msg)
         else:
@@ -410,17 +427,44 @@ def send_daily_email(
                 server.login(config.email_smtp_username, config.email_smtp_password)
                 server.send_message(msg)
 
-        logger.info(f"Daily email sent successfully to {config.email_recipient}")
+        logger.info(f"Email sent successfully to {config.email_recipient}")
         return True
     except Exception as e:
         logger.error(f"Failed to send email: {e}")
         return False
 
 
+def send_daily_email(
+    papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+    sources: dict[str, SourceConfig],
+    config: Config,
+    feed_configs: dict[str, FeedConfig] | None = None,
+) -> bool:
+    if not config.email_enabled:
+        logger.info("Email sending is disabled in configuration")
+        return False
+    if not papers_with_analyses:
+        logger.warning("No papers to send in email")
+        return False
+
+    try:
+        date_str = datetime.now().strftime("%Y-%m-%d")
+        subject = f"Quantum RSS Radar — Daily Research Digest ({date_str})"
+
+        html = build_email_html(papers_with_analyses, sources, config, feed_configs)
+        text = build_email_text(papers_with_analyses, sources, config, feed_configs)
+
+        return _send_smtp(subject, html, text, config)
+    except Exception as e:
+        logger.error(f"Failed to build daily email: {e}")
+        return False
+
+
 # ── Test helper ─────────────────────────────────────────────
 
+
 def test_email_config(
-    sources: Dict[str, SourceConfig],
+    sources: dict[str, SourceConfig],
     config: Config,
 ) -> bool:
     if not config.email_enabled:

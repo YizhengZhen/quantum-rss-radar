@@ -13,15 +13,16 @@
                      └─────────────────────────────┘
 
 Step  1: config_loader          ← 读取 .env + config/*.yaml/*.md
-Step  2: rss_fetcher            ← 多线程 RSS 抓取
+Step  2: rss_fetcher            ← 多线程 RSS 抓取（含 DOI 提取、arXiv 稳定 id）
 Step  3: normalizer             ← 统一 author/date/source 格式
-Step  4: deduplicate            ← arxiv ID 优先 + title hash
-Step  5: semantic_analyzer      ← LLM 评分 + 结构化摘要（缓存优先）
-Step  6: filter_and_rank        ← 按评分排序
-Step  7: arxiv_deep_reader      ← 高评分论文下载 PDF 再分析
-Step  8: data_exporter          ← JSONL + MD 报告 + Jekyll
-Step  9: database               ← SQLite 持久化
-Step 10: email_sender           ← 每日推荐摘要
+Step  4: arxiv_deep_reader      ← (可选) arXiv API 富集 DOI，支持 arXiv↔期刊 跨源去重
+Step  5: deduplicate            ← 确定性去重：doi → arxiv id → title hash
+Step  6: semantic_analyzer      ← LLM 评分 + 结构化摘要（缓存优先）
+Step  7: filter_and_rank        ← 按评分排序
+Step  8: arxiv_deep_reader      ← 高评分论文下载 PDF 再分析
+Step  9: data_exporter          ← JSONL + MD 报告 + Jekyll + 季度视图(quarterly.json)
+Step 10: database               ← SQLite 持久化
+Step 11: digest_engine          ← 按 config/digests.yaml 发送多频率邮件（weekday/weekly/monthly/seasonal）
 ```
 
 ---
@@ -32,13 +33,15 @@ Step 10: email_sender           ← 每日推荐摘要
 scheduler
     ↓
 orchestrator_jekyll  (主协调器)
-    ├── config_loader        ← 读取 .env + config/
-    ├── rss_fetcher → normalizer → deduplicate
+    ├── config_loader        ← 读取 .env + config/ (含 digests.yaml)
+    ├── rss_fetcher → normalizer → (arXiv DOI 富集) → deduplicate
     ├── semantic_analyzer    ← LLM 调用 + 缓存 (llm_cache.json)
-    ├── arxiv_deep_reader    ← PDF 下载 + 全文分析
-    ├── data_exporter        ← JSONL / MD / Jekyll _data/
+    ├── arxiv_deep_reader    ← PDF 下载 + 全文分析 + DOI 富集
+    ├── data_exporter        ← JSONL / MD / Jekyll _data/ + quarterly.json
+    ├── history              ← JSONL 归档聚合（digest/季度共用）
     ├── database             ← SQLite 存储 (radar.db)
-    └── email_sender         ← SMTP HTML 邮件
+    ├── digest_engine        ← 多频率邮件 (config/digests.yaml)
+    └── email_sender         ← SMTP 发送 (_send_smtp)
 
 模块间仅通过 models.py dataclass 通信，无循环依赖。
 ```
@@ -47,18 +50,20 @@ orchestrator_jekyll  (主协调器)
 
 | 模块 | 文件 | 职责 |
 |------|------|------|
-| 配置加载 | `config_loader.py` | 读取 `.env` 环境变量 + `config/` 下 YAML/MD/参考论文 YAML 文件 |
-| RSS 采集 | `rss_fetcher.py` | 多线程抓取 RSS feed，限流防封 |
+| 配置加载 | `config_loader.py` | 读取 `.env` 环境变量 + `config/` 下 YAML/MD/参考论文 YAML/digests.yaml |
+| RSS 采集 | `rss_fetcher.py` | 多线程抓取 RSS feed，提取 DOI，生成稳定 id（doi:/arx:） |
 | 标准化 | `normalizer.py` | 统一 author/date/source 格式 |
-| 去重 | `deduplicate.py` | 基于 arxiv ID + title hash 去重 |
+| 去重 | `deduplicate.py` | 确定性 key 去重：doi → arxiv id → title hash，期刊版 canonical |
 | 语义分析 | `semantic_analyzer.py` | LLM API 调用 + 缓存 + 结构化摘要 |
-| 深度阅读 | `arxiv_deep_reader.py` | 高评分论文自动下载 arXiv PDF 再分析 |
-| 数据导出 | `data_exporter.py` | JSONL + Markdown 报告 + Jekyll `_data/papers.json` |
+| 深度阅读 | `arxiv_deep_reader.py` | 高评分论文下载 arXiv PDF 再分析；arXiv DOI 富集 |
+| 数据导出 | `data_exporter.py` | JSONL + Markdown 报告 + Jekyll `_data/papers.json` + 季度 `_data/quarterly.json` |
+| 历史聚合 | `history.py` | 读 JSONL 归档、合并去重、窗口过滤、preprint/publication 分类（digest/季度共用） |
+| 邮件引擎 | `digest_engine.py` | 日历判断 today 该发哪些 digest、构建/发送多频率邮件 |
+| 邮件发送 | `email_sender.py` | SMTP 发送（`_send_smtp` 供 daily 与 digest 复用）、两级排序 |
 | 数据库 | `database.py` | SQLite 持久化（`data/radar.db`），支持跨天查询 |
-| 邮件发送 | `email_sender.py` | SMTP 发送 HTML 邮件，两级排序（来源优先级 + 评分）|
 | 标签管理 | `tag_manager.py` | 关键词自动累积、匹配、归类 |
-| 调度 | `scheduler.py` | cron 表达式调度 |
-| 数据模型 | `models.py` | Paper / PaperAnalysis / Config 等 dataclass |
+| 调度 | `scheduler.py` | 按 `update_frequency` 决定当天抓哪些 feed（CI 中因 fetch_history 不持久化而门控失效） |
+| 数据模型 | `models.py` | Paper / PaperAnalysis / Config / FeedConfig / DigestConfig 等 dataclass |
 
 ---
 
@@ -71,22 +76,26 @@ quantum-rss-radar/
 ├── pyproject.toml / requirements.txt
 │
 ├── src/                          # Python 源码
-│   ├── orchestrator_jekyll.py    # 主协调器（10 步流程）
-│   ├── config_loader.py          # 配置加载（含参考论文 YAML 读取）
-│   ├── rss_fetcher.py            # RSS 采集
+│   ├── orchestrator_jekyll.py    # 主协调器（11 步流程）
+│   ├── config_loader.py          # 配置加载（含 digests.yaml 读取）
+│   ├── rss_fetcher.py            # RSS 采集（DOI 提取）
 │   ├── normalizer.py             # 标准化
-│   ├── deduplicate.py            # 去重
+│   ├── deduplicate.py            # DOI 优先的确定性去重
 │   ├── semantic_analyzer.py      # LLM 分析 + 缓存 + few-shot 注入
-│   ├── arxiv_deep_reader.py      # PDF 深度阅读
-│   ├── data_exporter.py          # 数据导出
+│   ├── arxiv_deep_reader.py      # PDF 深度阅读 + arXiv DOI 富集
+│   ├── data_exporter.py          # 数据导出（含季度视图）
+│   ├── history.py                # JSONL 归档聚合（digest/季度共用）
+│   ├── digest_engine.py          # 多频率邮件引擎
+│   ├── digest_cli.py             # digest 手动发送/预览 CLI
+│   ├── email_sender.py           # 邮件发送（_send_smtp 复用）
 │   ├── database.py               # SQLite 存储
-│   ├── email_sender.py           # 邮件推送（两级排序）
 │   ├── tag_manager.py            # 标签管理
 │   ├── models.py                 # 数据模型
 │   └── scheduler.py              # 调度
 │
 ├── config/
 │   ├── rss_sources.yaml          # RSS 源定义
+│   ├── digests.yaml              # 多频率邮件（weekday/weekly/monthly/seasonal）定义
 │   ├── research_directions.md    # 研究方向（按需修改，三层分级结构）
 │   └── ref_*.yaml                # 参考论文（few-shot 校准，可选）
 │
@@ -108,7 +117,8 @@ quantum-rss-radar/
 │   ├── setup_github.sh
 │   ├── deploy_to_public_repo.py
 │   ├── inspect_results.py        # 历史评分分布分析
-│   └── rerun_analysis.py         # A/B 对比测试
+│   ├── rerun_analysis.py         # A/B 对比测试
+│   └── archive_preview.py        # 归档/digest 调度预览
 │
 └── data/                         # 运行输出（gitignored）
     ├── all/                      # JSONL 每日全量数据
@@ -125,7 +135,7 @@ quantum-rss-radar/
 
 ```
 Paper
-  ├── id: str              # 唯一标识（arxiv ID 优先 → title hash fallback）
+  ├── id: str              # 唯一标识（doi:... → arx:... → title hash fallback）
   ├── title: str
   ├── authors: List[str]
   ├── abstract: str
@@ -133,6 +143,8 @@ Paper
   ├── source: PaperSource  # arxiv / nature / aps / science / ieee / acm / springer / other
   ├── feed_name: str       # RSS 源名称（区分 Nature Physics vs Nature Comms 等）
   ├── link: str
+  ├── doi: str | None      # 归一化 DOI（去重主键）
+  ├── alternate_link: str | None  # DOI 合并时保留的 arXiv 版链接
   └── tags: List[str]
 
 PaperAnalysis
@@ -148,7 +160,16 @@ Config
   ├── llm_api_key / llm_model / llm_provider / llm_base_url
   ├── max_papers_per_feed / min_relevance_score / email_min_score
   ├── email_enabled / email_smtp_*
+  ├── digest_enabled / archive_dir / quarter_window_days / quarterly_top_n
   └── llm_cache_enabled
+
+DigestConfig（config/digests.yaml）
+  ├── id / name / frequency      # weekday / weekly / monthly / seasonal
+  ├── schedule                   # { weekday } 或 { day_of_month }
+  ├── include                    # all | arxiv | published
+  ├── feed_filter / source_filter
+  ├── window_days / min_score / max_papers
+  └── subject_template / enabled
 ```
 
 ---
@@ -163,11 +184,13 @@ Config
 - 可通过 `.env` 的 `LLM_CACHE_ENABLED=false` 关闭
 - 节省 50-80% API 调用费用
 
-### 5.2 去重策略
+### 5.2 去重策略（DOI 优先的确定性去重）
 
-1. arxiv ID 优先（从 link 中提取 `2301.xxxxx`）
-2. 无 arxiv ID → title 归一化后 SHA256 hash 对比
-3. `INSERT OR REPLACE` 写入 SQLite，天然去重
+1. **DOI 优先**（最稳定、跨源唯一）：arXiv 与期刊同文按 DOI 合并（arXiv 的 DOI 由 arXiv API 富集）
+2. 无 DOI → arXiv ID（`arx:...`）
+3. 都无 → 归一化标题 SHA256 hash（精确匹配，不再用 O(n²) 模糊匹配）
+4. 组内 canonical：期刊版优先，arXiv 链接保留为 `alternate_link`
+5. `INSERT OR REPLACE` 写入 SQLite，天然跨天去重
 
 ### 5.3 研究方向 vs 标签
 
@@ -191,4 +214,12 @@ Config
 - 数据库文件：`data/radar.db`
 - 表：`papers`（论文 + 分析）、`pipeline_runs`（运行记录）
 - 保留历史数据，支持跨天回溯查询
+
+### 5.7 归档聚合与多频率邮件（digest）
+
+- **CI 中 `data/` 不持久化**，`radar.db` 每次全新 → 周/月/季聚合必须基于推送到 `data` 分支的 **JSONL 归档**（保留 6 个月）
+- workflow 在跑 pipeline 前先 `git archive origin/data data/all | tar -x` 拉取历史归档
+- `history.py` 负责归档合并（按 id + DOI 去重）、窗口过滤（arXiv→`rss_fetch_date`，非 arXiv→`published_date`）、preprint/publication 分类（仅 `source==arxiv` → preprint）
+- `digest_engine.py` 按 `config/digests.yaml` 在单条每日 workflow 内做日历判断（方案 A）：weekday 周一~五 / weekly 周日 / monthly 1 号 / seasonal 季度首日；weekday 只推 arXiv，weekly/monthly/seasonal 只含期刊（邮件不冲突）
+- 网站「Quarterly Best」页用同一归档生成最近一个季度的 Preprints / Publications 高分榜单（`jekyll_site/_data/quarterly.json`），与邮件内容剥离
 - JSONL 仍作为 Jekyll 网站数据源保留

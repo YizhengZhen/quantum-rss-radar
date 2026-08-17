@@ -5,12 +5,15 @@ Copyright (c) 2026 Yizheng Zhen
 Licensed under the MIT License
 """
 
+import logging
 import os
 from pathlib import Path
-from typing import Dict, List
+
 import dotenv
 
-from .models import Config, FeedConfig, SourceConfig, PaperSource
+from .models import Config, FeedConfig, PaperSource, SourceConfig
+
+logger = logging.getLogger(__name__)
 
 
 def load_config() -> Config:
@@ -65,6 +68,12 @@ def load_config() -> Config:
     output_dir = os.getenv("OUTPUT_DIR", "data")
     web_dir = os.getenv("WEB_DIR", "web_output")
 
+    # Get digest / quarterly settings
+    digest_enabled = os.getenv("DIGEST_ENABLED", "true").lower() == "true"
+    archive_dir = os.getenv("ARCHIVE_DIR", "data/all")
+    quarter_window_days = int(os.getenv("QUARTER_WINDOW_DAYS", "90"))
+    quarterly_top_n = int(os.getenv("QUARTERLY_TOP_N", "50"))
+
     # Get advanced settings
     rss_timeout = int(os.getenv("RSS_TIMEOUT", "30"))
     llm_timeout = int(os.getenv("LLM_TIMEOUT", "60"))
@@ -76,7 +85,6 @@ def load_config() -> Config:
         llm_model=llm_model,
         llm_api_key=llm_api_key,
         llm_base_url=llm_base_url,
-
         email_enabled=email_enabled,
         email_sender=email_sender,
         email_recipient=email_recipient,
@@ -84,12 +92,14 @@ def load_config() -> Config:
         email_smtp_port=email_smtp_port,
         email_smtp_username=email_smtp_username,
         email_smtp_password=email_smtp_password,
-
         max_papers_per_feed=max_papers_per_feed,
         min_relevance_score=min_relevance_score,
         top_n_recommendations=top_n_recommendations,
         email_min_score=email_min_score,
-
+        digest_enabled=digest_enabled,
+        archive_dir=archive_dir,
+        quarter_window_days=quarter_window_days,
+        quarterly_top_n=quarterly_top_n,
         output_dir=output_dir,
         web_dir=web_dir,
     )
@@ -102,12 +112,13 @@ def load_config() -> Config:
     config._jekyll_site_dir = "jekyll_site/_site"
     config._deep_read_enabled = os.getenv("DEEP_READ_ENABLED", "true").lower() == "true"
     config._llm_cache_enabled = os.getenv("LLM_CACHE_ENABLED", "true").lower() == "true"
+    config._arxiv_doi_enrich = os.getenv("ARXIV_DOI_ENRICH", "true").lower() == "true"
     config._public_website_url = os.getenv("PUBLIC_WEBSITE_URL", "")
 
     return config
 
 
-def load_feeds(config_dir: str = "config") -> List[FeedConfig]:
+def load_feeds(config_dir: str = "config") -> list[FeedConfig]:
     """
     Load RSS feed configurations from YAML file.
 
@@ -122,6 +133,7 @@ def load_feeds(config_dir: str = "config") -> List[FeedConfig]:
         raise FileNotFoundError(f"Feeds configuration not found at {feeds_path}")
 
     import yaml
+
     with open(feeds_path, "r", encoding="utf-8") as f:
         feeds_data = yaml.safe_load(f) or {}
 
@@ -147,7 +159,7 @@ def load_feeds(config_dir: str = "config") -> List[FeedConfig]:
     return feeds
 
 
-def load_sources(config_dir: str = "config") -> Dict[str, SourceConfig]:
+def load_sources(config_dir: str = "config") -> dict[str, SourceConfig]:
     """
     Load source (publisher) colour configuration from YAML file.
 
@@ -160,6 +172,7 @@ def load_sources(config_dir: str = "config") -> Dict[str, SourceConfig]:
         raise FileNotFoundError(f"Feeds configuration not found at {feeds_path}")
 
     import yaml
+
     with open(feeds_path, "r", encoding="utf-8") as f:
         feeds_data = yaml.safe_load(f) or {}
 
@@ -189,3 +202,31 @@ def load_research_directions(config_dir: str = "config") -> str:
 
     with open(directions_path, "r", encoding="utf-8") as f:
         return f.read()
+
+
+def load_digest_configs(config_dir: str = "config") -> list["DigestConfig"]:
+    """
+    Load email digest configurations from config/digests.yaml.
+
+    Returns:
+        List of DigestConfig objects. Empty list if digests.yaml does not exist
+        (in which case the legacy single daily email is used).
+    """
+    import yaml
+
+    from .models import DigestConfig
+
+    digests_path = Path(config_dir) / "digests.yaml"
+    if not digests_path.exists():
+        return []
+
+    with open(digests_path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f) or {}
+
+    digests = []
+    for item in data.get("digests", []):
+        try:
+            digests.append(DigestConfig(**item))
+        except Exception as e:
+            logger.error(f"Invalid digest config entry: {e} — skipping")
+    return digests

@@ -162,6 +162,49 @@
 
 ---
 
+## 🟠 阶段 4：多频率邮件 + 季度网页 + DOI 去重（本期功能改进，分支 `feature/email-digests-quarterly-web`）
+
+> ✅ 决策已确认（2026-08-14）；**已实施（2026-08-17，Phase A–G）**，待 review 后合并回 master。
+> 详细设计见 [`docs/plan_feature_improvements.md`](docs/plan_feature_improvements.md)。
+
+### 4.1 多频率邮件（weekday / weekly / monthly / seasonal）— 决策已定
+- **触发**（方案 A：每日 workflow 内日历判断）
+  - **weekday**（周一到周五）：只推 arXiv 预印本
+  - **weekly**（周日）：只包含 published 期刊论文
+  - **monthly**（每月 1 号）：只包含 published 期刊论文
+  - **seasonal**（季度首日，=3 个月）：只包含 published 期刊论文
+- **邮件不冲突**：arXiv 只进 weekday；期刊只进 weekly/monthly/seasonal
+- **窗口字段**：arXiv 按 `rss_fetch_date`；非 arXiv 按 `published_date`
+- **方案**：
+  - 新增 `config/digests.yaml`（digest 定义：frequency/schedule/source_filter/window_days/min_score/max_papers/subject）
+  - 新增 `src/history.py`（JSONL 归档聚合：合并去重 + 窗口过滤 + preprint/publication 分类）
+  - 新增 `src/digest_engine.py`（日历判断 should_send_today + 邮件构建/发送）
+- **关键约束**：CI 中 `data/` 不持久化，历史聚合必须基于 `data` 分支的 JSONL 归档
+
+### 4.2 网页版与 Email 内容剥离 + 季度高分推荐
+- **需求**：网页不再等于当日邮件内容；网页推荐一个季度以内、打分最高的文章，分 Preprints / Publications 两类
+- **方案**：
+  - `data_exporter.py::export_quarterly_jekyll()` → `jekyll_site/_data/quarterly.json`
+  - 新增 Jekyll 季度页（Preprints / Publications 两个 Tab，各自按 score 展示）
+  - 分类：仅 `source==arxiv → preprint`，其余均为 published
+
+### 4.3 DOI 去重（追加需求）
+- 现有 O(n²) 模糊去重改为 **DOI 优先的确定性去重**（doi → arxiv_id → title hash）
+- `Paper` 加 `doi` / `alternate_link`；`rss_fetcher` 提取 DOI；canonical 期刊版优先
+- arXiv↔期刊 同文按 DOI 合并（可选：arXiv API 补 DOI）
+
+### 4.4 CI 集成
+- `daily-pipeline.yaml`：pipeline 前拉取 `data` 分支归档；邮件步骤改 digest 引擎；季度站构建
+
+### 4.5 实施顺序
+Phase A（history 归档）→ Phase B（DOI 去重）→ Phase C（digests.yaml + 模型）→ Phase D（digest 邮件引擎）→ Phase E（季度网页）→ Phase F（CI）→ Phase G（文档）
+
+### 4.6 调度器（已澄清，非孤儿）
+- `fetch_all_feeds(use_scheduler=True)` 已接入 `FeedScheduler`；但 CI 中 `fetch_history.json` 重置 → 门控失效、`monthly` 未处理
+- 修改办法见计划 §4.7，推荐方案 A（不改，频率交给邮件层），本期不实施
+
+---
+
 ## ✅ 已完成功能
 
 | 模块 | 说明 |

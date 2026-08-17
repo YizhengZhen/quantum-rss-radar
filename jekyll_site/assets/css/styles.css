@@ -1566,3 +1566,64 @@ footer {
     box-shadow: var(--box-shadow);
     padding: 1.5rem;
 }
+
+/* ── Quarterly Best page (pages/quarterly.html) ───────────── */
+[x-cloak] {
+    display: none !important;
+}
+
+.quarterly-tabs {
+    display: flex;
+    gap: 0.75rem;
+    margin: 0 0 1.5rem;
+    flex-wrap: wrap;
+}
+
+.quarterly-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.4rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--bg-card);
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.quarterly-tab:hover {
+    border-color: var(--primary-color);
+}
+
+.quarterly-tab.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.quarterly-tab .tab-count {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.quarterly-tab.active .tab-count {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.tab-hint {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+}
+
+.quarterly-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}

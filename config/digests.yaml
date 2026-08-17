@@ -1,0 +1,71 @@
+# Quantum RSS Radar — Email Digest Configuration
+# 每种 digest = 一个邮件摘要。频率/触发日/来源范围/时间窗口/最低分/数量/主题全部可指定。
+#
+# 约定：
+#   - frequency:  weekday(周一到周五) | weekly | monthly | seasonal
+#   - schedule:   weekly → { weekday: 0-6 }(0=周一, 6=周日)  默认周日
+#                 monthly → { day_of_month: 1-31 }            默认 1 号
+#                 seasonal → 季度首日(1/1,4/1,7/1,10/1) 自动，无需 schedule
+#   - include:    all | arxiv | published
+#                 * weekday 用 arxiv → 只推 arXiv 预印本
+#                 * weekly/monthly/seasonal 用 published → 只含期刊论文（与 weekday 不冲突）
+#   - feed_filter / source_filter: 非空时作为正向白名单（AND）；都为空 = 不额外过滤
+#   - window_days: 0 = 自上次触发以来（weekday 周一自动覆盖周五~周日），否则为固定天数
+#   - 窗口字段：arXiv → rss_fetch_date(每日更新时间)；非 arXiv → published_date
+
+digests:
+  # ── weekday：周一到周五触发，只推 arXiv 预印本 ──
+  - id: weekday_arxiv
+    name: "Weekday arXiv Digest"
+    frequency: weekday # 周一到周五
+    schedule: {}
+    include: arxiv # 只推 arXiv
+    feed_filter: [] # 可加：["arXiv Physics", "arXiv Math", "arXiv Computer Science"]
+    source_filter: []
+    window_days: 0 # 0 = 自上次触发以来（周一覆盖 3 天）
+    min_score: 7.0
+    max_papers: 10
+    subject_template: "Quantum RSS Radar — arXiv ({date})"
+    enabled: true
+
+  # ── weekly：周日触发，只包含 published 期刊论文 ──
+  - id: weekly_journals
+    name: "Weekly Journal Digest"
+    frequency: weekly
+    schedule: { weekday: 6 } # 6 = 周日
+    include: published # 只含期刊论文（不含 arXiv）
+    feed_filter: [] # 可加：["Physical Review Letters", "Nature Physics", ...]
+    source_filter: []
+    window_days: 7 # 最近 7 天（按 published_date）
+    min_score: 7.0
+    max_papers: 20
+    subject_template: "Quantum RSS Radar — Weekly Journals ({date})"
+    enabled: true
+
+  # ── monthly：每月 1 号触发，只包含 published 期刊论文 ──
+  - id: monthly_journals
+    name: "Monthly Journal Digest"
+    frequency: monthly
+    schedule: { day_of_month: 1 }
+    include: published
+    feed_filter: []
+    source_filter: []
+    window_days: 30 # 最近 30 天
+    min_score: 7.0
+    max_papers: 30
+    subject_template: "Quantum RSS Radar — Monthly Journals ({date})"
+    enabled: true
+
+  # ── seasonal：季度首日触发（季度 = 3 个月），只包含 published 期刊论文 ──
+  - id: seasonal_best
+    name: "Seasonal Best (Quarterly)"
+    frequency: seasonal
+    schedule: {}
+    include: published
+    feed_filter: []
+    source_filter: []
+    window_days: 90 # 最近一个季度
+    min_score: 8.0
+    max_papers: 40
+    subject_template: "Quantum RSS Radar — Quarterly Best ({date})"
+    enabled: true

@@ -107,8 +107,48 @@ top_papers = sorted(top_papers, key=_email_sort_key)
 
 ---
 
-## 6. 变更记录
+## 6. 多频率 Digest 邮件（2026-08 新增）
+
+> 当 `config/digests.yaml` 存在时，邮件由 `digest_engine.py` 接管，按频率推送；
+> 否则回退到第 1-5 节的 legacy 单封每日邮件。
+
+### 6.1 Digest 类型与触发
+
+| digest | 触发 | 内容（决策已确认） |
+|--------|------|--------------------|
+| `weekday_arxiv` | 周一到周五 | 只推 **arXiv 预印本**（`include: arxiv`） |
+| `weekly_journals` | 每周日 | 只含 **published 期刊论文**（`include: published`） |
+| `monthly_journals` | 每月 1 号 | 只含 **published 期刊论文** |
+| `seasonal_best` | 季度首日（1/1,4/1,7/1,10/1） | 只含 **published 期刊论文**，window=90 天 |
+
+- **邮件之间不冲突**：arXiv 只进 weekday；期刊只进 weekly/monthly/seasonal
+- 触发在**单条每日 workflow 内按日期判断**（`should_send_today`），无需额外 cron
+
+### 6.2 时间窗口（决策 5）
+
+- **arXiv 论文** → 按 `rss_fetch_date`（每日更新时间）计窗口
+- **非 arXiv（published）论文** → 按 `published_date`（发表时间）计窗口
+- `window_days: 0` = 自上次触发以来（weekday 周一自动覆盖周五~周日抓到的 arXiv）
+
+### 6.3 邮件内排序
+
+- 每个 digest 内的论文排序沿用**两级排序**（第 2 节的 Source 优先级 + 分数降序）
+- 卡片渲染复用 `email_sender.format_single_paper_html`，同一套期刊色块
+- 发送统一走 `email_sender._send_smtp`（465 SSL / 587 STARTTLS）
+
+### 6.4 本地调试
+
+```bash
+python -m src.digest_cli --all-due --dry-run                 # 预览今天该发的 digest
+python -m src.digest_cli --all-due --dry-run --today 2026-08-16  # 模拟周日
+python -m src.digest_cli --send weekday_arxiv                 # 真实发送
+```
+
+---
+
+## 7. 变更记录
 
 | 日期 | 变更 |
 |------|------|
 | 2026-06-07 | 首次定义，加入两级排序规则 |
+| 2026-08-17 | 新增多频率 Digest 邮件（weekday/weekly/monthly/seasonal），邮件与网页内容剥离 |

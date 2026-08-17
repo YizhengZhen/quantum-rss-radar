@@ -15,11 +15,10 @@ Licensed under the MIT License
 import json
 import logging
 import sqlite3
-from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Tuple
+from typing import Any
 
-from .models import Paper, PaperAnalysis, DeepReadResult, SourceConfig, FeedConfig
+from .models import FeedConfig, Paper, PaperAnalysis, SourceConfig
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ DEFAULT_DB_PATH = Path("data") / "radar.db"
 class RadarDatabase:
     """SQLite database for Quantum RSS Radar persistent storage."""
 
-    def __init__(self, db_path: Optional[Path] = None):
+    def __init__(self, db_path: Path | None = None):
         """
         Initialize database connection and ensure schema exists.
 
@@ -107,6 +106,7 @@ class RadarDatabase:
                     status TEXT NOT NULL DEFAULT 'completed'
                 );
             """)
+            self._ensure_columns(conn)
             conn.commit()
             logger.debug(f"Database schema initialized at {self.db_path}")
         except Exception as e:
@@ -115,13 +115,33 @@ class RadarDatabase:
         finally:
             conn.close()
 
+    def _ensure_columns(self, conn: sqlite3.Connection):
+        """Idempotently add columns added after the original schema (migrations)."""
+        try:
+            cols = {
+                row["name"]
+                for row in conn.execute("PRAGMA table_info(papers)").fetchall()
+            }
+            if "doi" not in cols:
+                conn.execute(
+                    "ALTER TABLE papers ADD COLUMN doi TEXT NOT NULL DEFAULT ''"
+                )
+            if "alternate_link" not in cols:
+                conn.execute(
+                    "ALTER TABLE papers ADD COLUMN alternate_link TEXT NOT NULL DEFAULT ''"
+                )
+        except Exception as e:
+            logger.warning(f"Failed to ensure DB columns (doi/alternate_link): {e}")
+
     # ── Paper CRUD ──────────────────────────────────────────
 
-    def save_papers(self,
-                    papers_with_analyses: List[Tuple[Paper, PaperAnalysis]],
-                    sources: Dict[str, SourceConfig],
-                    pipeline_run_timestamp: str,
-                    feed_configs: Optional[Dict[str, FeedConfig]] = None) -> int:
+    def save_papers(
+        self,
+        papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+        sources: dict[str, SourceConfig],
+        pipeline_run_timestamp: str,
+        feed_configs: dict[str, FeedConfig] | None = None,
+    ) -> int:
         """
         Insert or update papers in the database.
 
@@ -149,16 +169,21 @@ class RadarDatabase:
                     src_color = feed_cfg.color
                 else:
                     src_cfg = sources.get(paper.source.value)
-                    src_display = src_cfg.display_name if src_cfg else paper.source.value
+                    src_display = (
+                        src_cfg.display_name if src_cfg else paper.source.value
+                    )
                     src_color = src_cfg.color if src_cfg else "#757575"
 
                 deep_read_json = None
                 if analysis.deep_read:
-                    deep_read_json = json.dumps(analysis.deep_read.model_dump(), ensure_ascii=False)
+                    deep_read_json = json.dumps(
+                        analysis.deep_read.model_dump(), ensure_ascii=False
+                    )
 
-                conn.execute("""
+                conn.execute(
+                    """
                     INSERT OR REPLACE INTO papers (
-                        id, title, authors, abstract, link,
+                        id, title, authors, abstract, link, doi, alternate_link,
                         published_date, source, source_display_name, source_color,
                         feed_name, tags, rss_fetch_date,
                         score, recommended, direction,
@@ -166,7 +191,7 @@ class RadarDatabase:
                         keywords, analysis_timestamp, deep_read,
                         last_updated, pipeline_run
                     ) VALUES (
-                        ?, ?, ?, ?, ?,
+                        ?, ?, ?, ?, ?, ?, ?,
                         ?, ?, ?, ?,
                         ?, ?, ?,
                         ?, ?, ?,
@@ -174,34 +199,36 @@ class RadarDatabase:
                         ?, ?, ?,
                         datetime('now'), ?
                     )
-                """, (
-                    paper.id,
-                    paper.title,
-                    json.dumps(paper.authors, ensure_ascii=False),
-                    paper.abstract,
-                    paper.link,
-                    paper.published.isoformat() if paper.published else "",
-                    paper.source.value,
-                    src_display,
-                    src_color,
-                    paper.feed_name,
-                    json.dumps(paper.tags, ensure_ascii=False),
-                    paper.rss_fetch_date.isoformat(),
-
-                    analysis.relevance_score,
-                    1 if analysis.recommendation else 0,
-                    analysis.direction or "",
-                    analysis.tldr or "",
-                    analysis.motivation or "",
-                    analysis.method or "",
-                    analysis.result or "",
-                    analysis.conclusion or "",
-                    json.dumps(analysis.keywords, ensure_ascii=False),
-                    analysis.processing_time.isoformat(),
-                    deep_read_json,
-
-                    pipeline_run_timestamp,
-                ))
+                """,
+                    (
+                        paper.id,
+                        paper.title,
+                        json.dumps(paper.authors, ensure_ascii=False),
+                        paper.abstract,
+                        paper.link,
+                        getattr(paper, "doi", "") or "",
+                        getattr(paper, "alternate_link", "") or "",
+                        paper.published.isoformat() if paper.published else "",
+                        paper.source.value,
+                        src_display,
+                        src_color,
+                        paper.feed_name,
+                        json.dumps(paper.tags, ensure_ascii=False),
+                        paper.rss_fetch_date.isoformat(),
+                        analysis.relevance_score,
+                        1 if analysis.recommendation else 0,
+                        analysis.direction or "",
+                        analysis.tldr or "",
+                        analysis.motivation or "",
+                        analysis.method or "",
+                        analysis.result or "",
+                        analysis.conclusion or "",
+                        json.dumps(analysis.keywords, ensure_ascii=False),
+                        analysis.processing_time.isoformat(),
+                        deep_read_json,
+                        pipeline_run_timestamp,
+                    ),
+                )
                 saved += 1
 
             conn.commit()
@@ -214,7 +241,7 @@ class RadarDatabase:
 
         return saved
 
-    def get_paper_by_id(self, paper_id: str) -> Optional[Dict[str, Any]]:
+    def get_paper_by_id(self, paper_id: str) -> dict[str, Any] | None:
         """Get a single paper by its ID."""
         conn = self._get_connection()
         try:
@@ -227,7 +254,7 @@ class RadarDatabase:
         finally:
             conn.close()
 
-    def get_latest_papers(self, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_latest_papers(self, limit: int = 100) -> list[dict[str, Any]]:
         """
         Get the most recently updated papers.
 
@@ -239,16 +266,19 @@ class RadarDatabase:
         """
         conn = self._get_connection()
         try:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT * FROM papers
                 ORDER BY last_updated DESC, score DESC
                 LIMIT ?
-            """, (limit,)).fetchall()
+            """,
+                (limit,),
+            ).fetchall()
             return [dict(row) for row in rows]
         finally:
             conn.close()
 
-    def get_papers_by_date(self, date_str: str) -> List[Dict[str, Any]]:
+    def get_papers_by_date(self, date_str: str) -> list[dict[str, Any]]:
         """
         Get papers from a specific pipeline run date.
 
@@ -260,30 +290,38 @@ class RadarDatabase:
         """
         conn = self._get_connection()
         try:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT * FROM papers
                 WHERE pipeline_run LIKE ?
                 ORDER BY score DESC
-            """, (f"{date_str}%",)).fetchall()
+            """,
+                (f"{date_str}%",),
+            ).fetchall()
             return [dict(row) for row in rows]
         finally:
             conn.close()
 
-    def get_papers_by_direction(self, direction: str, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_papers_by_direction(
+        self, direction: str, limit: int = 50
+    ) -> list[dict[str, Any]]:
         """Get papers in a specific research direction."""
         conn = self._get_connection()
         try:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT * FROM papers
                 WHERE direction = ?
                 ORDER BY score DESC
                 LIMIT ?
-            """, (direction, limit)).fetchall()
+            """,
+                (direction, limit),
+            ).fetchall()
             return [dict(row) for row in rows]
         finally:
             conn.close()
 
-    def get_direction_stats(self) -> List[Dict[str, Any]]:
+    def get_direction_stats(self) -> list[dict[str, Any]]:
         """Get statistics per research direction across all time."""
         conn = self._get_connection()
         try:
@@ -304,43 +342,57 @@ class RadarDatabase:
 
     # ── Pipeline Run Tracking ───────────────────────────────
 
-    def save_pipeline_run(self,
-                          run_timestamp: str,
-                          total_papers: int,
-                          analyzed_papers: int,
-                          deep_read_papers: int,
-                          duration_seconds: float,
-                          status: str = "completed"):
+    def save_pipeline_run(
+        self,
+        run_timestamp: str,
+        total_papers: int,
+        analyzed_papers: int,
+        deep_read_papers: int,
+        duration_seconds: float,
+        status: str = "completed",
+    ):
         """Record a pipeline run."""
         conn = self._get_connection()
         try:
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO pipeline_runs (
                     run_timestamp, total_papers, analyzed_papers,
                     deep_read_papers, duration_seconds, status
                 ) VALUES (?, ?, ?, ?, ?, ?)
-            """, (run_timestamp, total_papers, analyzed_papers,
-                  deep_read_papers, duration_seconds, status))
+            """,
+                (
+                    run_timestamp,
+                    total_papers,
+                    analyzed_papers,
+                    deep_read_papers,
+                    duration_seconds,
+                    status,
+                ),
+            )
             conn.commit()
         finally:
             conn.close()
 
-    def get_latest_runs(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def get_latest_runs(self, limit: int = 10) -> list[dict[str, Any]]:
         """Get the most recent pipeline runs."""
         conn = self._get_connection()
         try:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT * FROM pipeline_runs
                 ORDER BY run_timestamp DESC
                 LIMIT ?
-            """, (limit,)).fetchall()
+            """,
+                (limit,),
+            ).fetchall()
             return [dict(row) for row in rows]
         finally:
             conn.close()
 
     # ── History and Statistics ───────────────────────────────
 
-    def get_paper_history(self, paper_title: str) -> List[Dict[str, Any]]:
+    def get_paper_history(self, paper_title: str) -> list[dict[str, Any]]:
         """
         Search for papers by title (for checking if a paper was
         previously analyzed, even from a different source).
@@ -349,17 +401,20 @@ class RadarDatabase:
         """
         conn = self._get_connection()
         try:
-            rows = conn.execute("""
+            rows = conn.execute(
+                """
                 SELECT * FROM papers
                 WHERE title LIKE ?
                 ORDER BY last_updated DESC
                 LIMIT 20
-            """, (f"%{paper_title[:80]}%",)).fetchall()
+            """,
+                (f"%{paper_title[:80]}%",),
+            ).fetchall()
             return [dict(row) for row in rows]
         finally:
             conn.close()
 
-    def get_overall_stats(self) -> Dict[str, Any]:
+    def get_overall_stats(self) -> dict[str, Any]:
         """Get overall database statistics."""
         conn = self._get_connection()
         try:

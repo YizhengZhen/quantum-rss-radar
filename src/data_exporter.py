@@ -13,14 +13,54 @@ Licensed under the MIT License
 """
 
 import json
-from datetime import datetime
-from pathlib import Path
-from typing import List, Dict, Any, Optional
 import logging
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any
 
-from .models import Paper, PaperAnalysis, SourceConfig, FeedConfig
+from .models import FeedConfig, Paper, PaperAnalysis, SourceConfig
 
 logger = logging.getLogger(__name__)
+
+
+def _record_to_paper_entry(rec: dict[str, Any]) -> dict[str, Any]:
+    """Convert a flat record (from JSONL) to the paper-entry shape the Jekyll
+    frontend expects (source badges, analysis block, …). Shared by the daily
+    papers.json and the quarterly.json views."""
+    src_id = rec.get("source", "other")
+    direction = rec.get("direction", "General / Other") or "General / Other"
+    return {
+        "id": rec["id"],
+        "title": rec["title"],
+        "authors": rec.get("authors", []),
+        "abstract": rec.get("abstract", ""),
+        "link": rec.get("link", ""),
+        "doi": rec.get("doi"),
+        "alternate_link": rec.get("alternate_link"),
+        "date": rec.get("published_date", ""),
+        "published_date": rec.get("published_date", "")[:10]
+        if rec.get("published_date")
+        else "",
+        "source": src_id,
+        "source_display_name": rec.get("source_display_name", src_id),
+        "source_color": rec.get("source_color", "#757575"),
+        "direction": direction,
+        "feed_name": rec.get("feed_name", ""),
+        "tags": rec.get("tags", []),
+        "score": rec.get("score", 0),
+        "recommended": rec.get("recommended", False),
+        "analysis": {
+            "tldr": rec.get("tldr", ""),
+            "motivation": rec.get("motivation", ""),
+            "method": rec.get("method", ""),
+            "result": rec.get("result", ""),
+            "conclusion": rec.get("conclusion", ""),
+            "keywords": rec.get("keywords", []),
+            "direction": direction,
+            "processing_time": rec.get("analysis_timestamp", ""),
+        },
+        "deep_read": rec.get("deep_read"),
+    }
 
 
 class DataExporter:
@@ -44,11 +84,13 @@ class DataExporter:
     #  1. JSONL  — one file per run, one paper per line
     # ──────────────────────────────────────────────
 
-    def export_jsonl(self,
-                     papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                     sources: Dict[str, SourceConfig],
-                     timestamp: Optional[datetime] = None,
-                     feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Path:
+    def export_jsonl(
+        self,
+        papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+        sources: dict[str, SourceConfig],
+        timestamp: datetime | None = None,
+        feed_configs: dict[str, FeedConfig] | None = None,
+    ) -> Path:
         """
         Export **all** papers to a JSONL file under data/all/.
 
@@ -79,7 +121,9 @@ class DataExporter:
         written = 0
         with open(output_path, "w", encoding="utf-8") as f:
             for paper, analysis in sorted_pairs:
-                record = self._paper_to_flat_dict(paper, analysis, sources, timestamp, feed_configs)
+                record = self._paper_to_flat_dict(
+                    paper, analysis, sources, timestamp, feed_configs
+                )
                 f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
                 written += 1
 
@@ -90,11 +134,13 @@ class DataExporter:
     #  2. Markdown — all papers, score‑sorted, human‑readable
     # ──────────────────────────────────────────────
 
-    def export_markdown(self,
-                        papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                        sources: Dict[str, SourceConfig],
-                        timestamp: Optional[datetime] = None,
-                        feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Path:
+    def export_markdown(
+        self,
+        papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+        sources: dict[str, SourceConfig],
+        timestamp: datetime | None = None,
+        feed_configs: dict[str, FeedConfig] | None = None,
+    ) -> Path:
         """
         Export **all** papers as a single Markdown file under data/reports/.
 
@@ -115,10 +161,12 @@ class DataExporter:
             reverse=True,
         )
 
-        lines: List[str] = []
+        lines: list[str] = []
         lines.append("# Quantum RSS Radar — Daily Report")
         lines.append("")
-        lines.append(f"**Date**: {date_only}  |  **Generated**: {timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
+        lines.append(
+            f"**Date**: {date_only}  |  **Generated**: {timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
+        )
         lines.append("")
         lines.append(f"**Total papers**: {len(sorted_pairs)}")
         lines.append("")
@@ -136,8 +184,10 @@ class DataExporter:
 
             lines.append(f"## {idx}. {paper.title}")
             lines.append("")
-            lines.append(f"- **Score**: {analysis.relevance_score:.1f} / 10  |  "
-                         f"**Recommended**: {'✅ Yes' if analysis.recommendation else '❌ No'}")
+            lines.append(
+                f"- **Score**: {analysis.relevance_score:.1f} / 10  |  "
+                f"**Recommended**: {'✅ Yes' if analysis.recommendation else '❌ No'}"
+            )
             lines.append(f"- **Source**: {src_display}  |  **Feed**: {paper.feed_name}")
             lines.append(f"- **Direction**: {analysis.direction}")
             lines.append(f"- **Published**: {paper.published.strftime('%Y-%m-%d')}")
@@ -201,13 +251,15 @@ class DataExporter:
         all_dir = self.base_output_dir / "all"
         jsonl_files = sorted(all_dir.glob("data_*.jsonl"), reverse=True)
         if not jsonl_files:
-            logger.warning("No JSONL files found under data/all/, cannot copy to Jekyll")
+            logger.warning(
+                "No JSONL files found under data/all/, cannot copy to Jekyll"
+            )
             return
 
         latest_jsonl = jsonl_files[0]
 
         # Read all lines
-        records: List[Dict[str, Any]] = []
+        records: list[dict[str, Any]] = []
         with open(latest_jsonl, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
@@ -231,11 +283,13 @@ class DataExporter:
     # ──────────────────────────────────────────────
 
     @staticmethod
-    def _paper_to_flat_dict(paper: Paper,
-                            analysis: PaperAnalysis,
-                            sources: Dict[str, SourceConfig],
-                            run_timestamp: datetime,
-                            feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Dict[str, Any]:
+    def _paper_to_flat_dict(
+        paper: Paper,
+        analysis: PaperAnalysis,
+        sources: dict[str, SourceConfig],
+        run_timestamp: datetime,
+        feed_configs: dict[str, FeedConfig] | None = None,
+    ) -> dict[str, Any]:
         """Flatten a Paper + PaperAnalysis into a single dict for JSONL."""
         # Resolve display name and colour: feed-level first, then source-level
         feed_cfg = feed_configs.get(paper.feed_name) if feed_configs else None
@@ -254,6 +308,8 @@ class DataExporter:
             "authors": paper.authors,
             "abstract": paper.abstract,
             "link": paper.link,
+            "doi": getattr(paper, "doi", None),
+            "alternate_link": getattr(paper, "alternate_link", None),
             "published_date": paper.published.isoformat(),
             "source": paper.source.value,
             "source_display_name": src_display,
@@ -261,7 +317,6 @@ class DataExporter:
             "feed_name": paper.feed_name,
             "tags": paper.tags,
             "rss_fetch_date": paper.rss_fetch_date.isoformat(),
-
             # — AI analysis —
             "score": analysis.relevance_score,
             "recommended": analysis.recommendation,
@@ -273,20 +328,20 @@ class DataExporter:
             "conclusion": analysis.conclusion,
             "keywords": analysis.keywords,
             "analysis_timestamp": analysis.processing_time.isoformat(),
-
             # — deep reading (optional) —
-            "deep_read": analysis.deep_read.model_dump() if analysis.deep_read else None,
-
+            "deep_read": analysis.deep_read.model_dump()
+            if analysis.deep_read
+            else None,
             # — pipeline metadata —
             "pipeline_run": run_timestamp.isoformat(),
         }
 
     @staticmethod
-    def _records_to_jekyll_data(records: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _records_to_jekyll_data(records: list[dict[str, Any]]) -> dict[str, Any]:
         """Convert a list of flat dicts (from JSONL) into Jekyll‑compatible structure."""
         papers = []
-        sources_data: Dict[str, Dict[str, Any]] = {}
-        directions_data: Dict[str, Dict[str, Any]] = {}
+        sources_data: dict[str, dict[str, Any]] = {}
+        directions_data: dict[str, dict[str, Any]] = {}
 
         for rec in records:
             src_id = rec.get("source", "other")
@@ -306,34 +361,7 @@ class DataExporter:
                     "recommended_count": 0,
                 }
 
-            paper_entry = {
-                "id": rec["id"],
-                "title": rec["title"],
-                "authors": rec.get("authors", []),
-                "abstract": rec.get("abstract", ""),
-                "link": rec.get("link", ""),
-                "date": rec.get("published_date", ""),
-                "published_date": rec.get("published_date", "")[:10] if rec.get("published_date") else "",
-                "source": src_id,
-                "source_display_name": rec.get("source_display_name", src_id),
-                "source_color": rec.get("source_color", "#757575"),
-                "direction": direction,
-                "feed_name": rec.get("feed_name", ""),
-                "tags": rec.get("tags", []),
-                "score": rec.get("score", 0),
-                "recommended": rec.get("recommended", False),
-                "analysis": {
-                    "tldr": rec.get("tldr", ""),
-                    "motivation": rec.get("motivation", ""),
-                    "method": rec.get("method", ""),
-                    "result": rec.get("result", ""),
-                    "conclusion": rec.get("conclusion", ""),
-                    "keywords": rec.get("keywords", []),
-                    "direction": direction,
-                    "processing_time": rec.get("analysis_timestamp", ""),
-                },
-                "deep_read": rec.get("deep_read"),
-            }
+            paper_entry = _record_to_paper_entry(rec)
             papers.append(paper_entry)
             sources_data[src_id]["count"] += 1
             directions_data[direction]["count"] += 1
@@ -362,14 +390,87 @@ class DataExporter:
         }
 
     # ──────────────────────────────────────────────
+    #  4.  Quarterly view — top papers in the last quarter, split
+    #      Preprints / Publications, for jekyll_site/_data/quarterly.json
+    # ──────────────────────────────────────────────
+
+    def export_quarterly_jekyll(
+        self,
+        records: list[dict[str, Any]],
+        window_days: int = 90,
+        top_n: int = 50,
+        today=None,
+        jekyll_site_dir: str = "jekyll_site",
+    ) -> Path | None:
+        """
+        Build the quarterly top-papers view for the website.
+
+        Args:
+            records: Merged archive records (list of flat dicts).
+            window_days: How many days back to include (quarter window).
+            top_n: Top-N papers per category.
+            today: Reference date (defaults to now).
+            jekyll_site_dir: Jekyll site directory.
+
+        Returns:
+            Path to quarterly.json, or None if it could not be written.
+        """
+        from . import history
+
+        in_window = history.filter_by_window(records, window_days, today)
+        preprints: list[dict[str, Any]] = []
+        publications: list[dict[str, Any]] = []
+        for rec in in_window:
+            if history.classify_preprint_publication(rec) == "preprint":
+                preprints.append(rec)
+            else:
+                publications.append(rec)
+
+        preprints.sort(key=lambda r: r.get("score", 0), reverse=True)
+        publications.sort(key=lambda r: r.get("score", 0), reverse=True)
+        preprints = [_record_to_paper_entry(r) for r in preprints[:top_n]]
+        publications = [_record_to_paper_entry(r) for r in publications[:top_n]]
+
+        today = today or datetime.now().date()
+        if isinstance(today, datetime):
+            today = today.date()
+        window_start = (today - timedelta(days=window_days)).strftime("%Y-%m-%d")
+        data = {
+            "generated": datetime.now().isoformat(),
+            "window_days": window_days,
+            "window_start": window_start,
+            "stats": {
+                "preprint_count": len(preprints),
+                "publication_count": len(publications),
+            },
+            "preprints": preprints,
+            "publications": publications,
+        }
+
+        jekyll_path = Path(jekyll_site_dir)
+        target_dir = jekyll_path / "_data"
+        target_dir.mkdir(parents=True, exist_ok=True)
+        target_file = target_dir / "quarterly.json"
+        with open(target_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False, default=str)
+
+        logger.info(
+            f"Exported quarterly view ({len(preprints)} preprints, "
+            f"{len(publications)} publications): {target_file}"
+        )
+        return target_file
+
+    # ──────────────────────────────────────────────
     #  Convenience: run both exports + Jekyll copy
     # ──────────────────────────────────────────────
 
-    def export_all(self,
-                   papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                   sources: Dict[str, SourceConfig],
-                   timestamp: Optional[datetime] = None,
-                   feed_configs: Optional[Dict[str, FeedConfig]] = None) -> Dict[str, str]:
+    def export_all(
+        self,
+        papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+        sources: dict[str, SourceConfig],
+        timestamp: datetime | None = None,
+        feed_configs: dict[str, FeedConfig] | None = None,
+    ) -> dict[str, str]:
         """
         Run JSONL export + Markdown export + Jekyll copy in one call.
 
@@ -379,8 +480,12 @@ class DataExporter:
         if timestamp is None:
             timestamp = datetime.now()
 
-        jsonl_path = self.export_jsonl(papers_with_analyses, sources, timestamp, feed_configs)
-        md_path = self.export_markdown(papers_with_analyses, sources, timestamp, feed_configs)
+        jsonl_path = self.export_jsonl(
+            papers_with_analyses, sources, timestamp, feed_configs
+        )
+        md_path = self.export_markdown(
+            papers_with_analyses, sources, timestamp, feed_configs
+        )
         self.copy_to_jekyll_site()
 
         return {"jsonl": str(jsonl_path), "markdown": str(md_path)}

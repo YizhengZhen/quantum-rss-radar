@@ -4,6 +4,32 @@
 
 ---
 
+## 2026-08-17 — Multi-frequency digest emails + quarterly web view + DOI dedup
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `src/models.py`, `src/rss_fetcher.py`, `src/deduplicate.py`, `src/history.py` (new), `src/digest_engine.py` (new), `src/digest_cli.py` (new), `src/email_sender.py`, `src/config_loader.py`, `src/database.py`, `src/data_exporter.py`, `src/orchestrator_jekyll.py`, `src/arxiv_deep_reader.py`, `config/digests.yaml` (new), `scripts/archive_preview.py` (new), `.env.example`, `.github/workflows/daily-pipeline.yaml`, `jekyll_site/pages/quarterly.html` (new), `jekyll_site/_includes/navigation.html`, `jekyll_site/assets/js/app.js`, `jekyll_site/assets/css/styles.css`, `.gitignore`, docs
+
+### Feature 1: Multi-frequency emails (weekday / weekly / monthly / seasonal)
+- New `config/digests.yaml` + `DigestConfig` model; `digest_engine.py` decides which digests fire today (`should_send_today`) and sends via SMTP
+- weekday (Mon–Fri) pushes arXiv only; weekly (Sun) / monthly (1st) / seasonal (quarter start) include published papers only — emails don't overlap
+- Triggered inside the single daily workflow (approach A); legacy single daily email kept as fallback when `digests.yaml` is absent
+- `digest_cli.py` for local `--dry-run` / `--send`; window semantics `window_days: 0` = since last trigger (Monday covers the weekend)
+
+### Feature 2: Web & email content separation + quarterly top papers
+- New `export_quarterly_jekyll()` → `jekyll_site/_data/quarterly.json`; new `pages/quarterly.html` with Preprints / Publications tabs
+- Quarterly view = last 90 days, top-scored, split by `source==arxiv` (preprint) vs everything else (publication)
+
+### Feature 3: DOI-first deterministic dedup
+- `Paper.doi` / `alternate_link`; `rss_fetcher` extracts DOI (prism:doi / dc:identifier / link)
+- arXiv DOI enrichment via arXiv API (`enrich_arxiv_dois`) enables arXiv↔journal cross-source merge
+- `deduplicate.py` rewritten to O(n) key dedup (doi → arxiv id → title hash), journal version canonical
+- SQLite migration (`_ensure_columns`) adds `doi`/`alternate_link`; JSONL archive merge by id + DOI
+
+### CI
+- `daily-pipeline.yaml`: fetch JSONL archive from `data` branch before the run (only cross-run history), pass digest/quarterly env vars
+
+---
+
 ## 2026-06-29 — Add "人工品味校准" docs + update ai_analysis.md status
 
 **Changed files:** `docs/ai_analysis.md`, `docs/CHANGELOG.md`
