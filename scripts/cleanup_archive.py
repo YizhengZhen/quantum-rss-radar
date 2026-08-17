@@ -21,8 +21,10 @@ Usage
 import argparse
 import json
 import logging
+import re
 import shutil
 import sys
+import time
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -30,8 +32,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+import requests
+
 from src import history
-from src.history import compute_record_key, canonical_record
+from src.history import canonical_record, compute_record_key
+from src.rss_fetcher import extract_arxiv_id_keep_version
 
 logger = logging.getLogger(__name__)
 
@@ -69,8 +74,9 @@ def load_file_records(f: Path):
 def write_file_records(f: Path, recs):
     recs = sorted(recs, key=lambda r: r.get("score", 0), reverse=True)
     with open(f, "w", encoding="utf-8") as fh:
-        for r in recs:
-            fh.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
+        fh.writelines(
+            json.dumps(r, ensure_ascii=False, default=str) + "\n" for r in recs
+        )
 
 
 def dry_run(archive_dir: Path):
@@ -95,11 +101,14 @@ def dry_run(archive_dir: Path):
         dup = sum(c - 1 for c in keys.values() if c > 1)
         per_file_dup += dup
         if dup:
-            print(f"  {f.name}: {len(recs)} records, {len(keys)} unique keys, {dup} within-file duplicates")
+            print(
+                f"  {f.name}: {len(recs)} records, {len(keys)} unique keys, {dup} within-file duplicates"
+            )
 
     doi_from_link = sum(
-        1 for _, r in iter_records(archive_dir)
-        if r.get("doi") or history._doi_from_link(r.get("link", ""))  # noqa: SLF001
+        1
+        for _, r in iter_records(archive_dir)
+        if r.get("doi") or history._doi_from_link(r.get("link", ""))
     )
     global_dups = sum(c - 1 for c in global_groups.values() if c > 1)
     merged_estimate = len(global_groups)
@@ -111,10 +120,12 @@ def dry_run(archive_dir: Path):
     print(f"  within-file dups : {per_file_dup}")
     print(f"  archive-unique   : {merged_estimate} (dedup across files by key)")
     print(f"  cross-file dups  : {total - merged_estimate}")
-    print(f"\n  → rewrite re-keys all records to the new id scheme (doi:/arx:/title:) and removes "
-          f"{per_file_dup} within-file duplicates. Cross-file duplicates ({total - merged_estimate}) "
-          f"are resolved at load time by history.load_jsonl_archive (id + DOI merge), so after "
-          f"re-keying future runs merge cleanly.")
+    print(
+        f"\n  → rewrite re-keys all records to the new id scheme (doi:/arx:/title:) and removes "
+        f"{per_file_dup} within-file duplicates. Cross-file duplicates ({total - merged_estimate}) "
+        f"are resolved at load time by history.load_jsonl_archive (id + DOI merge), so after "
+        f"re-keying future runs merge cleanly."
+    )
 
 
 def rewrite(archive_dir: Path, backup_dir: Path, remap_cache: bool, rebuild_db: bool):
@@ -145,9 +156,13 @@ def rewrite(archive_dir: Path, backup_dir: Path, remap_cache: bool, rebuild_db: 
         deduped = [canonical_record(g) for g in groups.values()]
         write_file_records(f, deduped)
         total_after += len(deduped)
-        print(f"  {f.name}: {len(recs)} → {len(deduped)} records (removed {len(recs) - len(deduped)})")
+        print(
+            f"  {f.name}: {len(recs)} → {len(deduped)} records (removed {len(recs) - len(deduped)})"
+        )
 
-    print(f"\n  Total: {total_before} → {total_after} records (removed {total_before - total_after})")
+    print(
+        f"\n  Total: {total_before} → {total_after} records (removed {total_before - total_after})"
+    )
     print(f"  Originals backed up to: {backup_dir}")
 
     if remap_cache:
@@ -171,8 +186,12 @@ def remap_llm_cache(id_map, cache_path: Path):
         if new_id != old_id:
             remapped += 1
         new_data[new_id] = value
-    cache_path.write_text(json.dumps(new_data, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"  [cache] remapped {remapped}/{len(data)} entries to new ids in llm_cache.json")
+    cache_path.write_text(
+        json.dumps(new_data, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    print(
+        f"  [cache] remapped {remapped}/{len(data)} entries to new ids in llm_cache.json"
+    )
 
 
 def rebuild_database(archive_dir: Path, db_path: Path):
@@ -197,19 +216,20 @@ def rebuild_database(archive_dir: Path, db_path: Path):
 
     sources = load_sources("config")
     from src import history as _h
+
     pairs = _h.records_to_pairs(records)
-    import logging as _l
 
     # save_papers needs SourceConfig dict; build a mapping keyed by source value
     feed_configs = None
-    from src.models import SourceConfig
 
     src_map = {}
     for k, cfg in sources.items():
         src_map[k] = cfg
     # source value keys in records may be 'aps' etc. — matches sources keys
     saved = db.save_papers(pairs, src_map, datetime.now().isoformat(), feed_configs)
-    print(f"  [db] rebuilt radar.db: seeded {saved} canonical papers from cleaned archive")
+    print(
+        f"  [db] rebuilt radar.db: seeded {saved} canonical papers from cleaned archive"
+    )
 
 
 def rebuild_site(archive_dir: Path, config_dir: str):
@@ -225,31 +245,146 @@ def rebuild_site(archive_dir: Path, config_dir: str):
         top_n=config.quarterly_top_n,
     )
     exporter.copy_to_jekyll_site()
-    print(f"  [site] regenerated jekyll_site/_data/papers.json + quarterly.json "
-          f"({len(records)} archive records)")
+    print(
+        f"  [site] regenerated jekyll_site/_data/papers.json + quarterly.json "
+        f"({len(records)} archive records)"
+    )
+
+
+# ── arXiv version backfill ────────────────────────────────────
+# Historical arXiv links carry no version suffix, so historical records are
+# unversioned (arx:2301.00001) while future fetches keep the version
+# (arx:2301.00001v1).  This backfills the CURRENT version from the arXiv API so
+# historical and future records use the same versioned identity.
+
+ARXIV_API_URL = "http://export.arxiv.org/api/query?id_list={}&max_results={}"
+ARXIV_API_DELAY = 3.0
+
+
+def _fetch_arxiv_versions_batch(bases: list[str]) -> dict[str, str]:
+    """Query the arXiv API and return {base_id: versioned_id} for a batch."""
+    url = ARXIV_API_URL.format(",".join(bases), len(bases))
+    try:
+        resp = requests.get(url, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        logger.warning(f"arXiv API version batch failed ({len(bases)} ids): {e}")
+        return {}
+    text = resp.text
+    result: dict[str, str] = {}
+    for entry in re.findall(r"<entry>(.*?)</entry>", text, re.DOTALL):
+        idm = re.search(r"<id[^>]*>(.*?)</id>", entry, re.DOTALL)
+        if not idm:
+            continue
+        versioned = extract_arxiv_id_keep_version(idm.group(1).strip())
+        if versioned:
+            base = re.sub(r"v\d+$", "", versioned)
+            result[base] = versioned
+    return result
+
+
+def backfill_arxiv_versions(archive_dir: Path, batch_size: int = 100) -> int:
+    """Add the current version suffix to historical unversioned arXiv ids.
+
+    Returns the number of records updated.
+    """
+    bases: set[str] = set()
+    for _, rec in iter_records(archive_dir):
+        rid = rec.get("id", "")
+        if rid.startswith("arx:") and not re.search(r"v\d+$", rid):
+            bases.add(rid[4:])
+    if not bases:
+        print("  [backfill] no unversioned arXiv ids found — nothing to do")
+        return 0
+
+    ordered = sorted(bases)
+    print(f"  [backfill] resolving current versions for {len(ordered)} arXiv ids...")
+    id_map: dict[str, str] = {}
+    for i in range(0, len(ordered), batch_size):
+        batch = ordered[i : i + batch_size]
+        id_map.update(_fetch_arxiv_versions_batch(batch))
+        if i + batch_size < len(ordered):
+            time.sleep(ARXIV_API_DELAY)
+    print(f"  [backfill] resolved {len(id_map)}/{len(ordered)}")
+
+    updated = 0
+    for f in archive_dir.glob("data_*.jsonl"):
+        recs = load_file_records(f)
+        changed = False
+        for r in recs:
+            rid = r.get("id", "")
+            if rid.startswith("arx:"):
+                tail = rid[4:]
+                base = re.sub(r"v\d+$", "", tail)
+                if base == tail and base in id_map:
+                    r["id"] = f"arx:{id_map[base]}"
+                    r["arxiv_id"] = id_map[base]
+                    changed = True
+                    updated += 1
+        if changed:
+            write_file_records(f, recs)
+    print(f"  [backfill] arXiv version suffix added to {updated} record(s)")
+    return updated
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Clean up & dedup historical JSONL archive")
-    parser.add_argument("--archive-dir", default="data/all", help="JSONL archive directory")
-    parser.add_argument("--backup-dir", default="data/archive_pre_clean", help="Backup dir for originals")
-    parser.add_argument("--dry-run", action="store_true", help="Inventory only (default behaviour without --rewrite)")
-    parser.add_argument("--rewrite", action="store_true", help="Re-key + dedup archive (backup kept)")
-    parser.add_argument("--remap-cache", action="store_true", help="Remap llm_cache.json ids")
-    parser.add_argument("--rebuild-db", action="store_true", help="Rebuild radar.db from cleaned archive")
-    parser.add_argument("--rebuild-site", action="store_true", help="Regenerate papers.json + quarterly.json")
+    parser = argparse.ArgumentParser(
+        description="Clean up & dedup historical JSONL archive"
+    )
+    parser.add_argument(
+        "--archive-dir", default="data/all", help="JSONL archive directory"
+    )
+    parser.add_argument(
+        "--backup-dir",
+        default="data/archive_pre_clean",
+        help="Backup dir for originals",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Inventory only (default behaviour without --rewrite)",
+    )
+    parser.add_argument(
+        "--backfill-arxiv-versions",
+        action="store_true",
+        help="Add current arXiv version suffix to historical unversioned arXiv ids "
+        "(calls the arXiv API, ~3s/batch)",
+    )
+    parser.add_argument(
+        "--rewrite", action="store_true", help="Re-key + dedup archive (backup kept)"
+    )
+    parser.add_argument(
+        "--remap-cache", action="store_true", help="Remap llm_cache.json ids"
+    )
+    parser.add_argument(
+        "--rebuild-db",
+        action="store_true",
+        help="Rebuild radar.db from cleaned archive",
+    )
+    parser.add_argument(
+        "--rebuild-site",
+        action="store_true",
+        help="Regenerate papers.json + quarterly.json",
+    )
     parser.add_argument("--config-dir", default="config", help="Config directory")
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
     archive_dir = Path(args.archive_dir)
 
+    if args.backfill_arxiv_versions:
+        backfill_arxiv_versions(archive_dir)
+
     if args.rewrite:
+        # rewrite already rebuilds db/cache when those flags are set
         rewrite(archive_dir, Path(args.backup_dir), args.remap_cache, args.rebuild_db)
-    elif args.dry_run:
-        dry_run(archive_dir)
     else:
         dry_run(archive_dir)
+
+    if args.rebuild_db and not args.rewrite:
+        rebuild_database(archive_dir, ROOT / "data" / "radar.db")
 
     if args.rebuild_site:
         rebuild_site(archive_dir, args.config_dir)

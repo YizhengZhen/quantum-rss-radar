@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from .arxiv_deep_reader import deep_read_high_score_papers, enrich_arxiv_dois
+from .arxiv_deep_reader import deep_read_high_score_papers
 from .config_loader import (
     load_config,
     load_feeds,
@@ -184,16 +184,7 @@ class QuantumRSSRadarJekyll:
                 enriched_papers.append(enrich_paper_metadata(paper))
             papers = enriched_papers
 
-            # Step 4.5: Enrich arXiv papers with DOIs (for cross-source dedup)
-            logger.info("Enriching arXiv DOIs...")
-            try:
-                enrich_arxiv_dois(papers, self.config)
-            except Exception as e:
-                logger.warning(
-                    f"arXiv DOI enrichment failed (continuing pipeline): {e}"
-                )
-
-            # Step 5: Deduplicate papers
+            # Step 5: Deduplicate papers (key-based: arxiv versioned id / journal doi)
             logger.info("Deduplicating papers...")
             papers = deduplicate_papers(papers)
             logger.info(f"After deduplication: {len(papers)} unique papers")

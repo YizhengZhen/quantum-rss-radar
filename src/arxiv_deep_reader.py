@@ -484,11 +484,12 @@ def enrich_arxiv_dois(
 ) -> int:
     """Best-effort: query arXiv API to fill in DOIs for arXiv preprints.
 
-    Enables arXiv ↔ journal cross-source dedup by DOI.  Updates ``paper.doi`` in
-    place and rewrites ``paper.id`` to ``doi:<doi>`` when a DOI is found.
-    Fully resilient: any failure only skips enrichment.
+    Informational only — records the DOI on the paper but does NOT change its
+    arXiv identity (product decision: arXiv versions and journal versions are
+    different papers, so no cross-source dedup).  Fully resilient: any failure
+    only skips enrichment.
     """
-    if not getattr(config, "_arxiv_doi_enrich", True):
+    if not getattr(config, "_arxiv_doi_enrich", False):
         logger.info("arXiv DOI enrichment disabled (ARXIV_DOI_ENRICH=false)")
         return 0
 
@@ -513,8 +514,7 @@ def enrich_arxiv_dois(
         for arx, paper in batch:
             doi = id_to_doi.get(arx)
             if doi:
-                paper.doi = doi
-                paper.id = f"doi:{doi}"
+                paper.doi = doi  # informational only; identity stays arx:<id>
                 found += 1
         # Throttle arXiv API between batches
         if i + batch_size < len(candidates):

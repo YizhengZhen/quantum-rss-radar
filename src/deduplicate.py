@@ -1,14 +1,17 @@
 """
 Paper deduplication for the Quantum RSS Radar system.
 
-Deterministic, key-based deduplication (O(n)):
-  1. doi (normalized)        — most stable, cross-source unique
-  2. arxiv id               — when no DOI
-  3. normalized title hash  — exact-match fallback (no fuzzy matching)
+Deterministic, key-based deduplication (O(n)).
 
-Within a duplicate group the canonical paper is chosen: a published (journal)
-version is preferred over the arXiv preprint, and the arXiv link is kept as
-alternate_link.
+Product decisions:
+  * NO cross-source dedup — an arXiv preprint and its journal version are two
+    different papers (they never merge, even if the same work).
+  * arXiv versions (v1, v2, …) are different papers, so the version is kept in
+    the arXiv identity.
+
+Identity keys:
+  - arXiv (preprint)    → arx:<id-with-version>  (or pre_title:<title hash>)
+  - Published (journal) → doi:<doi>              (or pub_title:<title hash>)
 """
 
 import hashlib
@@ -16,23 +19,37 @@ import logging
 from collections import defaultdict
 
 from .models import Paper, PaperSource
-from .rss_fetcher import extract_arxiv_id, normalize_doi
+from .rss_fetcher import (
+    extract_arxiv_id,
+    extract_arxiv_id_keep_version,
+    normalize_doi,
+)
 
 logger = logging.getLogger(__name__)
 
 
 def compute_paper_key(paper: Paper) -> str:
-    """Return the deterministic dedup key for a paper (doi → arxiv id → title hash)."""
+    """Return the deterministic dedup key for a paper.
+
+    arXiv papers use their versioned arXiv id and never use the DOI (no
+    cross-source merge).  Journal papers use DOI, falling back to a
+    published-namespaced title hash.
+    """
+    if paper.source == PaperSource.ARXIV:
+        arx = (paper.raw_data or {}).get("arxiv_id", "") or extract_arxiv_id_keep_version(
+            paper.link
+        )
+        if arx:
+            return f"arx:{arx}"
+        norm_title = " ".join(paper.title.lower().split())
+        return f"pre_title:{hashlib.sha256(norm_title.encode()).hexdigest()[:16]}"
+
     doi = normalize_doi(getattr(paper, "doi", None))
     if doi:
         return f"doi:{doi}"
 
-    arx = (paper.raw_data or {}).get("arxiv_id", "") or extract_arxiv_id(paper.link)
-    if arx:
-        return f"arx:{arx}"
-
     norm_title = " ".join(paper.title.lower().split())
-    return f"title:{hashlib.sha256(norm_title.encode()).hexdigest()[:16]}"
+    return f"pub_title:{hashlib.sha256(norm_title.encode()).hexdigest()[:16]}"
 
 
 def _info_score(paper: Paper) -> float:

@@ -45,8 +45,26 @@ def normalize_arxiv_id(arxiv_id: str) -> str:
 
 
 def extract_arxiv_id(link: str) -> str:
-    """Extract a normalized arXiv ID from a link/entry id."""
+    """Extract a normalized arXiv ID (version stripped) from a link/entry id."""
     return normalize_arxiv_id(link)
+
+
+def extract_arxiv_id_keep_version(link: str) -> str:
+    """Extract an arXiv ID KEEPING the version suffix, e.g. '2301.00001v2'.
+
+    Product decision: different versions (v1, v2, …) are treated as different
+    papers, so the version is part of the identity.  Returns '' if the input
+    has no arXiv ID.
+    """
+    if not link:
+        return ""
+    m = re.search(r"(\d{4}\.\d{4,5}(?:v\d+)?)", link)
+    if m:
+        return m.group(1)
+    m2 = re.search(r"([a-z\-]+(\.[A-Z]{2})?/\d{7}(?:v\d+)?)", link)
+    if m2:
+        return m2.group(1)
+    return ""
 
 
 def extract_doi_from_entry(entry, link: str = "") -> str:
@@ -116,8 +134,10 @@ def parse_arxiv_entry(entry, feed_name: str) -> Paper | None:
         except (ValueError, TypeError):
             published = datetime.now()
 
-        # Normalized arXiv ID → stable dedup-friendly ID (arxiv:2301.00001)
-        arxiv_id = normalize_arxiv_id(entry.get("id", "") or link)
+        # arXiv ID WITH version suffix → stable dedup-friendly ID.
+        # Product decision: different versions (v1, v2, …) are different papers,
+        # so the version is part of the identity (arxiv:2301.00001v1).
+        arxiv_id = extract_arxiv_id_keep_version(entry.get("id", "") or link)
         paper_id = (
             f"arx:{arxiv_id}"
             if arxiv_id

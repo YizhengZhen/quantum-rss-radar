@@ -112,7 +112,7 @@ def load_config() -> Config:
     config._jekyll_site_dir = "jekyll_site/_site"
     config._deep_read_enabled = os.getenv("DEEP_READ_ENABLED", "true").lower() == "true"
     config._llm_cache_enabled = os.getenv("LLM_CACHE_ENABLED", "true").lower() == "true"
-    config._arxiv_doi_enrich = os.getenv("ARXIV_DOI_ENRICH", "true").lower() == "true"
+    config._arxiv_doi_enrich = os.getenv("ARXIV_DOI_ENRICH", "false").lower() == "true"
     config._public_website_url = os.getenv("PUBLIC_WEBSITE_URL", "")
 
     return config

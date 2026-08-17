@@ -135,10 +135,17 @@ def _pick_best(group: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def _merge_by_doi(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Merge records that share a DOI (different ids across runs/sources)."""
+    """Merge PUBLISHED records that share a DOI (same paper across runs).
+
+    Per product decision, arXiv records are never DOI-merged: an arXiv preprint
+    and its journal version are different papers (no cross-source dedup).
+    """
     groups: dict[str, list[dict[str, Any]]] = {}
     no_doi: list[dict[str, Any]] = []
     for rec in records:
+        if (rec.get("source") or "").lower() == "arxiv":
+            no_doi.append(rec)
+            continue
         doi = _normalize_doi(rec.get("doi"))
         if doi:
             groups.setdefault(doi, []).append(rec)
@@ -162,24 +169,37 @@ def _doi_from_link(link: str) -> str:
 
 
 def compute_record_key(record: Dict[str, Any]) -> str:
-    """Deterministic identity key for a flat record (doi → arxiv id → title hash).
+    """Deterministic identity key for a flat record.
 
-    Matches the new per-paper id scheme so historical records merge cleanly
-    with future pipeline runs.
+    Product decision: NO cross-source dedup and arXiv versions are distinct.
+      - arXiv     → arx:<id-with-version>  (or pre_title:<title hash>)
+      - Published → doi:<doi>              (or pub_title:<title hash>)
     """
     import hashlib
-    from .rss_fetcher import normalize_doi as _norm, extract_arxiv_id as _ex
+
+    from .rss_fetcher import (
+        extract_arxiv_id_keep_version as _exv,
+        normalize_doi as _norm,
+    )
+
+    if (record.get("source") or "").lower() == "arxiv":
+        # Prefer an existing arx: id — historical links carry no version, so a
+        # stored versioned id (e.g. after arXiv-API backfill) must be kept.
+        rid = record.get("id", "")
+        if rid.startswith("arx:"):
+            return rid
+        arx = _exv(record.get("link", ""))
+        if arx:
+            return f"arx:{arx}"
+        norm_title = " ".join((record.get("title") or "").lower().split())
+        return f"pre_title:{hashlib.sha256(norm_title.encode()).hexdigest()[:16]}"
 
     doi = _norm(record.get("doi") or _doi_from_link(record.get("link", "")))
     if doi:
         return f"doi:{doi}"
 
-    arx = _ex(record.get("link", ""))
-    if arx:
-        return f"arx:{arx}"
-
     norm_title = " ".join((record.get("title") or "").lower().split())
-    return f"title:{hashlib.sha256(norm_title.encode()).hexdigest()[:16]}"
+    return f"pub_title:{hashlib.sha256(norm_title.encode()).hexdigest()[:16]}"
 
 
 _ANALYSIS_FIELDS = [
