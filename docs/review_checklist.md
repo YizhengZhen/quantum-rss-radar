@@ -38,18 +38,19 @@
 - [ ] 本地 `jekyll serve`：`/pages/quarterly/` 两个 Tab（Preprints/Publications）切换、排序、详情弹窗正常
 - [ ] 网站 Home / All / Recommended 页面不受 `app.js` 改动影响
 
-## D. 历史数据整理与去重（重点 · 必做）
+## D. 历史数据整理与去重（✅ 已完成 2026-08-17 · 工具 `scripts/cleanup_archive.py`）
 
 > 背景：id 方案从「title-hash」改为「doi:/arx:/title:」，旧 `data/all/*.jsonl` 与 `data` 分支上的历史都是旧 id；
 > 且归档里可能有重复（同文多次出现、arXiv 与期刊未按 DOI 合并）。CI 聚合依赖这些归档，需先清理一次。
 
-- [ ] **D1 盘点**：写/跑脚本扫描 `data/all/*.jsonl`，统计：总条数、`doi` 覆盖率、疑似重复组（同 DOI 多条 / 同标题多条 / 同 arXiv id 多条）
-- [ ] **D2 重建归档**：用新的合并规则（`history._merge_by_doi` + 期刊版优先 + 保留最新分析 + arXiv 链接进 `alternate_link`）去重后重写 `data/all/`
-- [ ] **D3 重建网站数据**：基于清理后的归档重新生成 `jekyll_site/_data/papers.json` 与 `quarterly.json`
-- [ ] **D4 清理本地 DB**：`data/radar.db` 中旧 id 残留行 / 重复行（可用清理后的归档重建，或按 DOI `UPDATE` 合并）
-- [ ] **D5 同步 data 分支**：把清理后的归档推送到 `data` 分支（一次性），之后每日增量自然保持干净；确认 6 个月保留策略仍在
-- [ ] **D6 验证清理效果**：对比清理前后「同文重复条数」下降、arXiv↔期刊 合并生效、`alternate_link` 正确
-- [ ] **工具建议**：在 `scripts/archive_preview.py` 增加 `--clean` 模式，或新建 `scripts/cleanup_archive.py`（复用 `src/history.py`）
+- [x] **D1 盘点**：`cleanup_archive.py --dry-run` → 96 文件、49,249 条、DOI(链接) 34,150、加载合并后唯一 13,124
+- [x] **D2 重建归档**：全量 re-key 到新 id（`arx:10132 / doi:34150 / title:4967`），`doi` 字段回填 34,150 条；原文件备份至 `data/archive_pre_clean/`（gitignored）
+- [x] **D3 重建网站数据**：`--rebuild-site` 重新生成 `jekyll_site/_data/papers.json` + `quarterly.json`（13,124 条）
+- [x] **D4 重建 DB**：`--rebuild-db` → `radar.db` 重建为 13,124 行，含 `doi`/`alternate_link` 列
+- [x] **D5 同步 data 分支**：清理后归档提交并推送（data 分支 commit `48cfde3`）
+- [x] **D6 验证**：DOI 字段覆盖 34,150；加载合并 13,124 无 DOI 重复组；digest/季度视图在真实数据上正常（weekday 10 篇等）
+- [ ] **遗留提醒**：`llm_cache.json`（旧 key）在清理/分支切换中清空，新 id 下本就失效，会自动重建（一次性重分析成本可接受）；`fetch_history.json`/`tags.json` 同样被清，会重建
+- [ ] **可选**：删除 `data/archive_pre_clean/` 备份（确认无回滚需求后）
 
 ## E. 回归测试（不要破坏旧行为）
 

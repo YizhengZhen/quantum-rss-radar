@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-08-17 — Historical archive cleanup (Phase D, DOI-first re-key)
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `src/history.py`, `scripts/cleanup_archive.py` (new), `docs/review_checklist.md`, `docs/CHANGELOG.md`
+**Data:** `data/all` re-keyed + deduped; `data/radar.db` rebuilt; pushed to `data` branch (`48cfde3`)
+
+- `history.py`: added `compute_record_key()` (doi → arxiv id → title hash) and `canonical_record()` (journal-preferring identity, newest-analysis content) for re-keying historical flat records; `canonical_record` backfills the `doi` field from the link-derived DOI so the archive loader's DOI merge works
+- `scripts/cleanup_archive.py`: `--dry-run` inventory / `--rewrite` (re-key + dedup + backup to `data/archive_pre_clean/`) / `--remap-cache` / `--rebuild-db` / `--rebuild-site`
+- Applied to the full 96-file archive (2026-05-14 → 2026-08-17): 49,249 records re-keyed → 13,124 unique after merge; `doi` field coverage 34,150; `radar.db` rebuilt with `doi`/`alternate_link` columns; `papers.json` + `quarterly.json` regenerated
+- Note: old `llm_cache.json` / `fetch_history.json` / `tags.json` were cleared (obsolete under the new id scheme; will rebuild automatically)
+
+---
+
 ## 2026-08-17 — Multi-frequency digest emails + quarterly web view + DOI dedup
 
 **Branch:** `feature/email-digests-quarterly-web`
