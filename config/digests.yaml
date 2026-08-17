@@ -20,13 +20,10 @@ digests:
     frequency: weekday # 周一到周五
     schedule: {}
     include: arxiv # 只推 arXiv
-    feed_filter: [] # 可加：["arXiv Physics", "arXiv Math", "arXiv Computer Science"]
-    source_filter: []
     window_days: 0 # 0 = 自上次触发以来（周一覆盖 3 天）
     min_score: 7.0
     max_papers: 10
     subject_template: "Quantum RSS Radar — arXiv ({date})"
-    enabled: true
 
   # ── weekly：周日触发，只包含 published 期刊论文 ──
   - id: weekly_journals
@@ -34,13 +31,10 @@ digests:
     frequency: weekly
     schedule: { weekday: 6 } # 6 = 周日
     include: published # 只含期刊论文（不含 arXiv）
-    feed_filter: [] # 可加：["Physical Review Letters", "Nature Physics", ...]
-    source_filter: []
     window_days: 7 # 最近 7 天（按 published_date）
     min_score: 7.0
     max_papers: 20
     subject_template: "Quantum RSS Radar — Weekly Journals ({date})"
-    enabled: true
 
   # ── monthly：每月 1 号触发，只包含 published 期刊论文 ──
   - id: monthly_journals
@@ -48,13 +42,10 @@ digests:
     frequency: monthly
     schedule: { day_of_month: 1 }
     include: published
-    feed_filter: []
-    source_filter: []
     window_days: 30 # 最近 30 天
     min_score: 7.0
     max_papers: 30
     subject_template: "Quantum RSS Radar — Monthly Journals ({date})"
-    enabled: true
 
   # ── seasonal：季度首日触发（季度 = 3 个月），只包含 published 期刊论文 ──
   - id: seasonal_best
@@ -62,10 +53,7 @@ digests:
     frequency: seasonal
     schedule: {}
     include: published
-    feed_filter: []
-    source_filter: []
     window_days: 90 # 最近一个季度
     min_score: 8.0
     max_papers: 40
     subject_template: "Quantum RSS Radar — Quarterly Best ({date})"
-    enabled: true

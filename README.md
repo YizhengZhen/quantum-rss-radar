@@ -61,7 +61,7 @@ Edit the following two files:
 | File | Purpose | Note |
 |------|---------|------|
 | `config/research_directions.md` | Define your research interests; LLM scores & classifies papers against this | `##` for direction name, `-` list for keywords |
-| `config/rss_sources.yaml` | Add/remove RSS sources you want to track | `name` / `url` / `source` fields per entry |
+| `config/rss_sources.yaml` | Add/remove RSS sources you want to track | Grouped by source: `defaults` → `sources.<source>.feeds` (per-feed only `name`/`url`, optional `display_name`/`color` overrides) |
 
 > The default `research_directions.md` contains the author's quantum information research directions. `rss_sources.yaml` comes pre-configured with arXiv × 4 + APS + Nature + Science and others. Modify as needed.
 

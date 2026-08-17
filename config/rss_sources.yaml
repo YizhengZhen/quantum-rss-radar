@@ -1,271 +1,138 @@
-# Quantum RSS Radar - RSS Sources Configuration
-# Edit as needed: add/remove feeds, change source labels, adjust colours.
+# Quantum RSS Radar — RSS Sources Configuration
+#
+# 按来源分组（sources → feeds），字段层级继承：defaults → source → feed。
+# 只写"与上级不同"的字段即可：
+#   - feed 可省略 display_name / color / max_items / update_frequency（继承 source 或 defaults）
+#   - source 可省略 max_items / update_frequency（继承 defaults）
+# display_name / color 用于邮件卡片与网站标签（期刊名 + 色块）。
 
-feeds:
-  - name: "arXiv Physics"
-    url: "https://rss.arxiv.org/rss/quant-ph+cond-mat.stat-mech+math-ph+physics.soc-ph+physics.pop-ph+physics.optics+physics.comp-ph+physics.atom-ph+physics.atm-clus"
-    source: "arxiv"
-    display_name: "arXiv"
-    color: "#B31B1B"
-    max_items: -1 # Unlimited
-    update_frequency:
-      type: "daily"
-
-  - name: "arXiv Math"
-    url: "https://rss.arxiv.org/rss/math.DS+math.FA+math.GM+math.HO+math.IT+math.NA+math.OC+math.QA+math.ST+stat.TH"
-    source: "arxiv"
-    display_name: "arXiv"
-    color: "#B31B1B"
-    max_items: -1 # Unlimited
-    update_frequency:
-      type: "daily"
-
-  - name: "arXiv Computer Science"
-    url: "https://rss.arxiv.org/rss/cs.CC+cs.CR+cs.ET+cs.GT+cs.IT+cs.LO"
-    source: "arxiv"
-    display_name: "arXiv"
-    color: "#B31B1B"
-    max_items: -1 # Unlimited
-    update_frequency:
-      type: "daily"
-
-  # ── Nature Journals ────────────────────────────
-  # Nature Physics
-  - name: "Nature Physics"
-    url: "https://www.nature.com/nphys.rss"
-    source: "nature"
-    display_name: "Nature Physics"
-    color: "#009688"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Nature Photonics
-  - name: "Nature Photonics"
-    url: "https://www.nature.com/nphoton.rss"
-    source: "nature"
-    display_name: "Nature Photonics"
-    color: "#4DB6AC"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Nature Reviews Physics
-  - name: "Nature Reviews Physics"
-    url: "https://www.nature.com/natrevphys.rss"
-    source: "nature"
-    display_name: "Nat. Rev. Phys."
-    color: "#80CBC4"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Nature Communications
-  - name: "Nature Communications"
-    url: "https://www.nature.com/ncomms.rss"
-    source: "nature"
-    display_name: "Nature Comms"
-    color: "#26A69A"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # npj Quantum Information
-  - name: "npj Quantum Information"
-    url: "https://www.nature.com/npjqi.rss"
-    source: "nature"
-    display_name: "npj Quantum Info"
-    color: "#00897B"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # ── Science Journals ───────────────────────────
-  # Science Magazine
-  - name: "Science Magazine"
-    url: "https://www.science.org/rss/current.xml"
-    source: "science"
-    display_name: "Science"
-    color: "#1565C0"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Science Advances
-  - name: "Science Advances"
-    url: "https://www.science.org/rss/sciadv.xml"
-    source: "science"
-    display_name: "Science Advances"
-    color: "#42A5F5"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # ── APS Journals ───────────────────────────────
-  # Physical Review Letters
-  - name: "Physical Review Letters"
-    url: "https://feeds.aps.org/rss/recent/prl.xml"
-    source: "aps"
-    display_name: "Phys. Rev. Lett."
-    color: "#7B1FA2"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Physical Review A
-  - name: "Physical Review A"
-    url: "https://feeds.aps.org/rss/recent/pra.xml"
-    source: "aps"
-    display_name: "Phys. Rev. A"
-    color: "#AB47BC"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Physical Review B
-  - name: "Physical Review B"
-    url: "https://feeds.aps.org/rss/recent/prb.xml"
-    source: "aps"
-    display_name: "Phys. Rev. B"
-    color: "#CE93D8"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Physical Review E
-  - name: "Physical Review E"
-    url: "https://feeds.aps.org/rss/recent/pre.xml"
-    source: "aps"
-    display_name: "Phys. Rev. E"
-    color: "#BA68C8"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Physical Review Research
-  - name: "Physical Review Research"
-    url: "https://feeds.aps.org/rss/recent/prresearch.xml"
-    source: "aps"
-    display_name: "Phys. Rev. Res."
-    color: "#E1BEE7"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Physical Review X
-  - name: "Physical Review X"
-    url: "https://feeds.aps.org/rss/recent/prx.xml"
-    source: "aps"
-    display_name: "Phys. Rev. X"
-    color: "#6A1B9A"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # PRX Quantum
-  - name: "PRX Quantum"
-    url: "https://feeds.aps.org/rss/recent/prxquantum.xml"
-    source: "aps"
-    display_name: "PRX Quantum"
-    color: "#4A148C"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Reviews of Modern Physics
-  - name: "Reviews of Modern Physics"
-    url: "https://feeds.aps.org/rss/recent/rmp.xml"
-    source: "aps"
-    display_name: "Rev. Mod. Phys."
-    color: "#8E24AA"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # ── Other / Open Access Journals ────────────────
-  # Quantum — the open journal for quantum science
-  - name: "Quantum"
-    url: "https://quantum-journal.org/feed/"
-    source: "other"
-    display_name: "Quantum"
-    color: "#EF5350"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # New Journal of Physics (IOP)
-  - name: "New Journal of Physics"
-    url: "https://iopscience.iop.org/journal/rss/1367-2630"
-    source: "other"
-    display_name: "New J. Phys."
-    color: "#FF7043"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Reports on Progress in Physics (ROPP)
-  - name: "Reports on Progress in Physics (ROPP)"
-    url: "https://iopscience.iop.org/journal/rss/0034-4885"
-    source: "other"
-    display_name: "Rep. Prog. Phys."
-    color: "#FF8A65"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Proceedings of the National Academy of Sciences
-  - name: "PNAS"
-    url: "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=PNAS"
-    source: "other"
-    display_name: "PNAS"
-    color: "#78909C"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # Journal of Mathematical Physics (AIP)
-  - name: "Journal of Mathematical Physics"
-    url: "https://pubs.aip.org/rss/site_1000031/1000018.xml"
-    source: "other"
-    display_name: "J. Math. Phys."
-    color: "#90A4AE"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
-
-  # IEEE Transactions on Information Theory
-  - name: "IEEE Transactions on Information Theory"
-    url: "https://ieeexplore.ieee.org/rss/TOC18.XML"
-    source: "ieee"
-    display_name: "IEEE Trans. Info. Theory"
-    color: "#F57C00"
-    max_items: -1
-    update_frequency:
-      type: "weekdays"
+defaults:
+  max_items: -1 # Unlimited
+  update_frequency: { type: "daily" }
 
 sources:
-  # Each source maps to a color tag on the website (fallback when feed has no display_name/color)
+  # ── arXiv（日更，继承 defaults.daily）──────────────
   arxiv:
     display_name: "arXiv"
     color: "#B31B1B"
+    feeds:
+      - name: "arXiv Physics"
+        url: "https://rss.arxiv.org/rss/quant-ph+cond-mat.stat-mech+math-ph+physics.soc-ph+physics.pop-ph+physics.optics+physics.comp-ph+physics.atom-ph+physics.atm-clus"
+      - name: "arXiv Math"
+        url: "https://rss.arxiv.org/rss/math.DS+math.FA+math.GM+math.HO+math.IT+math.NA+math.OC+math.QA+math.ST+stat.TH"
+      - name: "arXiv Computer Science"
+        url: "https://rss.arxiv.org/rss/cs.CC+cs.CR+cs.ET+cs.GT+cs.IT+cs.LO"
+
+  # ── Nature 期刊 ───────────────────────────────────
   nature:
     display_name: "Nature"
     color: "#009688"
+    update_frequency: { type: "weekdays" }
+    feeds:
+      - name: "Nature Physics"
+        url: "https://www.nature.com/nphys.rss"
+        display_name: "Nature Physics"
+      - name: "Nature Photonics"
+        url: "https://www.nature.com/nphoton.rss"
+        display_name: "Nature Photonics"
+        color: "#4DB6AC"
+      - name: "Nature Reviews Physics"
+        url: "https://www.nature.com/natrevphys.rss"
+        display_name: "Nat. Rev. Phys."
+        color: "#80CBC4"
+      - name: "Nature Communications"
+        url: "https://www.nature.com/ncomms.rss"
+        display_name: "Nature Comms"
+        color: "#26A69A"
+      - name: "npj Quantum Information"
+        url: "https://www.nature.com/npjqi.rss"
+        display_name: "npj Quantum Info"
+        color: "#00897B"
+
+  # ── Science 期刊 ──────────────────────────────────
   science:
     display_name: "Science"
     color: "#1565C0"
+    update_frequency: { type: "weekdays" }
+    feeds:
+      - name: "Science Magazine"
+        url: "https://www.science.org/rss/current.xml"
+      - name: "Science Advances"
+        url: "https://www.science.org/rss/sciadv.xml"
+        display_name: "Science Advances"
+        color: "#42A5F5"
+
+  # ── APS 期刊 ──────────────────────────────────────
   aps:
     display_name: "APS"
     color: "#7B1FA2"
-  ieee:
-    display_name: "IEEE"
-    color: "#F57C00"
-  acm:
-    display_name: "ACM"
-    color: "#00897B"
-  springer:
-    display_name: "Springer"
-    color: "#5D4037"
+    update_frequency: { type: "weekdays" }
+    feeds:
+      - name: "Physical Review Letters"
+        url: "https://feeds.aps.org/rss/recent/prl.xml"
+        display_name: "Phys. Rev. Lett."
+      - name: "Physical Review A"
+        url: "https://feeds.aps.org/rss/recent/pra.xml"
+        display_name: "Phys. Rev. A"
+        color: "#AB47BC"
+      - name: "Physical Review B"
+        url: "https://feeds.aps.org/rss/recent/prb.xml"
+        display_name: "Phys. Rev. B"
+        color: "#CE93D8"
+      - name: "Physical Review E"
+        url: "https://feeds.aps.org/rss/recent/pre.xml"
+        display_name: "Phys. Rev. E"
+        color: "#BA68C8"
+      - name: "Physical Review Research"
+        url: "https://feeds.aps.org/rss/recent/prresearch.xml"
+        display_name: "Phys. Rev. Res."
+        color: "#E1BEE7"
+      - name: "Physical Review X"
+        url: "https://feeds.aps.org/rss/recent/prx.xml"
+        display_name: "Phys. Rev. X"
+        color: "#6A1B9A"
+      - name: "PRX Quantum"
+        url: "https://feeds.aps.org/rss/recent/prxquantum.xml"
+        display_name: "PRX Quantum"
+        color: "#4A148C"
+      - name: "Reviews of Modern Physics"
+        url: "https://feeds.aps.org/rss/recent/rmp.xml"
+        display_name: "Rev. Mod. Phys."
+        color: "#8E24AA"
+
+  # ── Other / Open Access 期刊 ──────────────────────
   other:
     display_name: "Other"
     color: "#757575"
+    update_frequency: { type: "weekdays" }
+    feeds:
+      - name: "Quantum"
+        url: "https://quantum-journal.org/feed/"
+        display_name: "Quantum"
+        color: "#EF5350"
+      - name: "New Journal of Physics"
+        url: "https://iopscience.iop.org/journal/rss/1367-2630"
+        display_name: "New J. Phys."
+        color: "#FF7043"
+      - name: "Reports on Progress in Physics (ROPP)"
+        url: "https://iopscience.iop.org/journal/rss/0034-4885"
+        display_name: "Rep. Prog. Phys."
+        color: "#FF8A65"
+      - name: "PNAS"
+        url: "https://www.pnas.org/action/showFeed?type=etoc&feed=rss&jc=PNAS"
+        display_name: "PNAS"
+        color: "#78909C"
+      - name: "Journal of Mathematical Physics"
+        url: "https://pubs.aip.org/rss/site_1000031/1000018.xml"
+        display_name: "J. Math. Phys."
+        color: "#90A4AE"
+
+  # ── IEEE ──────────────────────────────────────────
+  ieee:
+    display_name: "IEEE"
+    color: "#F57C00"
+    update_frequency: { type: "weekdays" }
+    feeds:
+      - name: "IEEE Transactions on Information Theory"
+        url: "https://ieeexplore.ieee.org/rss/TOC18.XML"
+        display_name: "IEEE Trans. Info. Theory"

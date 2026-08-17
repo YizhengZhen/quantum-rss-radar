@@ -60,7 +60,7 @@ git clone https://github.com/YizhengZhen/quantum-rss-radar.git && cd quantum-rss
 | 文件 | 作用 | 说明 |
 |------|------|------|
 | `config/research_directions.md` | 写上你的研究方向，LLM 据此评分/分类 | `##` 为方向名，`-` 列表为关键词 |
-| `config/rss_sources.yaml` | 添加/删除你想追踪的 RSS 源 | 每项包含 `name` / `url` / `source` 字段 |
+| `config/rss_sources.yaml` | 添加/删除你想追踪的 RSS 源 | 按来源分组：`defaults` → `sources.<source>.feeds`（每个 feed 只需 `name` / `url`，可选 `display_name` / `color` 覆盖） |
 
 > 默认 `research_directions.md` 为作者的量子信息研究方向，`rss_sources.yaml` 已预置 arXiv × 4 + APS + Nature + Science 等源，按需修改即可。
 

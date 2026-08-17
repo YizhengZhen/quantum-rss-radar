@@ -122,11 +122,17 @@ def load_feeds(config_dir: str = "config") -> list[FeedConfig]:
     """
     Load RSS feed configurations from YAML file.
 
+    Supports two schemas:
+      * legacy flat:  top-level ``feeds:`` list, each entry carries ``source``
+      * grouped:      top-level ``sources:`` dict (source → feeds); fields
+                      cascade ``defaults → source → feed``
+    FeedConfig objects carry no 'category' field — LLM assigns direction.
+
     Args:
         config_dir: Path to configuration directory
 
     Returns:
-        List of FeedConfig objects (no 'category' field — LLM assigns direction)
+        List of FeedConfig objects
     """
     feeds_path = Path(config_dir) / "rss_sources.yaml"
     if not feeds_path.exists():
@@ -137,26 +143,55 @@ def load_feeds(config_dir: str = "config") -> list[FeedConfig]:
     with open(feeds_path, "r", encoding="utf-8") as f:
         feeds_data = yaml.safe_load(f) or {}
 
-    feeds = []
-    for feed_data in feeds_data.get("feeds", []):
-        source_str = feed_data.get("source", "").lower()
-        try:
-            source = PaperSource(source_str)
-        except ValueError:
-            source = PaperSource.OTHER
+    defaults = feeds_data.get("defaults", {})
+    feeds: list[FeedConfig] = []
 
-        feed = FeedConfig(
-            name=feed_data["name"],
-            url=feed_data["url"],
-            source=source,
-            display_name=feed_data.get("display_name"),
-            color=feed_data.get("color"),
-            max_items=feed_data.get("max_items", -1),
-            update_frequency=feed_data.get("update_frequency", {}),
-        )
-        feeds.append(feed)
+    if "feeds" in feeds_data:
+        # ── Legacy flat schema ──
+        for feed_data in feeds_data.get("feeds", []):
+            source = _parse_source(feed_data.get("source", ""))
+            feeds.append(
+                FeedConfig(
+                    name=feed_data["name"],
+                    url=feed_data["url"],
+                    source=source,
+                    display_name=feed_data.get("display_name"),
+                    color=feed_data.get("color"),
+                    max_items=feed_data.get("max_items", defaults.get("max_items", -1)),
+                    update_frequency=feed_data.get("update_frequency", defaults.get("update_frequency", {})),
+                )
+            )
+    else:
+        # ── Grouped schema: sources → feeds, cascade defaults → source → feed ──
+        for source_key, source_data in feeds_data.get("sources", {}).items():
+            source = _parse_source(source_key)
+            for feed_data in source_data.get("feeds", []):
+                feeds.append(
+                    FeedConfig(
+                        name=feed_data["name"],
+                        url=feed_data["url"],
+                        source=source,
+                        display_name=feed_data.get("display_name") or source_data.get("display_name"),
+                        color=feed_data.get("color") or source_data.get("color"),
+                        max_items=feed_data.get(
+                            "max_items",
+                            source_data.get("max_items", defaults.get("max_items", -1)),
+                        ),
+                        update_frequency=feed_data.get("update_frequency")
+                        or source_data.get("update_frequency")
+                        or defaults.get("update_frequency", {}),
+                    )
+                )
 
     return feeds
+
+
+def _parse_source(source_str: str) -> PaperSource:
+    """Parse a source key into a PaperSource, falling back to OTHER."""
+    try:
+        return PaperSource(source_str.lower())
+    except ValueError:
+        return PaperSource.OTHER
 
 
 def load_sources(config_dir: str = "config") -> dict[str, SourceConfig]:

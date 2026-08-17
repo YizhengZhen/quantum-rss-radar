@@ -69,12 +69,17 @@ def generate_rss_sources_data():
     with open(sources_path, "r", encoding="utf-8") as f:
         sources_data = yaml.safe_load(f) or {}
     
-    # Extract unique sources from feeds
-    unique_sources = set()
-    for feed in sources_data.get("feeds", []):
-        source = feed.get("source", "").lower()
-        if source and source in SOURCE_DISPLAY_INFO:
-            unique_sources.add(source)
+    # Extract active source keys (legacy flat: feeds[].source; grouped: sources keys)
+    active_sources = set()
+    if "feeds" in sources_data:
+        for feed in sources_data.get("feeds", []):
+            source = feed.get("source", "").lower()
+            if source:
+                active_sources.add(source)
+    else:
+        active_sources = set(sources_data.get("sources", {}).keys())
+
+    unique_sources = {s for s in active_sources if s in SOURCE_DISPLAY_INFO}
     
     # Create source objects with display info
     sources_list = []

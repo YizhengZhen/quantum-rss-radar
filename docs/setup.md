@@ -117,22 +117,32 @@ docker run --env-file .env quantum-rss-radar
 
 ## 6. RSS 源配置
 
-修改 `config/rss_sources.yaml` 添加/删除 RSS 源：
+修改 `config/rss_sources.yaml` 添加/删除 RSS 源。配置按来源分组，字段层级继承 `defaults → source → feed`，只写与上级不同的字段即可：
 
 ```yaml
-sources:
-  - name: "arXiv Physics"
-    url: "https://arxiv.org/rss/physics"
-    source_type: "arxiv"
-    max_papers: 100
+defaults:
+  max_items: -1                  # 默认不限量
+  update_frequency: { type: "daily" }
 
-  - name: "Nature Physics"
-    url: "https://www.nature.com/nphys.rss"
-    source_type: "nature"
-    max_papers: 30
+sources:
+  arxiv:                         # 组名即 source，必须是 PaperSource 枚举有效值
+    display_name: "arXiv"       # 邮件/网站标签（默认 fallback 为组名）
+    color: "#B31B1B"
+    feeds:
+      - name: "arXiv Physics"
+        url: "https://rss.arxiv.org/rss/quant-ph"
+
+  nature:
+    display_name: "Nature"
+    color: "#009688"
+    update_frequency: { type: "weekdays" }  # 覆盖 defaults
+    feeds:
+      - name: "Nature Physics"
+        url: "https://www.nature.com/nphys.rss"
+        display_name: "Nature Physics"      # 覆盖组级 display_name
 ```
 
-`source_type` 必须是 `PaperSource` 枚举的有效值：
+`source` 组名必须是 `PaperSource` 枚举的有效值：
 `arxiv` | `nature` | `science` | `aps` | `ieee` | `acm` | `springer` | `other`
 
 ---
