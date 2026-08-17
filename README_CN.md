@@ -21,7 +21,7 @@
 | 📧 **邮件推送** | 每日自动发送 Top-N 推荐论文 |
 | 📬 **多频率邮件** | weekday（周一~五，只推 arXiv）/ weekly（周日）/ monthly / seasonal 季度邮件，全部在 `config/digests.yaml` 可配置 |
 | 🌐 **季度高分网页** | 网页展示最近一个季度、打分最高的文章，分为 **Preprints / Publications** 两个 Tab |
-| 🔗 **DOI 去重** | 确定性去重：DOI → arXiv ID → 标题哈希；arXiv 与期刊同文自动合并 |
+| 🔗 **确定性去重** | arXiv 的 v1/v2 等不同版本、以及 arXiv 与期刊版都视为**不同文章**（不做跨源合并）；期刊按 DOI 去重，arXiv 按带版本的 id |
 | 🌐 **静态网页** | Jekyll 静态网站，可搜索、按方向筛选、统计 |
 | 🎯 **按研究方向分类** | LLM 自动把论文分到 `research_directions.md` 中对应的方向 |
 | 🏷️ **自动关键词标签** | LLM 提取技术关键词，自动累积、匹配、归类 |

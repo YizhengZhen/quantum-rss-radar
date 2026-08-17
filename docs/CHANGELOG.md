@@ -4,6 +4,20 @@
 
 ---
 
+## 2026-08-17 — No cross-source dedup; arXiv versions are distinct papers
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `src/rss_fetcher.py`, `src/deduplicate.py`, `src/history.py`, `src/arxiv_deep_reader.py`, `src/orchestrator_jekyll.py`, `src/config_loader.py`, `scripts/cleanup_archive.py`, docs
+**Data:** `data/all` re-keyed again (versioned arXiv ids); pushed to `data` branch (`ce706ad`)
+
+- Product decision: an arXiv preprint and its journal version are **different papers** (no DOI-based cross-source merge); arXiv versions (v1, v2, …) are also **different papers** — the version suffix is part of the arXiv identity
+- `rss_fetcher.py`: added `extract_arxiv_id_keep_version()`; arXiv ids now carry the version (`arx:2301.00001v1`)
+- `deduplicate.py` / `history.py`: identity keys → arXiv `arx:<id-with-version>` (never DOI); journal `doi:<doi>` else `pub_title:<title hash>` (namespaced, cannot match arXiv); `_merge_by_doi` never merges arXiv records
+- `arxiv_deep_reader.enrich_arxiv_dois`: informational only (no longer rewrites the arXiv id); orchestrator call removed; `ARXIV_DOI_ENRICH` default `false`
+- `cleanup_archive.py --backfill-arxiv-versions`: resolves current arXiv versions via the arXiv API (fixed `max_results=10` default → `max_results=<batch>`); historical archive re-keyed so 10031/10132 arXiv records carry a version
+
+---
+
 ## 2026-08-17 — Historical archive cleanup (Phase D, DOI-first re-key)
 
 **Branch:** `feature/email-digests-quarterly-web`

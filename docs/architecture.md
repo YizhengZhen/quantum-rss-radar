@@ -184,13 +184,14 @@ DigestConfig（config/digests.yaml）
 - 可通过 `.env` 的 `LLM_CACHE_ENABLED=false` 关闭
 - 节省 50-80% API 调用费用
 
-### 5.2 去重策略（DOI 优先的确定性去重）
+### 5.2 去重策略（确定性 key，无跨源合并）
 
-1. **DOI 优先**（最稳定、跨源唯一）：arXiv 与期刊同文按 DOI 合并（arXiv 的 DOI 由 arXiv API 富集）
-2. 无 DOI → arXiv ID（`arx:...`）
-3. 都无 → 归一化标题 SHA256 hash（精确匹配，不再用 O(n²) 模糊匹配）
-4. 组内 canonical：期刊版优先，arXiv 链接保留为 `alternate_link`
-5. `INSERT OR REPLACE` 写入 SQLite，天然跨天去重
+**产品决策**：arXiv 预印本与期刊版是**不同文章**（不做跨源合并）；arXiv 的 v1/v2 等不同版本也是**不同文章**。
+
+1. **arXiv** → `arx:<id-带版本>`（v1/v2 不同；从不使用 DOI）
+2. **期刊** → `doi:<doi>`；无 DOI → `pub_title:<标题 hash>`（命名空间隔离，绝不与 arXiv 匹配）
+3. `INSERT OR REPLACE` 写入 SQLite，天然跨天去重
+4. 历史数据：`cleanup_archive.py --backfill-arxiv-versions` 用 arXiv API 为历史记录补版本号
 
 ### 5.3 研究方向 vs 标签
 

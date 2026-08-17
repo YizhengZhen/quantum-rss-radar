@@ -52,6 +52,8 @@
 - [ ] **遗留提醒**：`llm_cache.json`（旧 key）在清理/分支切换中清空，新 id 下本就失效，会自动重建（一次性重分析成本可接受）；`fetch_history.json`/`tags.json` 同样被清，会重建
 - [ ] **可选**：删除 `data/archive_pre_clean/` 备份（确认无回滚需求后）
 
+> **2026-08-17 决策更新**：改为**无跨源合并**（arXiv 与期刊版是不同文章）+ **arXiv 版本独立**（v1/v2 是不同文章）。归档已再次重排：arXiv id 带版本（`arx:2605.12867v1`，10031/10132 由 arXiv API 回填），`data` 分支已更新（commit `ce706ad`）。
+
 ## E. 回归测试（不要破坏旧行为）
 
 - [ ] 删除/改名 `config/digests.yaml` 后，邮件回退到 legacy 单封每日邮件路径

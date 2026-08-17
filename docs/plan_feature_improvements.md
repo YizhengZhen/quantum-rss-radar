@@ -252,27 +252,25 @@ Jekyll UI：
 1. `deduplicate.py` 用 O(n²) 模糊匹配（title Jaccard + 作者姓氏 + 日期窗口 + abstract 长度比），每天 ~500 篇需 ~12.5 万次比较，慢且误判/漏判多
 2. arXiv 版与期刊版 id 不同（arXiv 走 arxiv_id 路径、期刊走 title hash）→ 同一论文重复出现，正是"去重很不好"的痛点
 
-**新方案：DOI 优先的确定性去重（key 精确匹配，O(n)）**
+**新方案：确定性 key 去重（无跨源合并 + arXiv 版本独立）**
 
-1. **抓取时提取 DOI**：
-   - `parse_generic_entry`：优先 `entry.get("prism_doi")` → `entry.get("dc_identifier")`（去 `doi:` 前缀）→ 从 link 正则提取；统一归一化（小写、去 `https://doi.org/`）
-   - `parse_arxiv_entry`：RSS 通常无 DOI，保持 None；**可选增强**：对 arXiv 论文调 arXiv API 补 DOI（复用 `arxiv_deep_reader` 的 `arxiv:doi` 逻辑），让 arXiv↔期刊 能按 DOI 合并
-   - 存入新字段 `Paper.doi`
+1. **抓取时提取身份**：
+   - `parse_generic_entry`：提取 DOI（prism_doi → dc_identifier → link 正则）存入 `Paper.doi`；无 DOI 时以标题为兜底
+   - `parse_arxiv_entry`：提取**带版本**的 arXiv id（`extract_arxiv_id_keep_version` → `arx:2301.00001v1`）
+   - `enrich_arxiv_dois` 仅记录性（不再改写 arXiv 身份），默认关闭
 
-2. **去重主键层级**（`deduplicate.py` 重写核心）：
+2. **去重 key（`deduplicate.py`/`history.py`）**：
    ```
-   1. doi（归一化后）      # 最稳定、跨源唯一
-   2. arxiv_id            # 无 DOI 时
-   3. 归一化标题的 hash    # 都无时（精确匹配，不用模糊）
+   arXiv   → arx:<id-带版本>        # v1/v2 不同；从不使用 DOI
+   期刊    → doi:<doi>
+            → pub_title:<标题 hash>  # 命名空间隔离，绝不与 arXiv 匹配
    ```
-   - `compute_paper_key(paper)`：按上表返回带前缀的 key（`doi:...` / `arx:...` / `title:...`）
-   - `deduplicate_papers()`：单趟 dict 按 key 分组（O(n)）→ 每组选 canonical
+   - `compute_paper_key` / `compute_record_key`：单趟 dict 按 key 分组（O(n)）
 
-3. **canonical 选择与合并**（替换 `select_best_paper_from_group`）：
-   - 组内含**期刊版**（source != arxiv）→ canonical = 期刊版（published、有 DOI）；arXiv 链接存入 `alternate_link`
-   - 组内**只有 arXiv 预印本** → canonical = arXiv 版
-   - 合并字段：`doi`、`arxiv_id`（存 raw_data）、`link`（期刊优先）、`published`（期刊发表日优先）、authors/abstract 取信息更全者
-   - 效果：与决策 4/6 一致——合并后若已 published → 进 weekly/monthly/seasonal + 网站 Publications；仅预印本 → 进 weekday 邮件 + 网站 Preprints
+3. **无跨源合并**：
+   - arXiv 预印本与期刊版是**不同文章**（即使 DOI 相同也不合并）
+   - `history._merge_by_doi` 仅合并期刊记录（arXiv 记录不参与 DOI 合并）
+   - 历史数据：`cleanup_archive.py --backfill-arxiv-versions` 用 arXiv API 为历史记录补版本号（已执行：10031/10132 条 arXiv 记录带版本）
 
 4. **`Paper.id` 生成规则调整**（保证 SQLite/归档跨天稳定）：
    - 有 DOI → `doi:{normalized_doi}`（或其 hash）

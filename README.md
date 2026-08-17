@@ -22,7 +22,7 @@ Automatically track the latest papers from arXiv / Nature / Science / APS / IEEE
 | 📧 **Email Digest** | Daily Top-N recommended papers sent via SMTP, sorted by source priority then score |
 | 📬 **Multi-Frequency Emails** | Weekday (Mon–Fri, arXiv only) / Weekly (Sun) / Monthly / Seasonal digests, fully configured in `config/digests.yaml` |
 | 🌐 **Quarterly Web View** | Website shows top papers from the last quarter, split into **Preprints** / **Publications** tabs |
-| 🔗 **DOI Deduplication** | Deterministic dedup by DOI → arXiv ID → title hash; merges arXiv + journal versions of the same paper |
+| 🔗 **Deterministic Dedup** | arXiv versions (v1/v2…) and journal papers are distinct identities (no cross-source merge); journals dedup by DOI, arXiv by versioned id |
 | 🌐 **Static Website** | Jekyll site with search, direction filtering, and statistics |
 | 🗂️ **Direction Classification** | LLM assigns each paper to one of your research directions |
 | 🏷️ **Auto Keyword Tagging** | LLM extracts keywords; tag manager accumulates, matches, and categorizes them |
