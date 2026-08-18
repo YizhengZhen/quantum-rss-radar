@@ -18,8 +18,7 @@
 | 🎯 **按研究方向自动评分** | LLM 按你定义的 `research_directions.md` 评分 (0-10) |
 | 📝 **高评分论文摘要报告** | 评分 ≥ 阈值 → 生成结构化摘要（TLDR / 动机 / 方法 / 结果 / 结论） |
 | 📄 **arXiv 全文深度阅读** | 评分极高 → 自动下载 PDF 全文再分析，生成 Note |
-| 📧 **邮件推送** | 每日自动发送 Top-N 推荐论文 |
-| 📬 **多频率邮件** | weekday（周一~五，只推 arXiv）/ weekly（周日）/ monthly / seasonal 季度邮件，全部在 `config/digests.yaml` 可配置 |
+| 📧 **按源邮件推送** | 每个 feed 在 `config/rss_sources.yaml` 里独立设 `update_frequency` / `min_score` / `max_items`；相同频率的 feed 合并为一封邮件（工作日 arXiv / 周末期刊 / 月度 Nature+Science / 季度） |
 | 🌐 **季度高分网页** | 网页展示最近一个季度、打分最高的文章，分为 **Preprints / Publications** 两个 Tab |
 | 🔗 **确定性去重** | arXiv 的 v1/v2 等不同版本、以及 arXiv 与期刊版都视为**不同文章**（不做跨源合并）；期刊按 DOI 去重，arXiv 按带版本的 id |
 | 🌐 **静态网页** | Jekyll 静态网站，可搜索、按方向筛选、统计 |
@@ -60,7 +59,7 @@ git clone https://github.com/YizhengZhen/quantum-rss-radar.git && cd quantum-rss
 | 文件 | 作用 | 说明 |
 |------|------|------|
 | `config/research_directions.md` | 写上你的研究方向，LLM 据此评分/分类 | `##` 为方向名，`-` 列表为关键词 |
-| `config/rss_sources.yaml` | 添加/删除你想追踪的 RSS 源 | 按来源分组：`defaults` → `sources.<source>.feeds`（每个 feed 只需 `name` / `url`，可选 `display_name` / `color` 覆盖） |
+| `config/rss_sources.yaml` | 添加/删除你想追踪的 RSS 源 | 扁平 per-feed 列表：`name`/`url`/`source`/`display_name`/`color`/`max_items`/`min_score`/`update_frequency` |
 
 > 默认 `research_directions.md` 为作者的量子信息研究方向，`rss_sources.yaml` 已预置 arXiv × 4 + APS + Nature + Science 等源，按需修改即可。
 
@@ -77,7 +76,6 @@ git clone https://github.com/YizhengZhen/quantum-rss-radar.git && cd quantum-rss
    | `LLM_MODEL` | 可选 | 模型名，DeepSeek 默认 `deepseek-chat` |
    | `MAX_PAPERS_PER_FEED` | 可选 | 每源最大论文数，默认 50 |
    | `MIN_RELEVANCE_SCORE` | 可选 | 最低评分，默认 5.0 |
-   | `TOP_N_RECOMMENDATIONS` | 可选 | 邮件推荐数，默认 10 |
    | `LLM_CACHE_ENABLED` | 可选 | 是否启用缓存，默认 true |
    | `DEEP_READ_ENABLED` | 可选 | 是否启用深度阅读，默认 true |
    | `EMAIL_ENABLED` | 可选 | `true` 启用邮件推送 |

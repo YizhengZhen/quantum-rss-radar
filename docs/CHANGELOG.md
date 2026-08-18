@@ -4,6 +4,21 @@
 
 ---
 
+## 2026-08-18 — Per-feed digest model (digests.yaml removed; rss_sources.yaml drives emails)
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `config/rss_sources.yaml`, `config/digests.yaml` (deleted), `src/models.py`, `src/config_loader.py`, `src/digest_engine.py`, `src/digest_cli.py`, `src/email_sender.py`, `src/history.py`, `src/scheduler.py`, `src/orchestrator_jekyll.py`, `scripts/archive_preview.py`, `.env.example`, `.github/workflows/daily-pipeline.yaml`, `jekyll_site/pages/about.html`, docs
+
+- `rss_sources.yaml` reverted to a **flat per-feed list**; each feed independently declares `name/url/source/display_name/color/max_items/min_score/update_frequency` (different journals under one publisher can have different `min_score`/`max_items`)
+- `config/digests.yaml` **deleted** — emails are driven entirely by `rss_sources.yaml`
+- `UpdateFrequency` enum replaces `DigestType`: `daily | weekday | weekly | monthly | season`
+- `digest_engine.py` reworked: `feed_is_due()` decides per-feed scheduling; feeds sharing an `update_frequency` are **merged into ONE email** (Weekday arXiv / Weekly journals / Monthly Nature+Science / Seasonal); `select_feed_records()` = per-feed window + `min_score` + top `max_items`
+- Removed legacy `send_daily_email` / `build_email_html` / `build_email_text` / `test_email_config` and the `DigestConfig` model; `Config` dropped `email_min_score`/`top_n_recommendations`/`digest_enabled`
+- `scheduler.py` updated for the `UpdateFrequency` enum (monthly/season helpers added)
+- CLI: `python -m src.digest_cli --dry-run [--today D] [--freq X]` previews/sends merged frequency emails
+
+---
+
 ## 2026-08-17 — No cross-source dedup; arXiv versions are distinct papers
 
 **Branch:** `feature/email-digests-quarterly-web`

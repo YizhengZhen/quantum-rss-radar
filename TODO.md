@@ -176,10 +176,11 @@
 - **邮件不冲突**：arXiv 只进 weekday；期刊只进 weekly/monthly/seasonal
 - **窗口字段**：arXiv 按 `rss_fetch_date`；非 arXiv 按 `published_date`
 - **方案**：
-  - 新增 `config/digests.yaml`（digest 定义：frequency/schedule/source_filter/window_days/min_score/max_papers/subject）
   - 新增 `src/history.py`（JSONL 归档聚合：合并去重 + 窗口过滤 + preprint/publication 分类）
-  - 新增 `src/digest_engine.py`（日历判断 should_send_today + 邮件构建/发送）
+  - 新增 `src/digest_engine.py`（日历判断 feed_is_due + 按 update_frequency 分组合并发信）
 - **关键约束**：CI 中 `data/` 不持久化，历史聚合必须基于 `data` 分支的 JSONL 归档
+
+> **2026-08-18 重构**：`config/digests.yaml` **已删除**，邮件完全由 `config/rss_sources.yaml` 驱动——每个 feed 独立声明 `min_score` / `max_items` / `update_frequency`（`daily|weekday|weekly|monthly|season`）；相同频率的 feed 合并为一封邮件。`DigestConfig`/`DigestType`/legacy `send_daily_email` 一并移除。
 
 ### 4.2 网页版与 Email 内容剥离 + 季度高分推荐
 - **需求**：网页不再等于当日邮件内容；网页推荐一个季度以内、打分最高的文章，分 Preprints / Publications 两类

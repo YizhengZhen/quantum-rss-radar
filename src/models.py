@@ -25,50 +25,22 @@ class PaperSource(str, Enum):
     OTHER = "other"
 
 
-class DigestType(str, Enum):
-    """Digest email frequency types."""
+class UpdateFrequency(str, Enum):
+    """How often a feed fires, and which email group it joins.
 
-    WEEKDAY = "weekday"  # Mon–Fri
-    WEEKLY = "weekly"  # once a week (default Sunday)
-    MONTHLY = "monthly"  # once a month (default 1st)
-    SEASONAL = "seasonal"  # once a quarter (quarter start)
-
-
-class DigestConfig(BaseModel):
-    """Configuration for a single email digest.
-
-    Each digest defines its frequency, schedule, feed/source scope,
-    time window, minimum score and cap.  See config/digests.yaml.
+    Feeds sharing the same update_frequency are merged into ONE email:
+      * daily   → every day
+      * weekday → Mon–Fri (e.g. the arXiv group)
+      * weekly  → every Sunday (weekend journal roundup)
+      * monthly → 1st of month (e.g. the Nature/Science group)
+      * season  → quarter start (1/1, 4/1, 7/1, 10/1)
     """
 
-    id: str = Field(..., description="Unique digest identifier")
-    name: str = Field(..., description="Digest display name")
-    frequency: DigestType = Field(..., description="Digest frequency")
-    schedule: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Schedule: weekday (0-6) for weekly, day_of_month for monthly",
-    )
-    include: str = Field("all", description="Source scope: all | arxiv | published")
-    feed_filter: list[str] = Field(
-        default_factory=list,
-        description="Include only these feed names (AND with source_filter)",
-    )
-    source_filter: list[str] = Field(
-        default_factory=list,
-        description="Include only these source keys (AND with feed_filter)",
-    )
-    window_days: int = Field(
-        1, description="Time window in days (0 = since last trigger)"
-    )
-    min_score: float = Field(7.0, description="Minimum relevance score to include")
-    max_papers: int = Field(10, description="Maximum number of papers to include")
-    subject_template: str = Field(
-        "Quantum RSS Radar — {name} ({date})", description="Email subject template"
-    )
-    enabled: bool = Field(True, description="Whether this digest is enabled")
-    split_preprint_publication: bool = Field(
-        False, description="Reserved: split preprints/publications inside the email"
-    )
+    DAILY = "daily"
+    WEEKDAY = "weekday"
+    WEEKLY = "weekly"
+    MONTHLY = "monthly"
+    SEASON = "season"
 
 
 class Paper(BaseModel):
@@ -208,15 +180,6 @@ class Config(BaseModel):
     min_relevance_score: float = Field(
         5.0, description="Minimum score for recommendation"
     )
-    top_n_recommendations: int = Field(10, description="Number of top papers for email")
-    email_min_score: float = Field(
-        7.0,
-        description="Minimum score for papers to include in email (overrides top_n_recommendations)",
-    )
-
-    digest_enabled: bool = Field(
-        True, description="Whether digest emails are enabled (digests.yaml present)"
-    )
     archive_dir: str = Field(
         "data/all",
         description="Directory of JSONL archive for digest/quarterly aggregation",
@@ -321,9 +284,12 @@ class FeedConfig(BaseModel):
         None,
         description="Hex colour for this journal's tag (overrides source-level color)",
     )
-    max_items: int = Field(-1, description="Maximum items to fetch (-1 for unlimited)")
-    update_frequency: dict[str, Any] = Field(
-        default_factory=dict, description="Update frequency configuration"
+    max_items: int = Field(
+        -1, description="Max papers to recommend per run (-1 for unlimited)"
+    )
+    min_score: float = Field(7.0, description="Minimum relevance score to include")
+    update_frequency: UpdateFrequency = Field(
+        UpdateFrequency.DAILY, description="How often this feed fires (email group)"
     )
 
 

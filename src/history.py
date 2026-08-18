@@ -18,8 +18,6 @@ from typing import Any, Dict, List
 
 from .models import (
     DeepReadResult,
-    DigestConfig,
-    DigestType,
     Paper,
     PaperAnalysis,
     PaperSource,
@@ -275,54 +273,6 @@ def filter_by_window(
         if d is not None and d >= cutoff:
             result.append(rec)
     return result
-
-
-def resolve_window_days(digest: DigestConfig, today) -> int:
-    """window_days=0 → 'since last trigger' (weekday Monday covers the weekend)."""
-    if digest.window_days and digest.window_days > 0:
-        return digest.window_days
-    if digest.frequency == DigestType.WEEKDAY:
-        # Monday covers Fri/Sat/Sun (3 days), other weekdays 1 day
-        return 3 if today.weekday() == 0 else 1
-    if digest.frequency == DigestType.WEEKLY:
-        return 7
-    if digest.frequency == DigestType.MONTHLY:
-        return 30
-    if digest.frequency == DigestType.SEASONAL:
-        return 90
-    return 1
-
-
-def filter_by_digest(
-    records: list[dict[str, Any]], digest: DigestConfig, today=None
-) -> list[dict[str, Any]]:
-    """Apply include scope + feed/source allowlists + window + min_score + cap."""
-    today = today or datetime.now().date()
-    window = resolve_window_days(digest, today)
-
-    selected: list[dict[str, Any]] = []
-    for rec in records:
-        src = (rec.get("source") or "").lower()
-        feed = rec.get("feed_name") or ""
-
-        # include scope (arxiv / published / all)
-        if digest.include == "arxiv" and src != "arxiv":
-            continue
-        if digest.include == "published" and src == "arxiv":
-            continue
-
-        # positive allowlists (both must pass if non-empty)
-        if digest.feed_filter and feed not in digest.feed_filter:
-            continue
-        if digest.source_filter and src not in digest.source_filter:
-            continue
-
-        selected.append(rec)
-
-    in_window = filter_by_window(selected, window, today)
-    scored = [r for r in in_window if r.get("score", 0) >= digest.min_score]
-    scored.sort(key=lambda r: r.get("score", 0), reverse=True)
-    return scored[: digest.max_papers] if digest.max_papers > 0 else scored
 
 
 # ── Record → Paper / PaperAnalysis (reuse email card renderers) ──

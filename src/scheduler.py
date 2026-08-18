@@ -9,7 +9,7 @@ from typing import List, Dict, Optional, Any
 import logging
 from enum import Enum
 
-from .models import FeedConfig
+from .models import FeedConfig, UpdateFrequency
 
 logger = logging.getLogger(__name__)
 
@@ -88,32 +88,22 @@ class FeedScheduler:
         except ValueError:
             return True
         
-        # Check update frequency configuration
-        update_freq = feed.update_frequency
-        
-        # Default: fetch every day
-        if not update_freq:
+        # Check update frequency configuration (UpdateFrequency enum)
+        freq = feed.update_frequency
+
+        if freq == UpdateFrequency.DAILY:
             return self._should_fetch_daily(last_fetch)
-        
-        # Check schedule type
-        schedule_type = update_freq.get("type", "daily")
-        days_of_week = update_freq.get("days", [])
-        schedule = update_freq.get("schedule", "")
-        
-        if schedule_type == "daily":
-            return self._should_fetch_daily(last_fetch)
-        elif schedule_type == "weekly":
-            return self._should_fetch_weekly(last_fetch, days_of_week)
-        elif schedule_type == "weekdays":
+        if freq == UpdateFrequency.WEEKDAY:
             return self._should_fetch_weekdays(last_fetch)
-        elif schedule_type == "weekend":
-            return self._should_fetch_weekend(last_fetch)
-        elif schedule_type == "custom":
-            return self._should_fetch_custom(last_fetch, schedule)
-        else:
-            # Unknown schedule type, default to daily
-            logger.warning(f"Unknown schedule type: {schedule_type} for feed {feed_name}")
-            return self._should_fetch_daily(last_fetch)
+        if freq == UpdateFrequency.WEEKLY:
+            return self._should_fetch_weekly(last_fetch, [6])  # Sunday
+        if freq == UpdateFrequency.MONTHLY:
+            return self._should_fetch_monthly(last_fetch)
+        if freq == UpdateFrequency.SEASON:
+            return self._should_fetch_season(last_fetch)
+        # Unknown / default → daily
+        logger.warning(f"Unknown update_frequency {freq!r} for feed {feed_name}")
+        return self._should_fetch_daily(last_fetch)
     
     def _should_fetch_daily(self, last_fetch: datetime) -> bool:
         """Check if feed should be fetched daily."""
@@ -165,6 +155,22 @@ class FeedScheduler:
         # Check if today is a weekend (5=Saturday, 6=Sunday)
         today_weekday = today.weekday()
         return today_weekday >= 5
+    
+    def _should_fetch_monthly(self, last_fetch: datetime) -> bool:
+        """Check if feed should be fetched on the 1st of the month."""
+        today = datetime.now()
+        last_fetch_date = last_fetch.date()
+        if last_fetch_date >= today.date():
+            return False
+        return today.day == 1
+    
+    def _should_fetch_season(self, last_fetch: datetime) -> bool:
+        """Check if feed should be fetched on quarter start (1/1, 4/1, 7/1, 10/1)."""
+        today = datetime.now()
+        last_fetch_date = last_fetch.date()
+        if last_fetch_date >= today.date():
+            return False
+        return today.month % 3 == 1 and today.day == 1
     
     def _should_fetch_custom(self, last_fetch: datetime, schedule: str) -> bool:
         """
@@ -264,26 +270,19 @@ class FeedScheduler:
         except ValueError:
             return now
         
-        update_freq = feed.update_frequency
-        
-        # Default: tomorrow at midnight
-        if not update_freq:
+        freq = feed.update_frequency
+        if freq == UpdateFrequency.DAILY:
             return last_fetch + timedelta(days=1)
-        
-        schedule_type = update_freq.get("type", "daily")
-        
-        if schedule_type == "daily":
-            return last_fetch + timedelta(days=1)
-        elif schedule_type == "weekly":
-            days = update_freq.get("days", [0])  # Default Monday
-            return self._next_weekly_day(last_fetch, days)
-        elif schedule_type == "weekdays":
+        if freq == UpdateFrequency.WEEKDAY:
             return self._next_weekday(last_fetch)
-        elif schedule_type == "weekend":
-            return self._next_weekend(last_fetch)
-        else:
-            # Unknown schedule, default to tomorrow
-            return last_fetch + timedelta(days=1)
+        if freq == UpdateFrequency.WEEKLY:
+            return self._next_weekly_day(last_fetch, [6])  # Sunday
+        if freq == UpdateFrequency.MONTHLY:
+            return self._next_monthly(last_fetch)
+        if freq == UpdateFrequency.SEASON:
+            return self._next_season(last_fetch)
+        # Unknown schedule, default to tomorrow
+        return last_fetch + timedelta(days=1)
     
     def _next_weekly_day(self, last_fetch: datetime, days: List[int]) -> datetime:
         """Get next scheduled day for weekly updates."""
@@ -327,6 +326,25 @@ class FeedScheduler:
             return today + timedelta(days=days_ahead)
         else:  # Already weekend
             return today + timedelta(days=7)  # Next weekend
+    
+    def _next_monthly(self, last_fetch: datetime) -> datetime:
+        """Get next 1st of the month."""
+        today = datetime.now()
+        if today.day == 1:
+            return today
+        year = today.year + (1 if today.month == 12 else 0)
+        month = (today.month % 12) + 1
+        return datetime(year, month, 1)
+    
+    def _next_season(self, last_fetch: datetime) -> datetime:
+        """Get next quarter start (1st of Jan/Apr/Jul/Oct)."""
+        today = datetime.now()
+        if today.month % 3 == 1 and today.day == 1:
+            return today
+        for m in (4, 7, 10):
+            if m > today.month:
+                return datetime(today.year, m, 1)
+        return datetime(today.year + 1, 1, 1)
     
     def filter_feeds_to_fetch(self, feeds: List[FeedConfig]) -> List[FeedConfig]:
         """

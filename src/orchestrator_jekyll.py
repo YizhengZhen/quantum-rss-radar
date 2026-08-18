@@ -25,7 +25,6 @@ from .config_loader import (
 from .data_exporter import DataExporter
 from .database import RadarDatabase
 from .deduplicate import deduplicate_papers
-from .email_sender import send_daily_email
 from .models import Paper, PaperAnalysis
 from .normalizer import enrich_paper_metadata, normalize_papers
 from .reference_paper_analyzer import (
@@ -267,47 +266,28 @@ class QuantumRSSRadarJekyll:
             except Exception as e:
                 logger.warning(f"Failed to save to database: {e}")
 
-            # Step 12: Send emails — digest engine if config/digests.yaml exists,
-            # otherwise the legacy single daily email
+            # Step 12: Send emails — per-feed digests driven by rss_sources.yaml.
+            # Each feed's update_frequency decides if it fires today; feeds
+            # sharing a frequency are merged into one email.
             if self.config.email_enabled:
-                feed_configs = {feed.name: feed for feed in self.feeds}
-                from .config_loader import load_digest_configs
-                from .digest_engine import send_digests
+                from .digest_engine import send_feed_digests
 
-                digests = load_digest_configs(self.config_dir)
-                if digests and any(d.enabled for d in digests):
-                    logger.info("Sending digest emails...")
-                    email_results = send_digests(
-                        config_dir=self.config_dir,
-                        config=self.config,
-                        sources=self.sources,
-                        feed_configs=feed_configs,
-                        archive_dir=self.config.archive_dir,
+                logger.info("Sending feed digest emails...")
+                email_results = send_feed_digests(
+                    config_dir=self.config_dir,
+                    config=self.config,
+                    sources=self.sources,
+                    feed_configs=feed_configs,
+                    archive_dir=self.config.archive_dir,
+                )
+                sent = sum(1 for ok in email_results.values() if ok)
+                logger.info(f"Feed digest emails: {sent}/{len(email_results)} sent")
+                if results:
+                    results["email_sent"] = (
+                        "sent"
+                        if sent
+                        else ("none_due" if not email_results else "failed")
                     )
-                    sent = sum(1 for ok in email_results.values() if ok)
-                    logger.info(f"Digest emails: {sent}/{len(email_results)} sent")
-                    if results:
-                        results["email_sent"] = (
-                            "sent"
-                            if sent
-                            else ("none_due" if not email_results else "failed")
-                        )
-                else:
-                    logger.info("Sending daily email digest...")
-                    email_success = send_daily_email(
-                        all_papers_with_analyses,
-                        self.sources,
-                        self.config,
-                        feed_configs,
-                    )
-                    if email_success:
-                        logger.info("Daily email sent successfully")
-                        if results:
-                            results["email_sent"] = "sent"
-                    else:
-                        logger.warning("Daily email failed to send")
-                        if results:
-                            results["email_sent"] = "failed"
             else:
                 logger.info("Email sending disabled, skipping")
 

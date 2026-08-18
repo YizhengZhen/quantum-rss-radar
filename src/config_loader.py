@@ -11,7 +11,7 @@ from pathlib import Path
 
 import dotenv
 
-from .models import Config, FeedConfig, PaperSource, SourceConfig
+from .models import Config, FeedConfig, PaperSource, SourceConfig, UpdateFrequency
 
 logger = logging.getLogger(__name__)
 
@@ -61,15 +61,12 @@ def load_config() -> Config:
     # Get processing settings from environment variables
     max_papers_per_feed = int(os.getenv("MAX_PAPERS_PER_FEED", "50"))
     min_relevance_score = float(os.getenv("MIN_RELEVANCE_SCORE", "5.0"))
-    top_n_recommendations = int(os.getenv("TOP_N_RECOMMENDATIONS", "10"))
-    email_min_score = float(os.getenv("EMAIL_MIN_SCORE", "7.0"))
 
     # Get output directories
     output_dir = os.getenv("OUTPUT_DIR", "data")
     web_dir = os.getenv("WEB_DIR", "web_output")
 
-    # Get digest / quarterly settings
-    digest_enabled = os.getenv("DIGEST_ENABLED", "true").lower() == "true"
+    # Get quarterly / archive settings
     archive_dir = os.getenv("ARCHIVE_DIR", "data/all")
     quarter_window_days = int(os.getenv("QUARTER_WINDOW_DAYS", "90"))
     quarterly_top_n = int(os.getenv("QUARTERLY_TOP_N", "50"))
@@ -94,9 +91,6 @@ def load_config() -> Config:
         email_smtp_password=email_smtp_password,
         max_papers_per_feed=max_papers_per_feed,
         min_relevance_score=min_relevance_score,
-        top_n_recommendations=top_n_recommendations,
-        email_min_score=email_min_score,
-        digest_enabled=digest_enabled,
         archive_dir=archive_dir,
         quarter_window_days=quarter_window_days,
         quarterly_top_n=quarterly_top_n,
@@ -120,12 +114,11 @@ def load_config() -> Config:
 
 def load_feeds(config_dir: str = "config") -> list[FeedConfig]:
     """
-    Load RSS feed configurations from YAML file.
+    Load RSS feed configurations from config/rss_sources.yaml.
 
-    Supports two schemas:
-      * legacy flat:  top-level ``feeds:`` list, each entry carries ``source``
-      * grouped:      top-level ``sources:`` dict (source → feeds); fields
-                      cascade ``defaults → source → feed``
+    Flat schema — each feed independently declares every field:
+      name / url / source / display_name / color /
+      max_items (recommendation cap) / min_score / update_frequency.
     FeedConfig objects carry no 'category' field — LLM assigns direction.
 
     Args:
@@ -143,45 +136,30 @@ def load_feeds(config_dir: str = "config") -> list[FeedConfig]:
     with open(feeds_path, "r", encoding="utf-8") as f:
         feeds_data = yaml.safe_load(f) or {}
 
-    defaults = feeds_data.get("defaults", {})
     feeds: list[FeedConfig] = []
-
-    if "feeds" in feeds_data:
-        # ── Legacy flat schema ──
-        for feed_data in feeds_data.get("feeds", []):
-            source = _parse_source(feed_data.get("source", ""))
-            feeds.append(
-                FeedConfig(
-                    name=feed_data["name"],
-                    url=feed_data["url"],
-                    source=source,
-                    display_name=feed_data.get("display_name"),
-                    color=feed_data.get("color"),
-                    max_items=feed_data.get("max_items", defaults.get("max_items", -1)),
-                    update_frequency=feed_data.get("update_frequency", defaults.get("update_frequency", {})),
-                )
+    for feed_data in feeds_data.get("feeds", []):
+        freq_raw = str(feed_data.get("update_frequency", "daily")).lower()
+        try:
+            freq = UpdateFrequency(freq_raw)
+        except ValueError:
+            logger.warning(
+                f"Invalid update_frequency '{freq_raw}' for '{feed_data.get('name')}' "
+                f"— using daily"
             )
-    else:
-        # ── Grouped schema: sources → feeds, cascade defaults → source → feed ──
-        for source_key, source_data in feeds_data.get("sources", {}).items():
-            source = _parse_source(source_key)
-            for feed_data in source_data.get("feeds", []):
-                feeds.append(
-                    FeedConfig(
-                        name=feed_data["name"],
-                        url=feed_data["url"],
-                        source=source,
-                        display_name=feed_data.get("display_name") or source_data.get("display_name"),
-                        color=feed_data.get("color") or source_data.get("color"),
-                        max_items=feed_data.get(
-                            "max_items",
-                            source_data.get("max_items", defaults.get("max_items", -1)),
-                        ),
-                        update_frequency=feed_data.get("update_frequency")
-                        or source_data.get("update_frequency")
-                        or defaults.get("update_frequency", {}),
-                    )
-                )
+            freq = UpdateFrequency.DAILY
+
+        feeds.append(
+            FeedConfig(
+                name=feed_data["name"],
+                url=feed_data["url"],
+                source=_parse_source(feed_data.get("source", "")),
+                display_name=feed_data.get("display_name"),
+                color=feed_data.get("color"),
+                max_items=feed_data.get("max_items", -1),
+                min_score=float(feed_data.get("min_score", 7.0)),
+                update_frequency=freq,
+            )
+        )
 
     return feeds
 
@@ -211,12 +189,27 @@ def load_sources(config_dir: str = "config") -> dict[str, SourceConfig]:
     with open(feeds_path, "r", encoding="utf-8") as f:
         feeds_data = yaml.safe_load(f) or {}
 
-    sources = {}
-    for source_key, source_data in feeds_data.get("sources", {}).items():
-        sources[source_key] = SourceConfig(
-            display_name=source_data.get("display_name", source_key),
-            color=source_data.get("color", "#757575"),
-        )
+    sources: dict[str, SourceConfig] = {}
+
+    # Prefer an explicit sources: block (legacy), else derive from feeds.
+    if feeds_data.get("sources"):
+        for source_key, source_data in feeds_data["sources"].items():
+            sources[source_key] = SourceConfig(
+                display_name=source_data.get("display_name", source_key),
+                color=source_data.get("color", "#757575"),
+            )
+    else:
+        for feed in feeds_data.get("feeds", []):
+            src = (feed.get("source") or "").lower()
+            if not src:
+                continue
+            sources.setdefault(
+                src,
+                SourceConfig(
+                    display_name=feed.get("display_name") or src,
+                    color=feed.get("color") or "#757575",
+                ),
+            )
 
     return sources
 
@@ -237,31 +230,3 @@ def load_research_directions(config_dir: str = "config") -> str:
 
     with open(directions_path, "r", encoding="utf-8") as f:
         return f.read()
-
-
-def load_digest_configs(config_dir: str = "config") -> list["DigestConfig"]:
-    """
-    Load email digest configurations from config/digests.yaml.
-
-    Returns:
-        List of DigestConfig objects. Empty list if digests.yaml does not exist
-        (in which case the legacy single daily email is used).
-    """
-    import yaml
-
-    from .models import DigestConfig
-
-    digests_path = Path(config_dir) / "digests.yaml"
-    if not digests_path.exists():
-        return []
-
-    with open(digests_path, "r", encoding="utf-8") as f:
-        data = yaml.safe_load(f) or {}
-
-    digests = []
-    for item in data.get("digests", []):
-        try:
-            digests.append(DigestConfig(**item))
-        except Exception as e:
-            logger.error(f"Invalid digest config entry: {e} — skipping")
-    return digests

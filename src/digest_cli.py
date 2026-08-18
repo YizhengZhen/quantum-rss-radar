@@ -1,10 +1,14 @@
-"""CLI to send or dry-run email digests manually (local testing / debugging).
+"""CLI to preview or send feed-digest emails manually (local testing / debugging).
+
+The email schedule is driven entirely by config/rss_sources.yaml: each feed's
+`update_frequency` decides whether it fires today, and feeds sharing the same
+frequency are merged into ONE email.
 
 Examples:
-  python -m src.digest_cli --send weekday_arxiv --dry-run
-  python -m src.digest_cli --all-due --dry-run
-  python -m src.digest_cli --all-due --dry-run --today 2026-08-16   # 周日
-  python -m src.digest_cli --send weekly_journals                    # 真实发送
+  python -m src.digest_cli --dry-run                        # 预览今天各频率组
+  python -m src.digest_cli --dry-run --today 2026-08-23     # 模拟周日 (weekly 组)
+  python -m src.digest_cli --freq weekly --dry-run          # 只看 weekly 组
+  python -m src.digest_cli                                  # 真实发送今天到期的邮件
 """
 
 import argparse
@@ -14,25 +18,30 @@ from datetime import datetime
 from pathlib import Path
 
 from . import history
-from .config_loader import load_config, load_digest_configs, load_feeds, load_sources
+from .config_loader import load_config, load_feeds, load_sources
 from .digest_engine import (
-    build_digest_email_html,
-    build_digest_email_text,
-    should_send_today,
+    _FREQUENCY_LABEL,
+    build_feed_email_html,
+    build_feed_email_text,
+    feed_is_due,
+    select_feed_records,
 )
 from .email_sender import _send_smtp
+from .models import UpdateFrequency
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Quantum RSS Radar digest sender")
-    parser.add_argument("--send", help="Digest id to send (e.g. weekday_arxiv)")
+    parser = argparse.ArgumentParser(
+        description="Quantum RSS Radar feed digest sender"
+    )
     parser.add_argument(
-        "--all-due", action="store_true", help="Handle all digests due today"
+        "--freq",
+        help="Only handle this frequency: daily|weekday|weekly|monthly|season",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Build emails but do NOT send; print subject and save HTML/TXT",
+        help="Build emails but do NOT send; save HTML/TXT to --out",
     )
     parser.add_argument("--today", help="Override today's date (YYYY-MM-DD)")
     parser.add_argument("--config-dir", default="config", help="Config directory")
@@ -49,17 +58,11 @@ def main():
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
-    logger = logging.getLogger(__name__)
 
     config = load_config()
     feeds = load_feeds(args.config_dir)
     sources = load_sources(args.config_dir)
     feed_configs = {f.name: f for f in feeds}
-    digests = load_digest_configs(args.config_dir)
-
-    if not digests:
-        print("No config/digests.yaml found — nothing to do.")
-        sys.exit(1)
 
     archive_dir = args.archive_dir or config.archive_dir
     records = history.load_jsonl_archive(archive_dir)
@@ -69,44 +72,56 @@ def main():
         else datetime.now().date()
     )
 
-    if args.send:
-        targets = [d for d in digests if d.id == args.send]
-    elif args.all_due:
-        targets = [d for d in digests if d.enabled and should_send_today(d, today)]
-    else:
-        targets = []
+    # Group feeds by update_frequency (feeds sharing a frequency merge into one email)
+    groups: dict[UpdateFrequency, list] = {}
+    for f in feeds:
+        groups.setdefault(f.update_frequency, []).append(f)
 
-    if not targets:
-        print(f"No digests selected (today={today}). Use --send <id> or --all-due.")
-        # Still list what would fire today for convenience
-        due = [d.id for d in digests if d.enabled and should_send_today(d, today)]
-        print(f"Digests due today: {due or 'none'}")
-        sys.exit(0)
+    if args.freq:
+        try:
+            only = UpdateFrequency(args.freq.lower())
+        except ValueError:
+            print(
+                f"Invalid --freq '{args.freq}'. "
+                "Valid: daily|weekday|weekly|monthly|season"
+            )
+            sys.exit(2)
+        groups = {freq: fs for freq, fs in groups.items() if freq == only}
 
     out_dir = Path(args.out)
-    for digest in targets:
-        selected = history.filter_by_digest(records, digest, today)
-        pairs = history.records_to_pairs(selected)
-        subject = digest.subject_template.format(
-            name=digest.name, date=today.strftime("%Y-%m-%d")
-        )
+    for freq, group_feeds in sorted(groups.items(), key=lambda x: x[0].value):
+        if not feed_is_due(group_feeds[0], today):
+            print(f"[{freq.value:8s}] not scheduled for {today} — skipped")
+            continue
 
-        print(
-            f"\n=== {digest.name} [{digest.id}] — due {today}, {len(pairs)} papers ==="
-        )
-        for i, (p, a) in enumerate(pairs, 1):
-            print(f"  {i}. [{a.relevance_score:.1f}] {p.title}  ({p.feed_name})")
+        sections = []
+        for feed in group_feeds:
+            selected = select_feed_records(records, feed, today)
+            pairs = history.records_to_pairs(selected)
+            print(
+                f"[{freq.value:8s}] {feed.name:36s} min={feed.min_score:4g} "
+                f"top={feed.max_items:>3} → {len(pairs)}"
+            )
+            if pairs:
+                sections.append((feed, pairs))
 
-        html = build_digest_email_html(digest, pairs, sources, config, feed_configs)
-        text = build_digest_email_text(digest, pairs, sources, feed_configs)
+        if not sections:
+            print(f"[{freq.value:8s}] due but no papers matched — skipped")
+            continue
+
+        label = _FREQUENCY_LABEL[freq]
+        subject = f"Quantum RSS Radar — {label} Digest ({today:%Y-%m-%d})"
+        html = build_feed_email_html(label, sections, sources, feed_configs, config, today)
+        text = build_feed_email_text(label, sections, sources, feed_configs, today)
+        total = sum(len(pairs) for _, pairs in sections)
+        print(f"  → {label} Digest: {total} papers | subject: {subject}")
 
         if args.dry_run:
             out_dir.mkdir(parents=True, exist_ok=True)
-            html_path = out_dir / f"{digest.id}.html"
-            txt_path = out_dir / f"{digest.id}.txt"
+            html_path = out_dir / f"{freq.value}.html"
+            txt_path = out_dir / f"{freq.value}.txt"
             html_path.write_text(html, encoding="utf-8")
             txt_path.write_text(text, encoding="utf-8")
-            print(f"  [dry-run] subject: {subject}")
             print(f"  [dry-run] saved: {html_path}  /  {txt_path}")
         else:
             ok = _send_smtp(subject, html, text, config)

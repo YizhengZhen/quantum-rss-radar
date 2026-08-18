@@ -47,8 +47,6 @@ LLM_MODEL="deepseek-chat"
 # ===== 处理控制 =====
 MAX_PAPERS_PER_FEED=50            # 每源最大论文数
 MIN_RELEVANCE_SCORE=5.0           # 最低评分（低于此不推荐）
-EMAIL_MIN_SCORE=7.0               # 邮件推送阈值
-TOP_N_RECOMMENDATIONS=10          # 邮件推荐数
 LLM_CACHE_ENABLED=true            # 是否启用缓存
 
 # ===== 邮件推送 =====
@@ -117,32 +115,40 @@ docker run --env-file .env quantum-rss-radar
 
 ## 6. RSS 源配置
 
-修改 `config/rss_sources.yaml` 添加/删除 RSS 源。配置按来源分组，字段层级继承 `defaults → source → feed`，只写与上级不同的字段即可：
+修改 `config/rss_sources.yaml` 添加/删除 RSS 源。每个 feed 独立声明全部字段（扁平结构）：
 
 ```yaml
-defaults:
-  max_items: -1                  # 默认不限量
-  update_frequency: { type: "daily" }
+feeds:
+  - name: "arXiv Physics"
+    url: "https://rss.arxiv.org/rss/quant-ph"
+    source: "arxiv"              # PaperSource 枚举有效值
+    display_name: "arXiv"        # 邮件/网站标签显示名
+    color: "#B31B1B"             # 标签色块
+    max_items: 10                 # 每次最多推荐几篇（-1 = 不限制）
+    min_score: 7.0                # 最低推荐分数 0-10
+    update_frequency: weekday     # daily | weekday | weekly | monthly | season
 
-sources:
-  arxiv:                         # 组名即 source，必须是 PaperSource 枚举有效值
-    display_name: "arXiv"       # 邮件/网站标签（默认 fallback 为组名）
-    color: "#B31B1B"
-    feeds:
-      - name: "arXiv Physics"
-        url: "https://rss.arxiv.org/rss/quant-ph"
-
-  nature:
-    display_name: "Nature"
+  - name: "Nature Physics"
+    url: "https://www.nature.com/nphys.rss"
+    source: "nature"
+    display_name: "Nature Physics"
     color: "#009688"
-    update_frequency: { type: "weekdays" }  # 覆盖 defaults
-    feeds:
-      - name: "Nature Physics"
-        url: "https://www.nature.com/nphys.rss"
-        display_name: "Nature Physics"      # 覆盖组级 display_name
+    max_items: 5
+    min_score: 7.5
+    update_frequency: monthly
 ```
 
-`source` 组名必须是 `PaperSource` 枚举的有效值：
+`update_frequency` 同时决定触发日期与邮件分组——相同频率的 feed 合并为一封邮件：
+
+| 值 | 触发 | 邮件 |
+|----|------|------|
+| `daily` | 每天 | Daily Digest |
+| `weekday` | 周一~周五 | Weekday Digest（例：arXiv 组） |
+| `weekly` | 每周日 | Weekly Digest（例：PRL / npj 等期刊组） |
+| `monthly` | 每月 1 号 | Monthly Digest（例：Nature / Science 组） |
+| `season` | 季度首日 | Seasonal Digest |
+
+`source` 必须是 `PaperSource` 枚举的有效值：
 `arxiv` | `nature` | `science` | `aps` | `ieee` | `acm` | `springer` | `other`
 
 ---

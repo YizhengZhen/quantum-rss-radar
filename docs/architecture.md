@@ -22,7 +22,7 @@ Step  7: filter_and_rank        ← 按评分排序
 Step  8: arxiv_deep_reader      ← 高评分论文下载 PDF 再分析
 Step  9: data_exporter          ← JSONL + MD 报告 + Jekyll + 季度视图(quarterly.json)
 Step 10: database               ← SQLite 持久化
-Step 11: digest_engine          ← 按 config/digests.yaml 发送多频率邮件（weekday/weekly/monthly/seasonal）
+Step 11: digest_engine          ← 按 rss_sources.yaml 的 update_frequency 判断哪些 feed 到期，相同频率合并为一封邮件
 ```
 
 ---
@@ -33,14 +33,14 @@ Step 11: digest_engine          ← 按 config/digests.yaml 发送多频率邮�
 scheduler
     ↓
 orchestrator_jekyll  (主协调器)
-    ├── config_loader        ← 读取 .env + config/ (含 digests.yaml)
+    ├── config_loader        ← 读取 .env + config/ (含 rss_sources.yaml)
     ├── rss_fetcher → normalizer → (arXiv DOI 富集) → deduplicate
     ├── semantic_analyzer    ← LLM 调用 + 缓存 (llm_cache.json)
     ├── arxiv_deep_reader    ← PDF 下载 + 全文分析 + DOI 富集
     ├── data_exporter        ← JSONL / MD / Jekyll _data/ + quarterly.json
     ├── history              ← JSONL 归档聚合（digest/季度共用）
     ├── database             ← SQLite 存储 (radar.db)
-    ├── digest_engine        ← 多频率邮件 (config/digests.yaml)
+    ├── digest_engine        ← per-feed 邮件（按 update_frequency 分组）
     └── email_sender         ← SMTP 发送 (_send_smtp)
 
 模块间仅通过 models.py dataclass 通信，无循环依赖。
@@ -50,7 +50,7 @@ orchestrator_jekyll  (主协调器)
 
 | 模块 | 文件 | 职责 |
 |------|------|------|
-| 配置加载 | `config_loader.py` | 读取 `.env` 环境变量 + `config/` 下 YAML/MD/参考论文 YAML/digests.yaml |
+| 配置加载 | `config_loader.py` | 读取 `.env` 环境变量 + `config/` 下 YAML/MD/参考论文 YAML/rss_sources.yaml |
 | RSS 采集 | `rss_fetcher.py` | 多线程抓取 RSS feed，提取 DOI，生成稳定 id（doi:/arx:） |
 | 标准化 | `normalizer.py` | 统一 author/date/source 格式 |
 | 去重 | `deduplicate.py` | 确定性 key 去重：doi → arxiv id → title hash，期刊版 canonical |
@@ -58,12 +58,12 @@ orchestrator_jekyll  (主协调器)
 | 深度阅读 | `arxiv_deep_reader.py` | 高评分论文下载 arXiv PDF 再分析；arXiv DOI 富集 |
 | 数据导出 | `data_exporter.py` | JSONL + Markdown 报告 + Jekyll `_data/papers.json` + 季度 `_data/quarterly.json` |
 | 历史聚合 | `history.py` | 读 JSONL 归档、合并去重、窗口过滤、preprint/publication 分类（digest/季度共用） |
-| 邮件引擎 | `digest_engine.py` | 日历判断 today 该发哪些 digest、构建/发送多频率邮件 |
-| 邮件发送 | `email_sender.py` | SMTP 发送（`_send_smtp` 供 daily 与 digest 复用）、两级排序 |
+| 邮件引擎 | `digest_engine.py` | 按 rss_sources.yaml 的 update_frequency 判断哪些 feed 今天到期，相同频率合并构建/发送一封邮件；每 feed 按 min_score/max_items 选文 |
+| 邮件发送 | `email_sender.py` | SMTP 发送（`_send_smtp` 供邮件引擎复用）、卡片渲染、两级排序 |
 | 数据库 | `database.py` | SQLite 持久化（`data/radar.db`），支持跨天查询 |
 | 标签管理 | `tag_manager.py` | 关键词自动累积、匹配、归类 |
 | 调度 | `scheduler.py` | 按 `update_frequency` 决定当天抓哪些 feed（CI 中因 fetch_history 不持久化而门控失效） |
-| 数据模型 | `models.py` | Paper / PaperAnalysis / Config / FeedConfig / DigestConfig 等 dataclass |
+| 数据模型 | `models.py` | Paper / PaperAnalysis / Config / FeedConfig / UpdateFrequency 等 dataclass |
 
 ---
 
@@ -76,8 +76,8 @@ quantum-rss-radar/
 ├── pyproject.toml / requirements.txt
 │
 ├── src/                          # Python 源码
-│   ├── orchestrator_jekyll.py    # 主协调器（11 步流程）
-│   ├── config_loader.py          # 配置加载（含 digests.yaml 读取）
+│   ├── orchestrator_jekyll.py    # 主协调器（12 步流程）
+│   ├── config_loader.py          # 配置加载（rss_sources.yaml + 环境变量）
 │   ├── rss_fetcher.py            # RSS 采集（DOI 提取）
 │   ├── normalizer.py             # 标准化
 │   ├── deduplicate.py            # DOI 优先的确定性去重
@@ -85,8 +85,8 @@ quantum-rss-radar/
 │   ├── arxiv_deep_reader.py      # PDF 深度阅读 + arXiv DOI 富集
 │   ├── data_exporter.py          # 数据导出（含季度视图）
 │   ├── history.py                # JSONL 归档聚合（digest/季度共用）
-│   ├── digest_engine.py          # 多频率邮件引擎
-│   ├── digest_cli.py             # digest 手动发送/预览 CLI
+│   ├── digest_engine.py          # per-feed 邮件引擎（update_frequency 分组）
+│   ├── digest_cli.py             # 邮件预览/发送 CLI
 │   ├── email_sender.py           # 邮件发送（_send_smtp 复用）
 │   ├── database.py               # SQLite 存储
 │   ├── tag_manager.py            # 标签管理
@@ -94,8 +94,7 @@ quantum-rss-radar/
 │   └── scheduler.py              # 调度
 │
 ├── config/
-│   ├── rss_sources.yaml          # RSS 源定义
-│   ├── digests.yaml              # 多频率邮件（weekday/weekly/monthly/seasonal）定义
+│   ├── rss_sources.yaml          # RSS 源定义（含每 feed 的 min_score/max_items/update_frequency）
 │   ├── research_directions.md    # 研究方向（按需修改，三层分级结构）
 │   └── ref_*.yaml                # 参考论文（few-shot 校准，可选）
 │
@@ -158,17 +157,16 @@ PaperAnalysis
 
 Config
   ├── llm_api_key / llm_model / llm_provider / llm_base_url
-  ├── max_papers_per_feed / min_relevance_score / email_min_score
+  ├── max_papers_per_feed / min_relevance_score
   ├── email_enabled / email_smtp_*
-  ├── digest_enabled / archive_dir / quarter_window_days / quarterly_top_n
+  ├── archive_dir / quarter_window_days / quarterly_top_n
   └── llm_cache_enabled
 
-DigestConfig（config/digests.yaml）
-  ├── id / name / frequency      # weekday / weekly / monthly / seasonal
-  ├── schedule                   # { weekday } 或 { day_of_month }
-  ├── include                    # all | arxiv | published
-  ├── feed_filter / source_filter
-  ├── window_days / min_score / max_papers
+FeedConfig（config/rss_sources.yaml，扁平列表）
+  ├── name / url / source       # PaperSource 枚举
+  ├── display_name / color      # 邮件/网站标签
+  ├── max_items / min_score     # 每 feed 推荐上限 / 门槛
+  └── update_frequency          # daily / weekday / weekly / monthly / season（邮件分组依据）
   └── subject_template / enabled
 ```
 
@@ -216,11 +214,11 @@ DigestConfig（config/digests.yaml）
 - 表：`papers`（论文 + 分析）、`pipeline_runs`（运行记录）
 - 保留历史数据，支持跨天回溯查询
 
-### 5.7 归档聚合与多频率邮件（digest）
+### 5.7 归档聚合与按源邮件（feed digest）
 
 - **CI 中 `data/` 不持久化**，`radar.db` 每次全新 → 周/月/季聚合必须基于推送到 `data` 分支的 **JSONL 归档**（保留 6 个月）
 - workflow 在跑 pipeline 前先 `git archive origin/data data/all | tar -x` 拉取历史归档
 - `history.py` 负责归档合并（按 id + DOI 去重）、窗口过滤（arXiv→`rss_fetch_date`，非 arXiv→`published_date`）、preprint/publication 分类（仅 `source==arxiv` → preprint）
-- `digest_engine.py` 按 `config/digests.yaml` 在单条每日 workflow 内做日历判断（方案 A）：weekday 周一~五 / weekly 周日 / monthly 1 号 / seasonal 季度首日；weekday 只推 arXiv，weekly/monthly/seasonal 只含期刊（邮件不冲突）
+- `digest_engine.py` 按 `config/rss_sources.yaml` 的 `update_frequency` 在单条每日 workflow 内做日历判断（`feed_is_due`）：**相同频率的 feed 合并为一封邮件**（weekday→arXiv / weekly→期刊 / monthly→Nature+Science / season→季度）；每 feed 按 `min_score` + `max_items` 选文
 - 网站「Quarterly Best」页用同一归档生成最近一个季度的 Preprints / Publications 高分榜单（`jekyll_site/_data/quarterly.json`），与邮件内容剥离
 - JSONL 仍作为 Jekyll 网站数据源保留
