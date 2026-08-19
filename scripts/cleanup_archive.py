@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 def iter_records(archive_dir: Path):
     """Yield (filename, record) for every line of every data_*.jsonl."""
-    for f in sorted(archive_dir.glob("data_*.jsonl")):
+    for f in sorted(archive_dir.glob("**/data_*.jsonl")):
         try:
             with open(f, "r", encoding="utf-8") as fh:
                 for line in fh:
@@ -135,7 +135,7 @@ def rewrite(archive_dir: Path, backup_dir: Path, remap_cache: bool, rebuild_db: 
     total_before = 0
     total_after = 0
 
-    for f in sorted(archive_dir.glob("data_*.jsonl")):
+    for f in sorted(archive_dir.glob("**/data_*.jsonl")):
         if f.name.startswith("data_clean_"):
             continue
         recs = load_file_records(f)
@@ -308,7 +308,7 @@ def backfill_arxiv_versions(archive_dir: Path, batch_size: int = 100) -> int:
     print(f"  [backfill] resolved {len(id_map)}/{len(ordered)}")
 
     updated = 0
-    for f in archive_dir.glob("data_*.jsonl"):
+    for f in archive_dir.glob("**/data_*.jsonl"):
         recs = load_file_records(f)
         changed = False
         for r in recs:

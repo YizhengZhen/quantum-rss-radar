@@ -111,7 +111,7 @@ python -m src.orchestrator_jekyll --test   # Test mode (10 papers)
 
 | Content | Path |
 |---------|------|
-| JSONL full data | `data/all/data_*.jsonl` |
+| JSONL full data | `data/all/<source>/data_*.jsonl` (per source per run) |
 | MD report (sorted by score) | `data/reports/report_*.md` |
 | Jekyll website data | `jekyll_site/_data/papers.json` |
 | SQLite history database | `data/radar.db` |

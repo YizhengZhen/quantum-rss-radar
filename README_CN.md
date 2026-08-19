@@ -110,7 +110,7 @@ python -m src.orchestrator_jekyll --test   # 测试模式（10 篇）
 
 | 内容 | 路径 |
 |------|------|
-| JSONL 全量数据 | `data/all/data_*.jsonl` |
+| JSONL 全量数据 | `data/all/<source>/data_*.jsonl`（按源、按 run） |
 | MD 报告（按评分排序） | `data/reports/report_*.md` |
 | Jekyll 网站数据 | `jekyll_site/_data/papers.json` |
 | SQLite 历史数据库 | `data/radar.db` |

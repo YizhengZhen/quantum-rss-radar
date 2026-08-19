@@ -127,11 +127,23 @@ def parse_arxiv_entry(entry, feed_name: str) -> Paper | None:
         abstract = entry.get("summary", "").strip()
         link = entry.get("link", "").strip()
 
-        # Parse publication date
+        # Parse publication date. arXiv RSS 'published' is RFC-822 style
+        # ("Tue, 18 Aug 2026 18:00:00 GMT"), which fromisoformat cannot parse;
+        # feedparser also exposes the parsed struct via published_parsed.
+        published = None
         published_str = entry.get("published", entry.get("updated", ""))
         try:
             published = datetime.fromisoformat(published_str.replace("Z", "+00:00"))
         except (ValueError, TypeError):
+            pass
+        if published is None and entry.get("published_parsed"):
+            import time as _time
+
+            try:
+                published = datetime.fromtimestamp(_time.mktime(entry.published_parsed))
+            except (ValueError, TypeError, OverflowError):
+                published = None
+        if published is None:
             published = datetime.now()
 
         # arXiv ID WITH version suffix → stable dedup-friendly ID.
@@ -258,7 +270,13 @@ def fetch_feed(feed: FeedConfig, max_items: int = 50) -> list[Paper]:
             logger.warning(f"Feed parsing warning: {parsed.bozo_exception}")
 
         papers = []
-        entries = parsed.entries[:max_items]
+        # -1 / None = unlimited; otherwise take the first max_items entries.
+        # (list[:-1] would silently DROP the last entry, not mean unlimited.)
+        entries = (
+            parsed.entries
+            if max_items is None or max_items < 0
+            else parsed.entries[:max_items]
+        )
 
         for entry in entries:
             if feed.source == PaperSource.ARXIV:
@@ -314,41 +332,41 @@ def save_raw_feed(papers: list[Paper], output_dir: str, feed_name: str):
 
 
 def fetch_all_feeds(
-    feeds: list[FeedConfig], config, use_scheduler: bool = True
+    feeds: list[FeedConfig], config, use_schedule: bool = True, today=None
 ) -> list[Paper]:
     """
-    Fetch papers from all configured RSS feeds with optional scheduling.
+    Fetch papers from all configured RSS feeds, gated by each feed's own
+    update_frequency (per-source scheduled fetching — only feeds due today).
 
     Args:
         feeds: List of FeedConfig objects
         config: System configuration
-        use_scheduler: Whether to use feed scheduler (default: True)
+        use_schedule: Whether to apply per-source scheduled fetching (default: True)
+        today: Override today's date (for testing)
 
     Returns:
-        List of all Paper objects from all feeds
+        List of all Paper objects from the feeds fetched today
     """
-    from .scheduler import get_scheduler
+    from datetime import datetime
 
     all_papers = []
 
-    # Filter feeds using scheduler if enabled
+    # Per-source schedule: fetch only feeds whose update_frequency fires today.
     feeds_to_fetch = feeds
-    if use_scheduler:
-        scheduler = get_scheduler()
-        feeds_to_fetch = scheduler.filter_feeds_to_fetch(feeds)
+    if use_schedule:
+        today = today or datetime.now().date()
+        if isinstance(today, datetime):
+            today = today.date()
+        feeds_to_fetch = [f for f in feeds if f.is_due(today)]
         logger.info(
-            f"Using scheduler: {len(feeds_to_fetch)} of {len(feeds)} feeds to fetch today"
+            f"Per-source schedule: {len(feeds_to_fetch)} of {len(feeds)} feeds due today"
         )
 
     for feed in feeds_to_fetch:
         papers = fetch_feed(feed, config.max_papers_per_feed)
 
-        # Save raw data
+        # Save raw data (debugging / audit trail)
         save_raw_feed(papers, config.output_dir, feed.name)
-
-        # Record fetch in scheduler
-        if use_scheduler:
-            scheduler.record_fetch(feed.name, len(papers))
 
         all_papers.extend(papers)
 
@@ -356,13 +374,4 @@ def fetch_all_feeds(
         time.sleep(1)
 
     logger.info(f"Total papers fetched: {len(all_papers)}")
-
-    # Log scheduler stats
-    if use_scheduler and feeds_to_fetch:
-        scheduler = get_scheduler()
-        stats = scheduler.get_stats()
-        logger.info(
-            f"Scheduler stats: {stats['total_fetches']} total fetches, {stats['total_papers']} total papers"
-        )
-
     return all_papers

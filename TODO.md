@@ -219,7 +219,7 @@ Phase A（history 归档）→ Phase B（DOI 去重）→ Phase C（digests.yaml
 | 邮件两级排序 | 一级：arXiv → Nature → Science → APS → Other；二级：分数降序 |
 | Data 分支归档 | JSONL + Markdown 报告自动存档 |
 | OneDrive 上传 | 通过 rclone 上传报告 |
-| GitHub Actions | 每日北京时间 10:00 定时运行 |
+| GitHub Actions | 每日北京时间 14:00 定时运行（在 arXiv 美国午夜刷新后） |
 | 数据探查脚本 | `scripts/inspect_results.py` — 历史评分分布分析 |
 | A/B 对比脚本 | `scripts/rerun_analysis.py` — 新配置效果验证 |
 | research_directions v2 | 三层分级 + 评分精度要求 + 方向重叠规则（5,900+ chars）|

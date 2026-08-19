@@ -31,9 +31,7 @@ from .models import UpdateFrequency
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Quantum RSS Radar feed digest sender"
-    )
+    parser = argparse.ArgumentParser(description="Quantum RSS Radar feed digest sender")
     parser.add_argument(
         "--freq",
         help="Only handle this frequency: daily|weekday|weekly|monthly|season",
@@ -111,7 +109,9 @@ def main():
 
         label = _FREQUENCY_LABEL[freq]
         subject = f"Quantum RSS Radar — {label} Digest ({today:%Y-%m-%d})"
-        html = build_feed_email_html(label, sections, sources, feed_configs, config, today)
+        html = build_feed_email_html(
+            label, sections, sources, feed_configs, config, today
+        )
         text = build_feed_email_text(label, sections, sources, feed_configs, today)
         total = sum(len(pairs) for _, pairs in sections)
         print(f"  → {label} Digest: {total} papers | subject: {subject}")

@@ -36,9 +36,9 @@ def compute_paper_key(paper: Paper) -> str:
     published-namespaced title hash.
     """
     if paper.source == PaperSource.ARXIV:
-        arx = (paper.raw_data or {}).get("arxiv_id", "") or extract_arxiv_id_keep_version(
-            paper.link
-        )
+        arx = (paper.raw_data or {}).get(
+            "arxiv_id", ""
+        ) or extract_arxiv_id_keep_version(paper.link)
         if arx:
             return f"arx:{arx}"
         norm_title = " ".join(paper.title.lower().split())

@@ -13,7 +13,7 @@ Quantum RSS Radar 是一个 AI 论文追踪系统：
 1. 抓取 21 个 RSS 源（arXiv×3、Nature×5、Science×2、APS×8、Quantum、NJP、ROPP、PNAS、JMP、IEEE 等）
 2. LLM 按 `config/research_directions.md` 对每篇论文 0–10 打分并生成结构化摘要
 3. 产出：每日 JSONL（`data/all/`）、MD 报告（`data/reports/`）、Jekyll 网站（`jekyll_site/_data/papers.json`）、可选每日邮件
-4. GitHub Actions 每日 10:00（北京时间）自动运行
+4. GitHub Actions 每日 14:00（北京时间）自动运行（在 arXiv 美国午夜刷新后，抓当天数据）
 
 ### 1.1 与本次需求相关的现状要点
 

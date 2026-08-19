@@ -4,6 +4,23 @@
 
 ---
 
+## 2026-08-19 — Per-source archive layout + per-source scheduled fetching
+
+**Branch:** `feature/email-digests-quarterly-web` · **Data:** `data` branch migrated & pushed (`7b28512`)
+
+- **Archive layout** `data/all/data_*.jsonl` (flat) → `data/all/<source>/data_*.jsonl` (one file per source per run)
+  - `data_exporter.export_jsonl` writes per-source files; `export_all` returns a list of paths
+  - `history.load_jsonl_archive` reads recursively (`**/data_*.jsonl`) and sorts by run timestamp so the newest run wins regardless of source dir
+  - `copy_to_jekyll_site` / `scripts/rerun_analysis.py` find the latest JSONL recursively
+  - `scripts/cleanup_archive.py` globs are recursive
+  - New `scripts/migrate_archive_layout.py` splits flat files into per-source files (idempotent); applied to the full archive (96 flat → 305 per-source files) and pushed to the `data` branch
+- **Per-source scheduled fetching**: `rss_fetcher.fetch_all_feeds` now fetches only feeds whose `update_frequency` fires today (`feed.is_due(today)`) — replaces the (ineffective) scheduler gating
+  - `FeedConfig.is_due()` / `FeedConfig.window_days()` added to `models.py`; `digest_engine.feed_is_due`/`resolve_feed_window_days` delegate to them (fetch and email share one scheduling source of truth)
+- CI `daily-pipeline.yaml` updated for the per-source tree (fetch count, upload glob, push staging `cp -r`, retention `find`, latest JSONL lookup)
+- Historical flat archive backed up to `data/all_flat_bak/` (gitignored; safe to delete once confident)
+
+---
+
 ## 2026-08-18 — Per-feed digest model (digests.yaml removed; rss_sources.yaml drives emails)
 
 **Branch:** `feature/email-digests-quarterly-web`

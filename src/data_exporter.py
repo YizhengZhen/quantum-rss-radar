@@ -1,7 +1,7 @@
 """
 Data exporter for the Quantum RSS Radar system.
 Outputs:
-  1. data/all/data_YYYY-MM-DD_HHMMSS.jsonl  ← each line = 1 paper with ALL fields
+  1. data/all/<source>/data_YYYY-MM-DD_HHMMSS.jsonl  ← one file per source per run, each line = 1 paper with ALL fields
   2. data/reports/report_YYYY-MM-DD_HHMMSS.md             ← all papers sorted by score desc, human‑readable
   3. jekyll_site/_data/papers.json                        ← latest data for Jekyll compilation
 
@@ -14,6 +14,7 @@ Licensed under the MIT License
 
 import json
 import logging
+import re
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -90,12 +91,13 @@ class DataExporter:
         sources: dict[str, SourceConfig],
         timestamp: datetime | None = None,
         feed_configs: dict[str, FeedConfig] | None = None,
-    ) -> Path:
+    ) -> list[Path]:
         """
-        Export **all** papers to a JSONL file under data/all/.
+        Export **all** papers to per-source JSONL files under data/all/<source>/.
 
-        Every line is a complete JSON object containing the original paper
-        metadata *and* the AI analysis fields (score, recommendation, tldr, …).
+        One file per source per run (data_all/<source>/data_<ts>.jsonl); each
+        line is a complete JSON object containing the original paper metadata
+        *and* the AI analysis fields (score, recommendation, tldr, …).
 
         Args:
             papers_with_analyses: List of (paper, analysis) tuples
@@ -103,32 +105,40 @@ class DataExporter:
             timestamp: Datetime used for the filename.  Defaults to now.
 
         Returns:
-            Path to the created JSONL file
+            List of written JSONL paths (one per source that had papers).
         """
         if timestamp is None:
             timestamp = datetime.now()
         ts = timestamp.strftime("%Y-%m-%d_%H%M%S")
-        output_dir = self.base_output_dir / "all"
-        output_path = output_dir / f"data_{ts}.jsonl"
+        base_dir = self.base_output_dir / "all"
 
-        # Sort by score descending first
-        sorted_pairs = sorted(
-            papers_with_analyses,
-            key=lambda x: x[1].relevance_score,
-            reverse=True,
-        )
+        # Group by source; sort each group by score descending
+        by_source: dict[str, list[tuple[Paper, PaperAnalysis]]] = {}
+        for paper, analysis in papers_with_analyses:
+            by_source.setdefault(paper.source.value, []).append((paper, analysis))
 
         written = 0
-        with open(output_path, "w", encoding="utf-8") as f:
-            for paper, analysis in sorted_pairs:
-                record = self._paper_to_flat_dict(
-                    paper, analysis, sources, timestamp, feed_configs
-                )
-                f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
-                written += 1
+        paths: list[Path] = []
+        for source_key in sorted(by_source):
+            group = sorted(
+                by_source[source_key],
+                key=lambda x: x[1].relevance_score,
+                reverse=True,
+            )
+            src_dir = base_dir / source_key
+            src_dir.mkdir(parents=True, exist_ok=True)
+            out_path = src_dir / f"data_{ts}.jsonl"
+            with open(out_path, "w", encoding="utf-8") as f:
+                for paper, analysis in group:
+                    record = self._paper_to_flat_dict(
+                        paper, analysis, sources, timestamp, feed_configs
+                    )
+                    f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+                    written += 1
+            paths.append(out_path)
 
-        logger.info(f"Exported {written} papers to JSONL: {output_path}")
-        return output_path
+        logger.info(f"Exported {written} papers to {len(paths)} per-source JSONL files")
+        return paths
 
     # ──────────────────────────────────────────────
     #  2. Markdown — all papers, score‑sorted, human‑readable
@@ -247,16 +257,20 @@ class DataExporter:
             logger.warning(f"Jekyll site directory not found: {jekyll_site_path}")
             return
 
-        # Find the latest JSONL
+        # Find the latest JSONL across per-source subdirectories (recursive)
         all_dir = self.base_output_dir / "all"
-        jsonl_files = sorted(all_dir.glob("data_*.jsonl"), reverse=True)
+        jsonl_files = list(all_dir.glob("**/data_*.jsonl"))
         if not jsonl_files:
             logger.warning(
                 "No JSONL files found under data/all/, cannot copy to Jekyll"
             )
             return
 
-        latest_jsonl = jsonl_files[0]
+        def _ts(p: Path) -> str:
+            m = re.search(r"data_(\d{4}-\d{2}-\d{2}_\d{6})", p.name)
+            return m.group(1) if m else ""
+
+        latest_jsonl = max(jsonl_files, key=_ts)
 
         # Read all lines
         records: list[dict[str, Any]] = []
@@ -480,7 +494,7 @@ class DataExporter:
         if timestamp is None:
             timestamp = datetime.now()
 
-        jsonl_path = self.export_jsonl(
+        jsonl_paths = self.export_jsonl(
             papers_with_analyses, sources, timestamp, feed_configs
         )
         md_path = self.export_markdown(
@@ -488,4 +502,7 @@ class DataExporter:
         )
         self.copy_to_jekyll_site()
 
-        return {"jsonl": str(jsonl_path), "markdown": str(md_path)}
+        return {
+            "jsonl": [str(p) for p in jsonl_paths],
+            "markdown": str(md_path),
+        }

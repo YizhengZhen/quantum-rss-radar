@@ -12,7 +12,7 @@ from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from .models import Config, FeedConfig, Paper, PaperAnalysis, PaperSource, SourceConfig
+from .models import Config, FeedConfig, Paper, PaperAnalysis, SourceConfig
 
 logger = logging.getLogger(__name__)
 

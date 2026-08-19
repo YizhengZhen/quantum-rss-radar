@@ -40,38 +40,12 @@ _FREQUENCY_LABEL = {
 
 def feed_is_due(feed: FeedConfig, today=None) -> bool:
     """Whether a feed's update_frequency fires on `today`."""
-    today = today or datetime.now().date()
-    freq = feed.update_frequency
-    if freq == UpdateFrequency.DAILY:
-        return True
-    if freq == UpdateFrequency.WEEKDAY:
-        return today.weekday() < 5  # Mon–Fri
-    if freq == UpdateFrequency.WEEKLY:
-        return today.weekday() == 6  # Sunday (weekend roundup)
-    if freq == UpdateFrequency.MONTHLY:
-        return today.day == 1
-    if freq == UpdateFrequency.SEASON:
-        return today.month % 3 == 1 and today.day == 1  # quarter start
-    return False
+    return feed.is_due(today)
 
 
 def resolve_feed_window_days(feed: FeedConfig, today=None) -> int:
-    """Window (days) from which to collect a feed's papers.
-
-    * weekday: Monday covers Fri–Sun (3d), other weekdays 1d
-    * weekly → 7d, monthly → 30d, season → 90d, daily → 1d
-    """
-    today = today or datetime.now().date()
-    freq = feed.update_frequency
-    if freq == UpdateFrequency.WEEKDAY:
-        return 3 if today.weekday() == 0 else 1
-    if freq == UpdateFrequency.WEEKLY:
-        return 7
-    if freq == UpdateFrequency.MONTHLY:
-        return 30
-    if freq == UpdateFrequency.SEASON:
-        return 90
-    return 1
+    """Window (days) from which to collect a feed's papers."""
+    return feed.window_days(today)
 
 
 def select_feed_records(
@@ -102,7 +76,7 @@ def _feed_header_html(feed: FeedConfig, count: int) -> str:
         f' background:#f8f9fa; border-radius:4px;">'
         f'<h3 style="margin:0; font-size:16px; color:{color};">{label}</h3>'
         f'<span style="color:#6C757D; font-size:12px;">{count} papers · '
-        f'min score {feed.min_score:g} · top {feed.max_items}</span>'
+        f"min score {feed.min_score:g} · top {feed.max_items}</span>"
         f"</div>"
     )
 

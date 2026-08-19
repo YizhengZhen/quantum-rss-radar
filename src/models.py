@@ -292,6 +292,48 @@ class FeedConfig(BaseModel):
         UpdateFrequency.DAILY, description="How often this feed fires (email group)"
     )
 
+    def is_due(self, today=None) -> bool:
+        """Whether this feed fires on `today` (per its update_frequency).
+
+        Shared by per-source scheduled fetching (rss_fetcher) and the email
+        engine (digest_engine).
+        """
+        today = today or datetime.now().date()
+        if isinstance(today, datetime):
+            today = today.date()
+        freq = self.update_frequency
+        if freq == UpdateFrequency.DAILY:
+            return True
+        if freq == UpdateFrequency.WEEKDAY:
+            return today.weekday() < 5  # Mon–Fri
+        if freq == UpdateFrequency.WEEKLY:
+            return today.weekday() == 6  # Sunday (weekend roundup)
+        if freq == UpdateFrequency.MONTHLY:
+            return today.day == 1
+        if freq == UpdateFrequency.SEASON:
+            return today.month % 3 == 1 and today.day == 1  # quarter start
+        return False
+
+    def window_days(self, today=None) -> int:
+        """Collection window (days) derived from this feed's frequency.
+
+        * weekday: Monday covers Fri–Sun (3d), other weekdays 1d
+        * weekly → 7d, monthly → 30d, season → 90d, daily → 1d
+        """
+        today = today or datetime.now().date()
+        if isinstance(today, datetime):
+            today = today.date()
+        freq = self.update_frequency
+        if freq == UpdateFrequency.WEEKDAY:
+            return 3 if today.weekday() == 0 else 1
+        if freq == UpdateFrequency.WEEKLY:
+            return 7
+        if freq == UpdateFrequency.MONTHLY:
+            return 30
+        if freq == UpdateFrequency.SEASON:
+            return 90
+        return 1
+
 
 class SourceConfig(BaseModel):
     """Configuration for a paper source (displayed on website)."""

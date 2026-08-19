@@ -75,7 +75,7 @@ uv run python scripts/inspect_results.py
 uv run python scripts/rerun_analysis.py --sample 20
 
 # 对指定 JSONL 文件运行分析
-uv run python scripts/rerun_analysis.py data/all/data_2026-06-05_084953.jsonl --sample 50
+uv run python scripts/rerun_analysis.py data/all/aps/data_2026-06-05_084953.jsonl --sample 50
 
 # 仅查看统计（不调用 LLM）
 uv run python scripts/rerun_analysis.py --dry-run
@@ -100,7 +100,7 @@ docker run --env-file .env quantum-rss-radar
 
 ## 5. GitHub Actions 自动化
 
-`.github/workflows/daily_run.yml` 每日北京时间 10:00 自动执行完整 pipeline。
+`.github/workflows/daily-pipeline.yaml` 每日北京时间 14:00（UTC 06:00）自动执行完整 pipeline——在 arXiv 每日美国午夜刷新（约北京 12:00）之后运行，确保中国大陆当天即可抓到当天数据。
 
 所需 Secrets（在 GitHub repo → Settings → Secrets → Actions 中配置）：
 

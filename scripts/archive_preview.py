@@ -15,8 +15,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.config_loader import load_config, load_feeds
 from src import history
+from src.config_loader import load_config, load_feeds
 from src.digest_engine import feed_is_due, select_feed_records
 
 
@@ -41,9 +41,7 @@ def main():
     print(f"\nArchive: {len(records)} merged records (dir={archive_dir})")
 
     pre = sum(
-        1
-        for r in records
-        if history.classify_preprint_publication(r) == "preprint"
+        1 for r in records if history.classify_preprint_publication(r) == "preprint"
     )
     pub = len(records) - pre
     print(f"  preprints: {pre}   publications: {pub}")

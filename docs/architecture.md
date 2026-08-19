@@ -217,7 +217,9 @@ FeedConfig（config/rss_sources.yaml，扁平列表）
 ### 5.7 归档聚合与按源邮件（feed digest）
 
 - **CI 中 `data/` 不持久化**，`radar.db` 每次全新 → 周/月/季聚合必须基于推送到 `data` 分支的 **JSONL 归档**（保留 6 个月）
-- workflow 在跑 pipeline 前先 `git archive origin/data data/all | tar -x` 拉取历史归档
+- 归档按源分目录：`data/all/<source>/data_YYYY-MM-DD_HHMMSS.jsonl`（每源每 run 一个文件）；`history.load_jsonl_archive` 递归读取并按运行时间戳合并（id + DOI 去重）
+- workflow 在跑 pipeline 前先 `git archive origin/data data/all | tar -x` 拉取历史归档（递归树）
+- **按源调度抓取**：`rss_fetcher.fetch_all_feeds` 只抓 `feed.is_due(today)`（`update_frequency` 决定）的 feed，与邮件调度共用 `FeedConfig.is_due()`
 - `history.py` 负责归档合并（按 id + DOI 去重）、窗口过滤（arXiv→`rss_fetch_date`，非 arXiv→`published_date`）、preprint/publication 分类（仅 `source==arxiv` → preprint）
 - `digest_engine.py` 按 `config/rss_sources.yaml` 的 `update_frequency` 在单条每日 workflow 内做日历判断（`feed_is_due`）：**相同频率的 feed 合并为一封邮件**（weekday→arXiv / weekly→期刊 / monthly→Nature+Science / season→季度）；每 feed 按 `min_score` + `max_items` 选文
 - 网站「Quarterly Best」页用同一归档生成最近一个季度的 Preprints / Publications 高分榜单（`jekyll_site/_data/quarterly.json`），与邮件内容剥离

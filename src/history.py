@@ -89,10 +89,20 @@ def load_jsonl_archive(archive_dir: str = "data/all") -> list[dict[str, Any]]:
         logger.warning(f"Archive directory not found: {archive_path}")
         return []
 
-    files = sorted(archive_path.glob("data_*.jsonl"))
+    files = list(archive_path.glob("**/data_*.jsonl"))
     if not files:
         logger.warning(f"No data_*.jsonl found in archive: {archive_path}")
         return []
+
+    # Sort by the run timestamp embedded in the filename (data_<ts>.jsonl) so
+    # the newest run wins on id collision regardless of source subdirectory.
+    import re as _re
+
+    def _run_ts(p: Path) -> str:
+        m = _re.search(r"data_(\d{4}-\d{2}-\d{2}_\d{6})", p.name)
+        return m.group(1) if m else p.name
+
+    files.sort(key=_run_ts)
 
     by_id: dict[str, dict[str, Any]] = {}
     for f in files:
@@ -155,13 +165,16 @@ def _merge_by_doi(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
         merged.append(_pick_best(group))
     return merged
 
+
 # ── Re-keying & canonical merge (used by historical archive cleanup) ──
+
 
 def _doi_from_link(link: str) -> str:
     """Extract a raw DOI from a link, if present."""
     if not link:
         return ""
     import re
+
     m = re.search(r"(10\.\d{4,9}/[^\s&?#]+)", link, re.IGNORECASE)
     return m.group(1) if m else ""
 
@@ -177,6 +190,8 @@ def compute_record_key(record: Dict[str, Any]) -> str:
 
     from .rss_fetcher import (
         extract_arxiv_id_keep_version as _exv,
+    )
+    from .rss_fetcher import (
         normalize_doi as _norm,
     )
 
@@ -201,9 +216,19 @@ def compute_record_key(record: Dict[str, Any]) -> str:
 
 
 _ANALYSIS_FIELDS = [
-    "score", "recommended", "direction", "tldr", "motivation", "method",
-    "result", "conclusion", "keywords", "analysis_timestamp", "deep_read",
-    "abstract", "authors",
+    "score",
+    "recommended",
+    "direction",
+    "tldr",
+    "motivation",
+    "method",
+    "result",
+    "conclusion",
+    "keywords",
+    "analysis_timestamp",
+    "deep_read",
+    "abstract",
+    "authors",
 ]
 
 
@@ -213,6 +238,7 @@ def canonical_record(group: List[Dict[str, Any]]) -> Dict[str, Any]:
     Identity (source / link / doi) prefers the journal version; the analysis
     content (score, summary, …) comes from the newest analysis in the group.
     """
+
     def is_journal(r):
         return (r.get("source") or "").lower() != "arxiv"
 
@@ -231,7 +257,11 @@ def canonical_record(group: List[Dict[str, Any]]) -> Dict[str, Any]:
     for member in group:
         if member is best_id:
             continue
-        if is_journal(best_id) and not is_journal(member) and not out.get("alternate_link"):
+        if (
+            is_journal(best_id)
+            and not is_journal(member)
+            and not out.get("alternate_link")
+        ):
             if "arxiv.org" in (member.get("link") or ""):
                 out["alternate_link"] = member.get("link")
         if not out.get("doi") and member.get("doi"):
@@ -252,6 +282,7 @@ def canonical_record(group: List[Dict[str, Any]]) -> Dict[str, Any]:
 
     out["id"] = compute_record_key(out)
     return out
+
 
 # ── Filtering ────────────────────────────────────────────────
 
