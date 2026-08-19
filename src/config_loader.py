@@ -75,6 +75,7 @@ def load_config() -> Config:
     rss_timeout = int(os.getenv("RSS_TIMEOUT", "30"))
     llm_timeout = int(os.getenv("LLM_TIMEOUT", "60"))
     llm_temperature = float(os.getenv("LLM_TEMPERATURE", "0.1"))
+    llm_max_tokens = int(os.getenv("LLM_MAX_TOKENS", "2500"))
     debug = os.getenv("DEBUG", "false").lower() == "true"
 
     config = Config(
@@ -102,6 +103,7 @@ def load_config() -> Config:
     config._rss_timeout = rss_timeout
     config._llm_timeout = llm_timeout
     config._llm_temperature = llm_temperature
+    config._llm_max_tokens = llm_max_tokens
     config._debug = debug
     config._jekyll_site_dir = "jekyll_site/_site"
     config._deep_read_enabled = os.getenv("DEEP_READ_ENABLED", "true").lower() == "true"

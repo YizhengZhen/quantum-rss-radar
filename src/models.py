@@ -206,6 +206,7 @@ class Config(BaseModel):
         self._rss_timeout = 30
         self._llm_timeout = 60
         self._llm_temperature = 0.1
+        self._llm_max_tokens = 2500
         self._debug = False
         self._deep_read_enabled = True
         self._llm_cache_enabled = True
@@ -231,6 +232,16 @@ class Config(BaseModel):
     def llm_temperature(self) -> float:
         """Get LLM temperature."""
         return getattr(self, "_llm_temperature", 0.1)
+
+    @property
+    def llm_max_tokens(self) -> int:
+        """Get LLM max output tokens.
+
+        Reasoning models (e.g. deepseek-v4-flash) may spend a large part of
+        this budget on internal reasoning. If it is too small, the model runs
+        out of tokens before writing the JSON answer and returns empty content.
+        """
+        return getattr(self, "_llm_max_tokens", 2500)
 
     @property
     def debug(self) -> bool:

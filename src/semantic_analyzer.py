@@ -75,6 +75,18 @@ class LLMAnalysisCache:
         """Store an analysis result in the cache."""
         if not self.enabled:
             return
+        # Only cache usable results. Two clear failure signatures must NOT be
+        # cached, otherwise the score=0 gets reused forever:
+        #   1. empty response (reasoning model ran out of tokens before writing JSON)
+        #   2. parse-failure fallback (tldr == "Analysis failed")
+        # Responses that merely need regex extraction (Layer 2) still parse and
+        # carry real scores, so those ARE cached.
+        if not response_text or not response_text.strip():
+            logger.warning(f"Not caching empty LLM response for {paper_id[:20]}...")
+            return
+        if (analysis.summary or {}).get("tldr") == "Analysis failed":
+            logger.warning(f"Not caching failed analysis for {paper_id[:20]}...")
+            return
         self._cache[paper_id] = {
             "prompt_preview": prompt[:200],
             "response": response_text,
@@ -366,7 +378,7 @@ Your analysis:"""
             result = result.replace(placeholder, str(value))
         return result
     
-    def _call_llm(self, prompt: str, max_retries: int = 3) -> str:
+    def _call_llm(self, prompt: str, max_retries: int = 5) -> str:
         """Call LLM API with retry logic.
 
         All supported providers (openai, deepseek, azure, generic, local) use
@@ -387,7 +399,7 @@ Your analysis:"""
                             {"role": "user", "content": prompt}
                         ],
                         temperature=getattr(self.config, "llm_temperature", 0.1),
-                        max_tokens=1000,
+                        max_tokens=getattr(self.config, "llm_max_tokens", 2500),
                         response_format={"type": "json_object"},
                     )
                 except Exception:
@@ -399,9 +411,15 @@ Your analysis:"""
                             {"role": "user", "content": prompt}
                         ],
                         temperature=getattr(self.config, "llm_temperature", 0.1),
-                        max_tokens=1000,
+                        max_tokens=getattr(self.config, "llm_max_tokens", 2500),
                     )
-                return response.choices[0].message.content
+                content = response.choices[0].message.content
+                if not content or not content.strip():
+                    # DeepSeek intermittently returns EMPTY content (even with
+                    # response_format=json_object). Treat it as a transient
+                    # failure and retry — a subsequent attempt usually succeeds.
+                    raise ValueError("LLM returned empty content")
+                return content
 
             except Exception as e:
                 logger.warning(f"LLM call failed (attempt {attempt + 1}/{max_retries}): {e}")
@@ -430,7 +448,7 @@ Your analysis:"""
             f"Previous response:\n{response_text}"
         )
         try:
-            retry_response = self._call_llm(retry_prompt, max_retries=1)
+            retry_response = self._call_llm(retry_prompt, max_retries=3)
             data = self._try_parse_json(retry_response, paper_id)
             if data is not None:
                 logger.info(f"LLM retry succeeded for {paper_id[:20]}...")
