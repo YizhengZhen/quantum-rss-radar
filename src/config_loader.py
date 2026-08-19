@@ -5,12 +5,15 @@ Copyright (c) 2026 Yizheng Zhen
 Licensed under the MIT License
 """
 
+import logging
 import os
 from pathlib import Path
-from typing import Dict, List
+
 import dotenv
 
-from .models import Config, FeedConfig, SourceConfig, PaperSource
+from .models import Config, FeedConfig, PaperSource, SourceConfig, UpdateFrequency
+
+logger = logging.getLogger(__name__)
 
 
 def load_config() -> Config:
@@ -58,12 +61,15 @@ def load_config() -> Config:
     # Get processing settings from environment variables
     max_papers_per_feed = int(os.getenv("MAX_PAPERS_PER_FEED", "50"))
     min_relevance_score = float(os.getenv("MIN_RELEVANCE_SCORE", "5.0"))
-    top_n_recommendations = int(os.getenv("TOP_N_RECOMMENDATIONS", "10"))
-    email_min_score = float(os.getenv("EMAIL_MIN_SCORE", "7.0"))
 
     # Get output directories
     output_dir = os.getenv("OUTPUT_DIR", "data")
     web_dir = os.getenv("WEB_DIR", "web_output")
+
+    # Get quarterly / archive settings
+    archive_dir = os.getenv("ARCHIVE_DIR", "data/all")
+    quarter_window_days = int(os.getenv("QUARTER_WINDOW_DAYS", "90"))
+    quarterly_top_n = int(os.getenv("QUARTERLY_TOP_N", "50"))
 
     # Get advanced settings
     rss_timeout = int(os.getenv("RSS_TIMEOUT", "30"))
@@ -76,7 +82,6 @@ def load_config() -> Config:
         llm_model=llm_model,
         llm_api_key=llm_api_key,
         llm_base_url=llm_base_url,
-
         email_enabled=email_enabled,
         email_sender=email_sender,
         email_recipient=email_recipient,
@@ -84,12 +89,11 @@ def load_config() -> Config:
         email_smtp_port=email_smtp_port,
         email_smtp_username=email_smtp_username,
         email_smtp_password=email_smtp_password,
-
         max_papers_per_feed=max_papers_per_feed,
         min_relevance_score=min_relevance_score,
-        top_n_recommendations=top_n_recommendations,
-        email_min_score=email_min_score,
-
+        archive_dir=archive_dir,
+        quarter_window_days=quarter_window_days,
+        quarterly_top_n=quarterly_top_n,
         output_dir=output_dir,
         web_dir=web_dir,
     )
@@ -102,52 +106,73 @@ def load_config() -> Config:
     config._jekyll_site_dir = "jekyll_site/_site"
     config._deep_read_enabled = os.getenv("DEEP_READ_ENABLED", "true").lower() == "true"
     config._llm_cache_enabled = os.getenv("LLM_CACHE_ENABLED", "true").lower() == "true"
+    config._arxiv_doi_enrich = os.getenv("ARXIV_DOI_ENRICH", "false").lower() == "true"
     config._public_website_url = os.getenv("PUBLIC_WEBSITE_URL", "")
 
     return config
 
 
-def load_feeds(config_dir: str = "config") -> List[FeedConfig]:
+def load_feeds(config_dir: str = "config") -> list[FeedConfig]:
     """
-    Load RSS feed configurations from YAML file.
+    Load RSS feed configurations from config/rss_sources.yaml.
+
+    Flat schema — each feed independently declares every field:
+      name / url / source / display_name / color /
+      max_items (recommendation cap) / min_score / update_frequency.
+    FeedConfig objects carry no 'category' field — LLM assigns direction.
 
     Args:
         config_dir: Path to configuration directory
 
     Returns:
-        List of FeedConfig objects (no 'category' field — LLM assigns direction)
+        List of FeedConfig objects
     """
     feeds_path = Path(config_dir) / "rss_sources.yaml"
     if not feeds_path.exists():
         raise FileNotFoundError(f"Feeds configuration not found at {feeds_path}")
 
     import yaml
+
     with open(feeds_path, "r", encoding="utf-8") as f:
         feeds_data = yaml.safe_load(f) or {}
 
-    feeds = []
+    feeds: list[FeedConfig] = []
     for feed_data in feeds_data.get("feeds", []):
-        source_str = feed_data.get("source", "").lower()
+        freq_raw = str(feed_data.get("update_frequency", "daily")).lower()
         try:
-            source = PaperSource(source_str)
+            freq = UpdateFrequency(freq_raw)
         except ValueError:
-            source = PaperSource.OTHER
+            logger.warning(
+                f"Invalid update_frequency '{freq_raw}' for '{feed_data.get('name')}' "
+                f"— using daily"
+            )
+            freq = UpdateFrequency.DAILY
 
-        feed = FeedConfig(
-            name=feed_data["name"],
-            url=feed_data["url"],
-            source=source,
-            display_name=feed_data.get("display_name"),
-            color=feed_data.get("color"),
-            max_items=feed_data.get("max_items", -1),
-            update_frequency=feed_data.get("update_frequency", {}),
+        feeds.append(
+            FeedConfig(
+                name=feed_data["name"],
+                url=feed_data["url"],
+                source=_parse_source(feed_data.get("source", "")),
+                display_name=feed_data.get("display_name"),
+                color=feed_data.get("color"),
+                max_items=feed_data.get("max_items", -1),
+                min_score=float(feed_data.get("min_score", 7.0)),
+                update_frequency=freq,
+            )
         )
-        feeds.append(feed)
 
     return feeds
 
 
-def load_sources(config_dir: str = "config") -> Dict[str, SourceConfig]:
+def _parse_source(source_str: str) -> PaperSource:
+    """Parse a source key into a PaperSource, falling back to OTHER."""
+    try:
+        return PaperSource(source_str.lower())
+    except ValueError:
+        return PaperSource.OTHER
+
+
+def load_sources(config_dir: str = "config") -> dict[str, SourceConfig]:
     """
     Load source (publisher) colour configuration from YAML file.
 
@@ -160,15 +185,31 @@ def load_sources(config_dir: str = "config") -> Dict[str, SourceConfig]:
         raise FileNotFoundError(f"Feeds configuration not found at {feeds_path}")
 
     import yaml
+
     with open(feeds_path, "r", encoding="utf-8") as f:
         feeds_data = yaml.safe_load(f) or {}
 
-    sources = {}
-    for source_key, source_data in feeds_data.get("sources", {}).items():
-        sources[source_key] = SourceConfig(
-            display_name=source_data.get("display_name", source_key),
-            color=source_data.get("color", "#757575"),
-        )
+    sources: dict[str, SourceConfig] = {}
+
+    # Prefer an explicit sources: block (legacy), else derive from feeds.
+    if feeds_data.get("sources"):
+        for source_key, source_data in feeds_data["sources"].items():
+            sources[source_key] = SourceConfig(
+                display_name=source_data.get("display_name", source_key),
+                color=source_data.get("color", "#757575"),
+            )
+    else:
+        for feed in feeds_data.get("feeds", []):
+            src = (feed.get("source") or "").lower()
+            if not src:
+                continue
+            sources.setdefault(
+                src,
+                SourceConfig(
+                    display_name=feed.get("display_name") or src,
+                    color=feed.get("color") or "#757575",
+                ),
+            )
 
     return sources
 

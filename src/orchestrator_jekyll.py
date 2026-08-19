@@ -10,27 +10,29 @@ Licensed under the MIT License
 """
 
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any
-import sys
+from typing import Any
 
+from .arxiv_deep_reader import deep_read_high_score_papers
 from .config_loader import (
     load_config,
     load_feeds,
-    load_sources,
     load_research_directions,
+    load_sources,
 )
-from .rss_fetcher import fetch_all_feeds
-from .normalizer import normalize_papers, enrich_paper_metadata
-from .deduplicate import deduplicate_papers
-from .semantic_analyzer import SemanticAnalyzer
-from .arxiv_deep_reader import deep_read_high_score_papers
-from .reference_paper_analyzer import run_reference_paper_analysis, generate_research_directions_from_papers
 from .data_exporter import DataExporter
 from .database import RadarDatabase
-from .email_sender import send_daily_email
+from .deduplicate import deduplicate_papers
 from .models import Paper, PaperAnalysis
+from .normalizer import enrich_paper_metadata, normalize_papers
+from .reference_paper_analyzer import (
+    generate_research_directions_from_papers,
+    run_reference_paper_analysis,
+)
+from .rss_fetcher import fetch_all_feeds
+from .semantic_analyzer import SemanticAnalyzer
 
 logger = logging.getLogger(__name__)
 
@@ -63,11 +65,11 @@ class QuantumRSSRadarJekyll:
         """Setup logging configuration."""
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
             handlers=[
                 logging.StreamHandler(sys.stdout),
-                logging.FileHandler('quantum_rss_radar_jekyll.log')
-            ]
+                logging.FileHandler("quantum_rss_radar_jekyll.log"),
+            ],
         )
 
     def load_configuration(self):
@@ -86,17 +88,27 @@ class QuantumRSSRadarJekyll:
             if not rd_path.exists() or rd_path.stat().st_size < 50:
                 papers_dir = Path(self.config_dir) / "papers"
                 if papers_dir.exists() and any(papers_dir.rglob("*.pdf")):
-                    logger.info("research_directions.md missing or empty — auto-generating from PDFs...")
-                    generated = generate_research_directions_from_papers(self.config_dir, self.config)
+                    logger.info(
+                        "research_directions.md missing or empty — auto-generating from PDFs..."
+                    )
+                    generated = generate_research_directions_from_papers(
+                        self.config_dir, self.config
+                    )
                     if generated:
                         self.research_directions = generated
-                        logger.info(f"Auto-generated research_directions.md ({len(generated)} chars)")
+                        logger.info(
+                            f"Auto-generated research_directions.md ({len(generated)} chars)"
+                        )
                     else:
-                        logger.warning("Could not auto-generate research_directions.md — pipeline may produce poor results")
+                        logger.warning(
+                            "Could not auto-generate research_directions.md — pipeline may produce poor results"
+                        )
 
             logger.info(f"Loaded {len(self.feeds)} RSS feeds")
             logger.info(f"Loaded {len(self.sources)} source configurations")
-            logger.info(f"Research directions loaded: {len(self.research_directions)} characters")
+            logger.info(
+                f"Research directions loaded: {len(self.research_directions)} characters"
+            )
 
             # Initialize semantic analyzer (pass config_dir for prompt template loading)
             self.analyzer = SemanticAnalyzer(self.config, config_dir=self.config_dir)
@@ -120,7 +132,9 @@ class QuantumRSSRadarJekyll:
         Returns:
             True if pipeline completed successfully, False otherwise
         """
-        logger.info(f"Starting Quantum RSS Radar Jekyll pipeline (output: {self.output_format})...")
+        logger.info(
+            f"Starting Quantum RSS Radar Jekyll pipeline (output: {self.output_format})..."
+        )
         start_time = datetime.now()
 
         try:
@@ -137,7 +151,9 @@ class QuantumRSSRadarJekyll:
                 self.research_directions,
             )
             if new_refs:
-                logger.info(f"Generated {new_refs} new reference YAML(s) — reloading analyzer")
+                logger.info(
+                    f"Generated {new_refs} new reference YAML(s) — reloading analyzer"
+                )
                 # Reload so the new YAMLs are included in the few-shot prompt
                 self.analyzer.load_research_directions(self.research_directions)
 
@@ -167,14 +183,16 @@ class QuantumRSSRadarJekyll:
                 enriched_papers.append(enrich_paper_metadata(paper))
             papers = enriched_papers
 
-            # Step 5: Deduplicate papers
+            # Step 5: Deduplicate papers (key-based: arxiv versioned id / journal doi)
             logger.info("Deduplicating papers...")
             papers = deduplicate_papers(papers)
             logger.info(f"After deduplication: {len(papers)} unique papers")
 
             # Step 6: Analyze papers with LLM
             logger.info("Analyzing papers with LLM...")
-            analyses = self.analyzer.analyze_papers_batch(papers, self.research_directions)
+            analyses = self.analyzer.analyze_papers_batch(
+                papers, self.research_directions
+            )
 
             # Step 7: Combine all papers with analyses
             logger.info("Combining papers with analyses...")
@@ -196,13 +214,33 @@ class QuantumRSSRadarJekyll:
             all_papers_with_analyses = deep_read_high_score_papers(
                 all_papers_with_analyses,
                 self.config,
-                self.analyzer.llm_client if hasattr(self.analyzer, 'llm_client') else None,
+                self.analyzer.llm_client
+                if hasattr(self.analyzer, "llm_client")
+                else None,
             )
-            logger.info(f"Deep reading completed for {len(all_papers_with_analyses)} papers")
+            logger.info(
+                f"Deep reading completed for {len(all_papers_with_analyses)} papers"
+            )
 
             # Step 9: Export data to requested format(s)
             logger.info("Exporting data...")
             results = self._export_data(all_papers_with_analyses, date_str)
+
+            # Step 9.5: Build the quarterly web view from the merged JSONL archive
+            try:
+                from . import history as _history
+
+                archive_records = _history.load_jsonl_archive(self.config.archive_dir)
+                exporter = DataExporter(
+                    self.config.output_dir if self.config else "data"
+                )
+                exporter.export_quarterly_jekyll(
+                    archive_records,
+                    window_days=self.config.quarter_window_days,
+                    top_n=self.config.quarterly_top_n,
+                )
+            except Exception as e:
+                logger.warning(f"Failed to build quarterly web view: {e}")
 
             # Step 10: Copy to Jekyll site if applicable
             if self.output_format in ["all", "jekyll"]:
@@ -215,39 +253,56 @@ class QuantumRSSRadarJekyll:
             pipeline_ts = datetime.now().isoformat()
             try:
                 self.db = RadarDatabase()
-                feed_configs = {feed.name: feed for feed in self.feeds} if self.feeds else None
+                feed_configs = (
+                    {feed.name: feed for feed in self.feeds} if self.feeds else None
+                )
                 db_saved = self.db.save_papers(
-                    all_papers_with_analyses, self.sources, pipeline_ts, feed_configs,
+                    all_papers_with_analyses,
+                    self.sources,
+                    pipeline_ts,
+                    feed_configs,
                 )
                 logger.info(f"Saved {db_saved} papers to database")
             except Exception as e:
                 logger.warning(f"Failed to save to database: {e}")
 
-            # Step 12: Send daily email (if enabled)
+            # Step 12: Send emails — per-feed digests driven by rss_sources.yaml.
+            # Each feed's update_frequency decides if it fires today; feeds
+            # sharing a frequency are merged into one email.
             if self.config.email_enabled:
-                logger.info("Sending daily email digest...")
-                # Build feed-level config lookup (feed_name → FeedConfig)
-                feed_configs = {feed.name: feed for feed in self.feeds}
-                email_success = send_daily_email(
-                    all_papers_with_analyses, self.sources, self.config, feed_configs,
+                from .digest_engine import send_feed_digests
+
+                logger.info("Sending feed digest emails...")
+                email_results = send_feed_digests(
+                    config_dir=self.config_dir,
+                    config=self.config,
+                    sources=self.sources,
+                    feed_configs=feed_configs,
+                    archive_dir=self.config.archive_dir,
                 )
-                if email_success:
-                    logger.info("Daily email sent successfully")
-                    if results:
-                        results["email_sent"] = "sent"
-                else:
-                    logger.warning("Daily email failed to send")
-                    if results:
-                        results["email_sent"] = "failed"
+                sent = sum(1 for ok in email_results.values() if ok)
+                logger.info(f"Feed digest emails: {sent}/{len(email_results)} sent")
+                if results:
+                    results["email_sent"] = (
+                        "sent"
+                        if sent
+                        else ("none_due" if not email_results else "failed")
+                    )
             else:
                 logger.info("Email sending disabled, skipping")
 
             # Calculate execution time and record pipeline run
             execution_time = datetime.now() - start_time
-            logger.info(f"Pipeline completed in {execution_time.total_seconds():.2f} seconds")
+            logger.info(
+                f"Pipeline completed in {execution_time.total_seconds():.2f} seconds"
+            )
             if self.db is not None:
                 try:
-                    deep_read_count = sum(1 for _, a in all_papers_with_analyses if a.deep_read is not None)
+                    deep_read_count = sum(
+                        1
+                        for _, a in all_papers_with_analyses
+                        if a.deep_read is not None
+                    )
                     self.db.save_pipeline_run(
                         run_timestamp=pipeline_ts,
                         total_papers=len(all_papers_with_analyses),
@@ -266,11 +321,15 @@ class QuantumRSSRadarJekyll:
         except Exception as e:
             logger.error(f"Pipeline failed: {e}")
             import traceback
+
             logger.error(traceback.format_exc())
             return False
 
-    def _export_data(self, papers_with_analyses: List[tuple[Paper, PaperAnalysis]],
-                    date_str: str = None) -> Dict[str, Any]:
+    def _export_data(
+        self,
+        papers_with_analyses: list[tuple[Paper, PaperAnalysis]],
+        date_str: str = None,
+    ) -> dict[str, Any]:
         """
         Export data to requested format(s).
 
@@ -288,10 +347,12 @@ class QuantumRSSRadarJekyll:
         """
         exporter = DataExporter(self.config.output_dir if self.config else "data")
         feed_configs = {feed.name: feed for feed in self.feeds} if self.feeds else None
-        results = exporter.export_all(papers_with_analyses, self.sources, feed_configs=feed_configs)
+        results = exporter.export_all(
+            papers_with_analyses, self.sources, feed_configs=feed_configs
+        )
         return results
 
-    def _copy_to_jekyll_site(self, results: Dict[str, Any]):
+    def _copy_to_jekyll_site(self, results: dict[str, Any]):
         """Copy exported data to Jekyll site directory."""
         try:
             exporter = DataExporter(self.config.output_dir if self.config else "data")
@@ -301,27 +362,30 @@ class QuantumRSSRadarJekyll:
         except Exception as e:
             logger.error(f"Failed to copy data to Jekyll site: {e}")
 
-    def _print_summary(self, results: Dict[str, Any]):
+    def _print_summary(self, results: dict[str, Any]):
         """Print summary of pipeline execution."""
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("QUANTUM RSS RADAR - EXECUTION SUMMARY")
-        print("="*60)
+        print("=" * 60)
         print(f"Output format: {self.output_format}")
 
         if results:
             print("\n📄 Output files created:")
             for format_name, file_path in results.items():
                 if file_path:
-                    label = {"jsonl": "JSONL (all papers)", "markdown": "MD report (all papers)"}.get(format_name, format_name.upper())
+                    label = {
+                        "jsonl": "JSONL (all papers)",
+                        "markdown": "MD report (all papers)",
+                    }.get(format_name, format_name.upper())
                     print(f"  • {label}: {file_path}")
 
         # Jekyll site info
         jekyll_site_dir = Path("jekyll_site")
         if jekyll_site_dir.exists():
             print(f"\n🌐 Jekyll site data: {jekyll_site_dir / '_data' / 'papers.json'}")
-            print(f"   To preview: cd jekyll_site && bundle exec jekyll serve")
+            print("   To preview: cd jekyll_site && bundle exec jekyll serve")
 
-        print("="*60)
+        print("=" * 60)
 
     def run_test_pipeline(self):
         """Run a test pipeline with limited data."""
@@ -339,27 +403,25 @@ def main():
     parser.add_argument(
         "--config-dir",
         default="config",
-        help="Path to configuration directory (default: config)"
+        help="Path to configuration directory (default: config)",
     )
     parser.add_argument(
         "--format",
         default="all",
         choices=["all", "json", "markdown", "jekyll"],
-        help="Output format (default: all)"
+        help="Output format (default: all)",
     )
     parser.add_argument(
         "--date",
-        help="Date for output files (YYYY-MM-DD). If not provided, uses today."
+        help="Date for output files (YYYY-MM-DD). If not provided, uses today.",
     )
     parser.add_argument(
-        "--test",
-        action="store_true",
-        help="Run in test mode with limited papers"
+        "--test", action="store_true", help="Run in test mode with limited papers"
     )
     parser.add_argument(
         "--skip-jekyll-copy",
         action="store_true",
-        help="Skip copying to Jekyll site directory"
+        help="Skip copying to Jekyll site directory",
     )
 
     args = parser.parse_args()

@@ -4,6 +4,91 @@
 
 ---
 
+## 2026-08-19 — Per-source archive layout + per-source scheduled fetching
+
+**Branch:** `feature/email-digests-quarterly-web` · **Data:** `data` branch migrated & pushed (`7b28512`)
+
+- **Archive layout** `data/all/data_*.jsonl` (flat) → `data/all/<source>/data_*.jsonl` (one file per source per run)
+  - `data_exporter.export_jsonl` writes per-source files; `export_all` returns a list of paths
+  - `history.load_jsonl_archive` reads recursively (`**/data_*.jsonl`) and sorts by run timestamp so the newest run wins regardless of source dir
+  - `copy_to_jekyll_site` / `scripts/rerun_analysis.py` find the latest JSONL recursively
+  - `scripts/cleanup_archive.py` globs are recursive
+  - New `scripts/migrate_archive_layout.py` splits flat files into per-source files (idempotent); applied to the full archive (96 flat → 305 per-source files) and pushed to the `data` branch
+- **Per-source scheduled fetching**: `rss_fetcher.fetch_all_feeds` now fetches only feeds whose `update_frequency` fires today (`feed.is_due(today)`) — replaces the (ineffective) scheduler gating
+  - `FeedConfig.is_due()` / `FeedConfig.window_days()` added to `models.py`; `digest_engine.feed_is_due`/`resolve_feed_window_days` delegate to them (fetch and email share one scheduling source of truth)
+- CI `daily-pipeline.yaml` updated for the per-source tree (fetch count, upload glob, push staging `cp -r`, retention `find`, latest JSONL lookup)
+- Historical flat archive backed up to `data/all_flat_bak/` (gitignored; safe to delete once confident)
+
+---
+
+## 2026-08-18 — Per-feed digest model (digests.yaml removed; rss_sources.yaml drives emails)
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `config/rss_sources.yaml`, `config/digests.yaml` (deleted), `src/models.py`, `src/config_loader.py`, `src/digest_engine.py`, `src/digest_cli.py`, `src/email_sender.py`, `src/history.py`, `src/scheduler.py`, `src/orchestrator_jekyll.py`, `scripts/archive_preview.py`, `.env.example`, `.github/workflows/daily-pipeline.yaml`, `jekyll_site/pages/about.html`, docs
+
+- `rss_sources.yaml` reverted to a **flat per-feed list**; each feed independently declares `name/url/source/display_name/color/max_items/min_score/update_frequency` (different journals under one publisher can have different `min_score`/`max_items`)
+- `config/digests.yaml` **deleted** — emails are driven entirely by `rss_sources.yaml`
+- `UpdateFrequency` enum replaces `DigestType`: `daily | weekday | weekly | monthly | season`
+- `digest_engine.py` reworked: `feed_is_due()` decides per-feed scheduling; feeds sharing an `update_frequency` are **merged into ONE email** (Weekday arXiv / Weekly journals / Monthly Nature+Science / Seasonal); `select_feed_records()` = per-feed window + `min_score` + top `max_items`
+- Removed legacy `send_daily_email` / `build_email_html` / `build_email_text` / `test_email_config` and the `DigestConfig` model; `Config` dropped `email_min_score`/`top_n_recommendations`/`digest_enabled`
+- `scheduler.py` updated for the `UpdateFrequency` enum (monthly/season helpers added)
+- CLI: `python -m src.digest_cli --dry-run [--today D] [--freq X]` previews/sends merged frequency emails
+
+---
+
+## 2026-08-17 — No cross-source dedup; arXiv versions are distinct papers
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `src/rss_fetcher.py`, `src/deduplicate.py`, `src/history.py`, `src/arxiv_deep_reader.py`, `src/orchestrator_jekyll.py`, `src/config_loader.py`, `scripts/cleanup_archive.py`, docs
+**Data:** `data/all` re-keyed again (versioned arXiv ids); pushed to `data` branch (`ce706ad`)
+
+- Product decision: an arXiv preprint and its journal version are **different papers** (no DOI-based cross-source merge); arXiv versions (v1, v2, …) are also **different papers** — the version suffix is part of the arXiv identity
+- `rss_fetcher.py`: added `extract_arxiv_id_keep_version()`; arXiv ids now carry the version (`arx:2301.00001v1`)
+- `deduplicate.py` / `history.py`: identity keys → arXiv `arx:<id-with-version>` (never DOI); journal `doi:<doi>` else `pub_title:<title hash>` (namespaced, cannot match arXiv); `_merge_by_doi` never merges arXiv records
+- `arxiv_deep_reader.enrich_arxiv_dois`: informational only (no longer rewrites the arXiv id); orchestrator call removed; `ARXIV_DOI_ENRICH` default `false`
+- `cleanup_archive.py --backfill-arxiv-versions`: resolves current arXiv versions via the arXiv API (fixed `max_results=10` default → `max_results=<batch>`); historical archive re-keyed so 10031/10132 arXiv records carry a version
+
+---
+
+## 2026-08-17 — Historical archive cleanup (Phase D, DOI-first re-key)
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `src/history.py`, `scripts/cleanup_archive.py` (new), `docs/review_checklist.md`, `docs/CHANGELOG.md`
+**Data:** `data/all` re-keyed + deduped; `data/radar.db` rebuilt; pushed to `data` branch (`48cfde3`)
+
+- `history.py`: added `compute_record_key()` (doi → arxiv id → title hash) and `canonical_record()` (journal-preferring identity, newest-analysis content) for re-keying historical flat records; `canonical_record` backfills the `doi` field from the link-derived DOI so the archive loader's DOI merge works
+- `scripts/cleanup_archive.py`: `--dry-run` inventory / `--rewrite` (re-key + dedup + backup to `data/archive_pre_clean/`) / `--remap-cache` / `--rebuild-db` / `--rebuild-site`
+- Applied to the full 96-file archive (2026-05-14 → 2026-08-17): 49,249 records re-keyed → 13,124 unique after merge; `doi` field coverage 34,150; `radar.db` rebuilt with `doi`/`alternate_link` columns; `papers.json` + `quarterly.json` regenerated
+- Note: old `llm_cache.json` / `fetch_history.json` / `tags.json` were cleared (obsolete under the new id scheme; will rebuild automatically)
+
+---
+
+## 2026-08-17 — Multi-frequency digest emails + quarterly web view + DOI dedup
+
+**Branch:** `feature/email-digests-quarterly-web`
+**Changed files:** `src/models.py`, `src/rss_fetcher.py`, `src/deduplicate.py`, `src/history.py` (new), `src/digest_engine.py` (new), `src/digest_cli.py` (new), `src/email_sender.py`, `src/config_loader.py`, `src/database.py`, `src/data_exporter.py`, `src/orchestrator_jekyll.py`, `src/arxiv_deep_reader.py`, `config/digests.yaml` (new), `scripts/archive_preview.py` (new), `.env.example`, `.github/workflows/daily-pipeline.yaml`, `jekyll_site/pages/quarterly.html` (new), `jekyll_site/_includes/navigation.html`, `jekyll_site/assets/js/app.js`, `jekyll_site/assets/css/styles.css`, `.gitignore`, docs
+
+### Feature 1: Multi-frequency emails (weekday / weekly / monthly / seasonal)
+- New `config/digests.yaml` + `DigestConfig` model; `digest_engine.py` decides which digests fire today (`should_send_today`) and sends via SMTP
+- weekday (Mon–Fri) pushes arXiv only; weekly (Sun) / monthly (1st) / seasonal (quarter start) include published papers only — emails don't overlap
+- Triggered inside the single daily workflow (approach A); legacy single daily email kept as fallback when `digests.yaml` is absent
+- `digest_cli.py` for local `--dry-run` / `--send`; window semantics `window_days: 0` = since last trigger (Monday covers the weekend)
+
+### Feature 2: Web & email content separation + quarterly top papers
+- New `export_quarterly_jekyll()` → `jekyll_site/_data/quarterly.json`; new `pages/quarterly.html` with Preprints / Publications tabs
+- Quarterly view = last 90 days, top-scored, split by `source==arxiv` (preprint) vs everything else (publication)
+
+### Feature 3: DOI-first deterministic dedup
+- `Paper.doi` / `alternate_link`; `rss_fetcher` extracts DOI (prism:doi / dc:identifier / link)
+- arXiv DOI enrichment via arXiv API (`enrich_arxiv_dois`) enables arXiv↔journal cross-source merge
+- `deduplicate.py` rewritten to O(n) key dedup (doi → arxiv id → title hash), journal version canonical
+- SQLite migration (`_ensure_columns`) adds `doi`/`alternate_link`; JSONL archive merge by id + DOI
+
+### CI
+- `daily-pipeline.yaml`: fetch JSONL archive from `data` branch before the run (only cross-run history), pass digest/quarterly env vars
+
+---
+
 ## 2026-06-29 — Add "人工品味校准" docs + update ai_analysis.md status
 
 **Changed files:** `docs/ai_analysis.md`, `docs/CHANGELOG.md`

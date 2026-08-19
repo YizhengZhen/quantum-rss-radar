@@ -1,0 +1,125 @@
+---
+layout: default
+title: Quarterly Best
+description: Top-scored papers from the last quarter, split into Preprints and Publications
+---
+
+<script>
+window.quarterlyData = {{ site.data.quarterly | default: nil | jsonify }};
+</script>
+
+<section class="page-header">
+    <h1><i class="fas fa-calendar-week"></i> Quarterly Best</h1>
+    <p class="page-subtitle">
+        Top-scored papers from the last quarter
+        <span x-show="quarterlyWindowStart" x-text="'(since ' + quarterlyWindowStart + ')'"></span>
+    </p>
+</section>
+
+<!-- Tabs: Preprints / Publications -->
+<div class="quarterly-tabs">
+    <button class="quarterly-tab" :class="{ active: quarterlyTab === 'preprints' }"
+            @click="quarterlyTab = 'preprints'">
+        <i class="fas fa-file-upload"></i> Preprints
+        <span class="tab-count" x-text="quarterlyPreprints.length"></span>
+    </button>
+    <button class="quarterly-tab" :class="{ active: quarterlyTab === 'publications' }"
+            @click="quarterlyTab = 'publications'">
+        <i class="fas fa-book"></i> Publications
+        <span class="tab-count" x-text="quarterlyPublications.length"></span>
+    </button>
+</div>
+
+<!-- Preprints tab -->
+<div x-show="quarterlyTab === 'preprints'" x-cloak>
+    <p class="tab-hint">Preprints — arXiv preprints (not yet formally published).</p>
+    <div class="quarterly-grid">
+        <template x-for="paper in quarterlyPreprints" :key="paper.id">
+            <div class="paper-card" :class="{ recommended: paper.recommended }"
+                 @click="openModal(paper)">
+                <div class="paper-score">
+                    <span class="score-number" x-text="paper.score.toFixed(1)"></span>
+                    <span class="score-label">Score</span>
+                </div>
+                <div class="paper-content">
+                    <div class="paper-header">
+                        <h3 class="paper-title">
+                            <a :href="paper.link" target="_blank" @click.stop x-text="paper.title"></a>
+                        </h3>
+                        <div class="paper-badges">
+                            <span class="badge recommended-badge" x-show="paper.recommended">⭐ Recommended</span>
+                            <span class="badge source-badge" :style="sourceStyle(paper)"
+                                  x-text="getSourceName(paper)"></span>
+                        </div>
+                    </div>
+                    <div class="paper-meta">
+                        <span class="authors">
+                            <i class="fas fa-user"></i> <span x-text="paper.authors.join(', ')"></span>
+                        </span>
+                        <span class="date">
+                            <i class="fas fa-calendar"></i> <span x-text="formatDate(paper.published_date)"></span>
+                        </span>
+                    </div>
+                    <p class="paper-tldr"><strong>TL;DR:</strong> <span x-text="paper.analysis.tldr"></span></p>
+                    <div class="paper-categories">
+                        <span class="category-tag">
+                            <i class="fas fa-tag"></i> <span x-text="paper.direction || 'General / Other'"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    <div class="empty-state" x-show="quarterlyPreprints.length === 0">
+        <i class="fas fa-file-alt fa-3x"></i>
+        <h3>No preprints found</h3>
+        <p>No arXiv preprints within the quarter window yet.</p>
+    </div>
+</div>
+
+<!-- Publications tab -->
+<div x-show="quarterlyTab === 'publications'" x-cloak>
+    <p class="tab-hint">Publications — formally published journal papers.</p>
+    <div class="quarterly-grid">
+        <template x-for="paper in quarterlyPublications" :key="paper.id">
+            <div class="paper-card" :class="{ recommended: paper.recommended }"
+                 @click="openModal(paper)">
+                <div class="paper-score">
+                    <span class="score-number" x-text="paper.score.toFixed(1)"></span>
+                    <span class="score-label">Score</span>
+                </div>
+                <div class="paper-content">
+                    <div class="paper-header">
+                        <h3 class="paper-title">
+                            <a :href="paper.link" target="_blank" @click.stop x-text="paper.title"></a>
+                        </h3>
+                        <div class="paper-badges">
+                            <span class="badge recommended-badge" x-show="paper.recommended">⭐ Recommended</span>
+                            <span class="badge source-badge" :style="sourceStyle(paper)"
+                                  x-text="getSourceName(paper)"></span>
+                        </div>
+                    </div>
+                    <div class="paper-meta">
+                        <span class="authors">
+                            <i class="fas fa-user"></i> <span x-text="paper.authors.join(', ')"></span>
+                        </span>
+                        <span class="date">
+                            <i class="fas fa-calendar"></i> <span x-text="formatDate(paper.published_date)"></span>
+                        </span>
+                    </div>
+                    <p class="paper-tldr"><strong>TL;DR:</strong> <span x-text="paper.analysis.tldr"></span></p>
+                    <div class="paper-categories">
+                        <span class="category-tag">
+                            <i class="fas fa-tag"></i> <span x-text="paper.direction || 'General / Other'"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    <div class="empty-state" x-show="quarterlyPublications.length === 0">
+        <i class="fas fa-book fa-3x"></i>
+        <h3>No publications found</h3>
+        <p>No journal publications within the quarter window yet.</p>
+    </div>
+</div>

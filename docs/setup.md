@@ -47,8 +47,6 @@ LLM_MODEL="deepseek-chat"
 # ===== 处理控制 =====
 MAX_PAPERS_PER_FEED=50            # 每源最大论文数
 MIN_RELEVANCE_SCORE=5.0           # 最低评分（低于此不推荐）
-EMAIL_MIN_SCORE=7.0               # 邮件推送阈值
-TOP_N_RECOMMENDATIONS=10          # 邮件推荐数
 LLM_CACHE_ENABLED=true            # 是否启用缓存
 
 # ===== 邮件推送 =====
@@ -77,7 +75,7 @@ uv run python scripts/inspect_results.py
 uv run python scripts/rerun_analysis.py --sample 20
 
 # 对指定 JSONL 文件运行分析
-uv run python scripts/rerun_analysis.py data/all/data_2026-06-05_084953.jsonl --sample 50
+uv run python scripts/rerun_analysis.py data/all/aps/data_2026-06-05_084953.jsonl --sample 50
 
 # 仅查看统计（不调用 LLM）
 uv run python scripts/rerun_analysis.py --dry-run
@@ -102,7 +100,7 @@ docker run --env-file .env quantum-rss-radar
 
 ## 5. GitHub Actions 自动化
 
-`.github/workflows/daily_run.yml` 每日北京时间 10:00 自动执行完整 pipeline。
+`.github/workflows/daily-pipeline.yaml` 每日北京时间 14:00（UTC 06:00）自动执行完整 pipeline——在 arXiv 每日美国午夜刷新（约北京 12:00）之后运行，确保中国大陆当天即可抓到当天数据。
 
 所需 Secrets（在 GitHub repo → Settings → Secrets → Actions 中配置）：
 
@@ -117,22 +115,40 @@ docker run --env-file .env quantum-rss-radar
 
 ## 6. RSS 源配置
 
-修改 `config/rss_sources.yaml` 添加/删除 RSS 源：
+修改 `config/rss_sources.yaml` 添加/删除 RSS 源。每个 feed 独立声明全部字段（扁平结构）：
 
 ```yaml
-sources:
+feeds:
   - name: "arXiv Physics"
-    url: "https://arxiv.org/rss/physics"
-    source_type: "arxiv"
-    max_papers: 100
+    url: "https://rss.arxiv.org/rss/quant-ph"
+    source: "arxiv"              # PaperSource 枚举有效值
+    display_name: "arXiv"        # 邮件/网站标签显示名
+    color: "#B31B1B"             # 标签色块
+    max_items: 10                 # 每次最多推荐几篇（-1 = 不限制）
+    min_score: 7.0                # 最低推荐分数 0-10
+    update_frequency: weekday     # daily | weekday | weekly | monthly | season
 
   - name: "Nature Physics"
     url: "https://www.nature.com/nphys.rss"
-    source_type: "nature"
-    max_papers: 30
+    source: "nature"
+    display_name: "Nature Physics"
+    color: "#009688"
+    max_items: 5
+    min_score: 7.5
+    update_frequency: monthly
 ```
 
-`source_type` 必须是 `PaperSource` 枚举的有效值：
+`update_frequency` 同时决定触发日期与邮件分组——相同频率的 feed 合并为一封邮件：
+
+| 值 | 触发 | 邮件 |
+|----|------|------|
+| `daily` | 每天 | Daily Digest |
+| `weekday` | 周一~周五 | Weekday Digest（例：arXiv 组） |
+| `weekly` | 每周日 | Weekly Digest（例：PRL / npj 等期刊组） |
+| `monthly` | 每月 1 号 | Monthly Digest（例：Nature / Science 组） |
+| `season` | 季度首日 | Seasonal Digest |
+
+`source` 必须是 `PaperSource` 枚举的有效值：
 `arxiv` | `nature` | `science` | `aps` | `ieee` | `acm` | `springer` | `other`
 
 ---

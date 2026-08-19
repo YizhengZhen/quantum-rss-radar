@@ -19,7 +19,9 @@ Automatically track the latest papers from arXiv / Nature / Science / APS / IEEE
 | 📝 **High-Score Paper Reports** | Score ≥ threshold → structured summary (TLDR / Motivation / Method / Result / Conclusion) |
 | 📄 **arXiv Deep Reading** | Very high scores → auto-download PDF, full-text re-analysis, generates a Note |
 | 📚 **Reference Paper Calibration** | Drop PDFs in `config/papers/{tier}/` → pipeline auto-generates few-shot YAML calibration files |
-| 📧 **Email Digest** | Daily Top-N recommended papers sent via SMTP, sorted by source priority then score |
+| 📧 **Email Digests** | Per-feed scheduling — each feed sets its own `update_frequency` / `min_score` / `max_items` in `config/rss_sources.yaml`; feeds sharing a frequency merge into one email (Weekday arXiv / Weekly journals / Monthly Nature+Science / Seasonal) |
+| 🌐 **Quarterly Web View** | Website shows top papers from the last quarter, split into **Preprints** / **Publications** tabs |
+| 🔗 **Deterministic Dedup** | arXiv versions (v1/v2…) and journal papers are distinct identities (no cross-source merge); journals dedup by DOI, arXiv by versioned id |
 | 🌐 **Static Website** | Jekyll site with search, direction filtering, and statistics |
 | 🗂️ **Direction Classification** | LLM assigns each paper to one of your research directions |
 | 🏷️ **Auto Keyword Tagging** | LLM extracts keywords; tag manager accumulates, matches, and categorizes them |
@@ -58,7 +60,7 @@ Edit the following two files:
 | File | Purpose | Note |
 |------|---------|------|
 | `config/research_directions.md` | Define your research interests; LLM scores & classifies papers against this | `##` for direction name, `-` list for keywords |
-| `config/rss_sources.yaml` | Add/remove RSS sources you want to track | `name` / `url` / `source` fields per entry |
+| `config/rss_sources.yaml` | Add/remove RSS sources you want to track | Flat per-feed list: `name`/`url`/`source`/`display_name`/`color`/`max_items`/`min_score`/`update_frequency` |
 
 > The default `research_directions.md` contains the author's quantum information research directions. `rss_sources.yaml` comes pre-configured with arXiv × 4 + APS + Nature + Science and others. Modify as needed.
 
@@ -75,7 +77,6 @@ Edit the following two files:
    | `LLM_MODEL` | Optional | Model name (DeepSeek default: `deepseek-chat`) |
    | `MAX_PAPERS_PER_FEED` | Optional | Max papers per feed (default: 50) |
    | `MIN_RELEVANCE_SCORE` | Optional | Minimum score for recommendation (default: 5.0) |
-   | `TOP_N_RECOMMENDATIONS` | Optional | Top-N for email (default: 10) |
    | `LLM_CACHE_ENABLED` | Optional | Enable analysis cache (default: true) |
    | `DEEP_READ_ENABLED` | Optional | Enable deep reading (default: true) |
    | `EMAIL_ENABLED` | Optional | `true` to enable email digest |
@@ -110,7 +111,7 @@ python -m src.orchestrator_jekyll --test   # Test mode (10 papers)
 
 | Content | Path |
 |---------|------|
-| JSONL full data | `data/all/data_*.jsonl` |
+| JSONL full data | `data/all/<source>/data_*.jsonl` (per source per run) |
 | MD report (sorted by score) | `data/reports/report_*.md` |
 | Jekyll website data | `jekyll_site/_data/papers.json` |
 | SQLite history database | `data/radar.db` |

@@ -2,8 +2,11 @@ name: Quantum RSS Radar - Daily Pipeline
 
 on:
   schedule:
-    # Run daily at 10:00 AM Beijing Time (UTC+8 → UTC 2:00)
-    - cron: "0 2 * * *"
+    # Run daily at 2:00 PM Beijing Time (UTC+8 → UTC 6:00).
+    # Must run AFTER arXiv's daily refresh (~midnight US Eastern = ~12:00
+    # Beijing) so mainland China fetches the SAME day's listings; the old
+    # 10:00 Beijing run caught only the previous day's arXiv content.
+    - cron: "0 6 * * *"
   workflow_dispatch: # Allow manual triggering
   push:
     branches: [master]
@@ -17,11 +20,32 @@ jobs:
   run-pipeline:
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # 允许 push 到 data 分支
+      contents: write # 允许 push 到 data 分支
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # ─────────────────────────────────────────────────────────────────
+      # Fetch the JSONL archive (history) from the `data` branch so the
+      # digest engine and quarterly web view can aggregate previous runs.
+      # This is the ONLY history that persists across CI runs.
+      # ─────────────────────────────────────────────────────────────────
+      - name: Fetch archive from data branch
+        run: |
+          mkdir -p data/all
+          if git ls-remote --heads origin data | grep -q "refs/heads/data"; then
+            git fetch origin data:data --depth=1
+            if git cat-file -e data:data/all 2>/dev/null; then
+              git archive data data/all | tar -x -C .
+              COUNT=$(find data/all -name 'data_*.jsonl' 2>/dev/null | wc -l)
+              echo "✅ Fetched $COUNT archive file(s) from data branch"
+            else
+              echo "data branch exists but has no data/all yet — starting fresh"
+            fi
+          else
+            echo "data branch does not exist yet — starting fresh archive"
+          fi
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -57,6 +81,12 @@ jobs:
           EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
           EMAIL_SMTP_USERNAME: ${{ secrets.EMAIL_SMTP_USERNAME }}
           EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
+
+          # Optional Email / Quarterly settings
+          ARCHIVE_DIR: ${{ secrets.ARCHIVE_DIR }}
+          QUARTER_WINDOW_DAYS: ${{ secrets.QUARTER_WINDOW_DAYS }}
+          QUARTERLY_TOP_N: ${{ secrets.QUARTERLY_TOP_N }}
+          ARXIV_DOI_ENRICH: ${{ secrets.ARXIV_DOI_ENRICH }}
         run: |
           source .venv/bin/activate
           echo "Running Quantum RSS Radar with environment variable configuration:"
@@ -125,14 +155,13 @@ jobs:
             exit 1
           fi
 
-
       - name: Upload pipeline artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pipeline-outputs-${{ github.run_id }}
           path: |
-            data/all/*.jsonl
+            data/all/**/*.jsonl
             data/reports/*.md
           if-no-files-found: warn
           retention-days: 7
@@ -147,12 +176,15 @@ jobs:
         if: always()
         run: |
           # ── Save new files to /tmp before any branch switching ──────
-          mkdir -p /tmp/quantum-new-data/all /tmp/quantum-new-data/reports
-          cp data/all/data_*.jsonl     /tmp/quantum-new-data/all/     2>/dev/null || true
-          cp data/reports/report_*.md  /tmp/quantum-new-data/reports/ 2>/dev/null || true
+          # data/all is now per-source (data/all/<source>/data_*.jsonl), so
+          # stage the whole tree to preserve the layout.
+          mkdir -p /tmp/quantum-new-data
+          cp -r data/all     /tmp/quantum-new-data/all
+          cp -r data/reports /tmp/quantum-new-data/reports
 
-          HAS_FILES=$(ls /tmp/quantum-new-data/all/*.jsonl \
-                         /tmp/quantum-new-data/reports/*.md 2>/dev/null | wc -l)
+          HAS_FILES=$(find /tmp/quantum-new-data/all /tmp/quantum-new-data/reports \
+                            -type f \( -name 'data_*.jsonl' -o -name 'report_*.md' \) \
+                            2>/dev/null | wc -l)
           if [ "$HAS_FILES" -eq 0 ]; then
             echo "No data files generated this run, skipping data branch push"
             exit 0
@@ -199,7 +231,7 @@ jobs:
           # Quantum RSS Radar — Data Archive
 
           This branch stores auto-generated daily pipeline outputs:
-          - `data/all/data_YYYY-MM-DD_HHMMSS.jsonl` — all papers (one JSON per line)
+          - `data/all/<source>/data_YYYY-MM-DD_HHMMSS.jsonl` — per-source papers (one JSON per line)
           - `data/reports/report_YYYY-MM-DD_HHMMSS.md` — human-readable Markdown report
 
           **Retention policy:** files older than 6 months are automatically removed.
@@ -209,13 +241,13 @@ jobs:
 
           # ── Copy new data files into the branch ─────────────────────
           mkdir -p data/all data/reports
-          cp /tmp/quantum-new-data/all/*.jsonl    data/all/     2>/dev/null || true
-          cp /tmp/quantum-new-data/reports/*.md   data/reports/ 2>/dev/null || true
+          cp -r /tmp/quantum-new-data/all/.      data/all/
+          cp -r /tmp/quantum-new-data/reports/.  data/reports/
 
           # ── Remove files whose filename-date is older than 6 months ─
           CUTOFF=$(date -u -d "6 months ago" +%Y-%m-%d)
           REMOVED=0
-          for f in data/all/data_*.jsonl data/reports/report_*.md; do
+          for f in $(find data/all -name 'data_*.jsonl') $(find data/reports -name 'report_*.md'); do
             [ -f "$f" ] || continue
             FILE_DATE=$(basename "$f" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)
             [ -z "$FILE_DATE" ] && continue
@@ -232,8 +264,8 @@ jobs:
           if git diff --staged --quiet; then
             echo "Nothing new to commit on data branch"
           else
-            NEW_JSONL=$(ls /tmp/quantum-new-data/all/*.jsonl    2>/dev/null | wc -l)
-            NEW_MD=$(ls    /tmp/quantum-new-data/reports/*.md   2>/dev/null | wc -l)
+            NEW_JSONL=$(find /tmp/quantum-new-data/all -name 'data_*.jsonl'    2>/dev/null | wc -l)
+            NEW_MD=$(find    /tmp/quantum-new-data/reports -name 'report_*.md' 2>/dev/null | wc -l)
             git commit -m "data: $(date -u '+%Y-%m-%d') — ${NEW_JSONL} JSONL, ${NEW_MD} MD (removed: ${REMOVED})"
             git push origin data
             echo "✅ Data pushed to data branch ($(git rev-parse --short HEAD))"
@@ -309,8 +341,10 @@ jobs:
           echo "**Run Time:** $(date)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Check for processed papers (latest JSONL — actual filename: data_*.jsonl)
-          LATEST_JSONL=$(ls -t data/all/data_*.jsonl 2>/dev/null | head -1)
+          # Check for processed papers (latest JSONL across per-source subdirs)
+          LATEST_JSONL=$(find data/all -name 'data_*.jsonl' 2>/dev/null \
+                          | while read f; do echo "$(basename "$f") $f"; done \
+                          | sort | tail -1 | cut -d' ' -f2-)
           if [ -n "$LATEST_JSONL" ]; then
             PAPER_COUNT=$(wc -l < "$LATEST_JSONL")
             echo "**Papers Analyzed:** $PAPER_COUNT" >> $GITHUB_STEP_SUMMARY
