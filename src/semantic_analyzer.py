@@ -7,13 +7,14 @@ Licensed under the MIT License
 
 import json
 import logging
-from typing import List, Dict, Optional
-from datetime import datetime
 import time
-from openai import OpenAI
+from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Optional
 
-from .models import Paper, PaperAnalysis, Config
+from openai import OpenAI
+
+from .models import Config, Paper, PaperAnalysis
 from .tag_manager import get_tag_manager
 
 logger = logging.getLogger(__name__)
@@ -44,7 +45,9 @@ class LLMAnalysisCache:
             if self.cache_file.exists():
                 with open(self.cache_file, "r", encoding="utf-8") as f:
                     self._cache = json.load(f)
-                logger.info(f"Loaded LLM cache with {len(self._cache)} entries from {self.cache_file}")
+                logger.info(
+                    f"Loaded LLM cache with {len(self._cache)} entries from {self.cache_file}"
+                )
         except Exception as e:
             logger.warning(f"Failed to load LLM cache: {e}")
             self._cache = {}
@@ -71,7 +74,9 @@ class LLMAnalysisCache:
             return entry
         return None
 
-    def put(self, paper_id: str, prompt: str, response_text: str, analysis: PaperAnalysis):
+    def put(
+        self, paper_id: str, prompt: str, response_text: str, analysis: PaperAnalysis
+    ):
         """Store an analysis result in the cache."""
         if not self.enabled:
             return
@@ -114,11 +119,11 @@ class LLMAnalysisCache:
 
 class SemanticAnalyzer:
     """LLM-based analyzer for research papers."""
-    
+
     def __init__(self, config: Config, config_dir: str = "config"):
         """
         Initialize the semantic analyzer.
-        
+
         Args:
             config: System configuration
             config_dir: Path to configuration directory (for loading prompt template)
@@ -127,30 +132,30 @@ class SemanticAnalyzer:
         self.config_dir = config_dir
         self.llm_client = None
         self._initialize_llm_client()
-        
+
         # Cache for research directions (to avoid reloading)
         self._research_directions = None
 
         # Few-shot calibration examples from config/curated_papers.yaml
         self._curated_papers: list = []
-        
+
         # LLM analysis cache
         cache_enabled = getattr(config, "llm_cache_enabled", True)
         self._cache = LLMAnalysisCache(enabled=cache_enabled)
-    
+
     def _initialize_llm_client(self):
         """Initialize the LLM client based on provider."""
         if not self.config.llm_api_key:
             raise ValueError("LLM API key not configured")
-        
+
         client_kwargs = {
             "api_key": self.config.llm_api_key,
         }
-        
+
         # Add base_url if provided (for custom providers)
         if self.config.llm_base_url:
             client_kwargs["base_url"] = self.config.llm_base_url
-        
+
         if self.config.llm_provider == "openai":
             # Standard OpenAI API
             self.llm_client = OpenAI(**client_kwargs)
@@ -167,7 +172,7 @@ class SemanticAnalyzer:
         else:
             # Generic provider - try to initialize with whatever base_url is provided
             self.llm_client = OpenAI(**client_kwargs)
-    
+
     def load_research_directions(self, research_directions: str):
         """Load research directions for context."""
         self._research_directions = research_directions
@@ -179,9 +184,12 @@ class SemanticAnalyzer:
         """
         try:
             from .reference_paper_analyzer import load_curated_papers as _load
+
             data = _load(config_dir)
             self._curated_papers = data.get("papers", [])
-            logger.info(f"Loaded {len(self._curated_papers)} curated paper(s) for few-shot calibration")
+            logger.info(
+                f"Loaded {len(self._curated_papers)} curated paper(s) for few-shot calibration"
+            )
             return len(self._curated_papers)
         except Exception as e:
             logger.warning(f"Could not load curated papers: {e}")
@@ -198,7 +206,12 @@ class SemanticAnalyzer:
             return ""
 
         # Pick at most 2 per tier, total ≤ 5
-        by_tier: dict = {"core": [], "relevant": [], "not_priority": [], "unrelated": []}
+        by_tier: dict = {
+            "core": [],
+            "relevant": [],
+            "not_priority": [],
+            "unrelated": [],
+        }
         for p in self._curated_papers:
             t = p.get("tier", "unrelated")
             if t in by_tier:
@@ -217,48 +230,50 @@ class SemanticAnalyzer:
         lines = ["\nFEW-SHOT CALIBRATION EXAMPLES (use these to anchor your scoring):"]
         for i, p in enumerate(selected, 1):
             lines.append(
-                f"\n[Example {i} — tier: {p.get('tier','?')}, score: {p.get('score','?')}]"
-                f"\nTitle: {p.get('title','')}"
-                f"\nDirection: {p.get('direction','')}"
-                f"\nAbstract: {p.get('abstract_snippet','')[:300]}"
-                f"\nWhy this score: {p.get('reason','')}"
+                f"\n[Example {i} — tier: {p.get('tier', '?')}, score: {p.get('score', '?')}]"
+                f"\nTitle: {p.get('title', '')}"
+                f"\nDirection: {p.get('direction', '')}"
+                f"\nAbstract: {p.get('abstract_snippet', '')[:300]}"
+                f"\nWhy this score: {p.get('reason', '')}"
             )
         lines.append("\n--- End of examples ---")
         return "\n".join(lines)
-    
+
     def analyze_paper(self, paper: Paper, research_directions: str) -> PaperAnalysis:
         """
         Analyze a single paper using LLM and assign tags.
-        
+
         Args:
             paper: Paper to analyze
             research_directions: Research interests as string
-            
+
         Returns:
             PaperAnalysis with scores and summary
         """
         logger.info(f"Analyzing paper: {paper.title[:50]}...")
-        
+
         # Prepare prompt
         prompt = self._create_analysis_prompt(paper, research_directions)
-        
+
         # Call LLM
         response = self._call_llm(prompt)
-        
+
         # Parse response
         analysis = self._parse_llm_response(response, paper.id)
-        
+
         # Assign tags to paper using tag manager
         self._assign_tags_to_paper(paper, analysis.keywords)
-        
-        logger.info(f"Paper analysis complete: score={analysis.relevance_score}, recommend={analysis.recommendation}, tags={paper.tags}")
-        
+
+        logger.info(
+            f"Paper analysis complete: score={analysis.relevance_score}, recommend={analysis.recommendation}, tags={paper.tags}"
+        )
+
         return analysis
-    
+
     def _assign_tags_to_paper(self, paper: Paper, llm_keywords: List[str]) -> None:
         """
         Assign tags to paper using tag manager.
-        
+
         Args:
             paper: Paper to assign tags to
             llm_keywords: Keywords extracted by LLM
@@ -266,17 +281,18 @@ class SemanticAnalyzer:
         try:
             tag_manager = get_tag_manager()
             paper.tags = tag_manager.extract_and_assign_tags(
-                paper_title=paper.title,
-                abstract=paper.abstract,
-                llm_tags=llm_keywords
+                paper_title=paper.title, abstract=paper.abstract, llm_tags=llm_keywords
             )
             logger.debug(f"Assigned tags to paper {paper.id}: {paper.tags}")
         except Exception as e:
             logger.error(f"Failed to assign tags to paper {paper.id}: {e}")
             # Fallback: use LLM keywords directly (normalized)
             from .tag_manager import extract_keywords_from_text
-            paper.tags = extract_keywords_from_text(f"{paper.title} {paper.abstract}", max_keywords=5)[:5]
-    
+
+            paper.tags = extract_keywords_from_text(
+                f"{paper.title} {paper.abstract}", max_keywords=5
+            )[:5]
+
     def _create_analysis_prompt(self, paper: Paper, research_directions: str) -> str:
         """Create LLM prompt for paper analysis.
 
@@ -294,9 +310,11 @@ class SemanticAnalyzer:
                 research_directions=research_directions,
                 few_shot_examples=few_shot_block,
                 title=paper.title,
-                authors=', '.join(paper.authors) if paper.authors else 'Unknown',
+                authors=", ".join(paper.authors) if paper.authors else "Unknown",
                 abstract=paper.abstract,
-                published=paper.published.strftime('%Y-%m-%d') if paper.published else 'Unknown',
+                published=paper.published.strftime("%Y-%m-%d")
+                if paper.published
+                else "Unknown",
                 source=paper.source.value,
                 link=paper.link,
             )
@@ -318,9 +336,9 @@ Scoring precision: output a float with 1 decimal place (e.g. 7.4, 8.2, 5.6). Do 
 
 PAPER TO ANALYZE:
 Title: {paper.title}
-Authors: {', '.join(paper.authors) if paper.authors else 'Unknown'}
+Authors: {", ".join(paper.authors) if paper.authors else "Unknown"}
 Abstract: {paper.abstract}
-Published: {paper.published.strftime('%Y-%m-%d') if paper.published else 'Unknown'}
+Published: {paper.published.strftime("%Y-%m-%d") if paper.published else "Unknown"}
 Source: {paper.source.value}
 Link: {paper.link}
 
@@ -356,7 +374,12 @@ Your analysis:"""
         Returns the template string if the file exists, None otherwise.
         """
         from pathlib import Path
-        template_path = Path(self.config_dir) / "analysis_prompt.md" if hasattr(self, 'config_dir') else Path("config") / "analysis_prompt.md"
+
+        template_path = (
+            Path(self.config_dir) / "analysis_prompt.md"
+            if hasattr(self, "config_dir")
+            else Path("config") / "analysis_prompt.md"
+        )
         if template_path.exists():
             try:
                 with template_path.open("r", encoding="utf-8") as f:
@@ -364,7 +387,9 @@ Your analysis:"""
                 logger.info(f"Loaded prompt template from {template_path}")
                 return content
             except Exception as e:
-                logger.warning(f"Failed to load prompt template from {template_path}: {e}")
+                logger.warning(
+                    f"Failed to load prompt template from {template_path}: {e}"
+                )
         return None
 
     def _fill_prompt_template(self, template: str, **kwargs) -> str:
@@ -377,7 +402,7 @@ Your analysis:"""
             placeholder = "{{" + key + "}}"
             result = result.replace(placeholder, str(value))
         return result
-    
+
     def _call_llm(self, prompt: str, max_retries: int = 5) -> str:
         """Call LLM API with retry logic.
 
@@ -395,8 +420,11 @@ Your analysis:"""
                     response = self.llm_client.chat.completions.create(
                         model=self.config.llm_model,
                         messages=[
-                            {"role": "system", "content": "You are a research analysis assistant. Always respond with valid JSON."},
-                            {"role": "user", "content": prompt}
+                            {
+                                "role": "system",
+                                "content": "You are a research analysis assistant. Always respond with valid JSON.",
+                            },
+                            {"role": "user", "content": prompt},
                         ],
                         temperature=getattr(self.config, "llm_temperature", 0.1),
                         max_tokens=getattr(self.config, "llm_max_tokens", 2500),
@@ -407,8 +435,11 @@ Your analysis:"""
                     response = self.llm_client.chat.completions.create(
                         model=self.config.llm_model,
                         messages=[
-                            {"role": "system", "content": "You are a research analysis assistant. Always respond with valid JSON."},
-                            {"role": "user", "content": prompt}
+                            {
+                                "role": "system",
+                                "content": "You are a research analysis assistant. Always respond with valid JSON.",
+                            },
+                            {"role": "user", "content": prompt},
                         ],
                         temperature=getattr(self.config, "llm_temperature", 0.1),
                         max_tokens=getattr(self.config, "llm_max_tokens", 2500),
@@ -422,12 +453,14 @@ Your analysis:"""
                 return content
 
             except Exception as e:
-                logger.warning(f"LLM call failed (attempt {attempt + 1}/{max_retries}): {e}")
+                logger.warning(
+                    f"LLM call failed (attempt {attempt + 1}/{max_retries}): {e}"
+                )
                 if attempt < max_retries - 1:
-                    time.sleep(2 ** attempt)  # Exponential backoff
+                    time.sleep(2**attempt)  # Exponential backoff
                 else:
                     raise
-    
+
     def _parse_llm_response(self, response_text: str, paper_id: str) -> PaperAnalysis:
         """Parse LLM response into PaperAnalysis object.
 
@@ -441,7 +474,9 @@ Your analysis:"""
             return data
 
         # Layer 3: LLM retry — ask the model to reformat as valid JSON
-        logger.warning(f"JSON parse failed for {paper_id[:20]}... — requesting LLM retry")
+        logger.warning(
+            f"JSON parse failed for {paper_id[:20]}... — requesting LLM retry"
+        )
         retry_prompt = (
             "Your previous response was not valid JSON. "
             "Please respond with ONLY valid JSON, no markdown, no extra text.\n\n"
@@ -457,7 +492,9 @@ Your analysis:"""
             logger.warning(f"LLM retry also failed for {paper_id[:20]}...: {e}")
 
         # Final fallback: return default (score=0)
-        logger.error(f"All JSON parse attempts failed for {paper_id[:20]}... — returning score=0")
+        logger.error(
+            f"All JSON parse attempts failed for {paper_id[:20]}... — returning score=0"
+        )
         return PaperAnalysis(
             paper_id=paper_id,
             relevance_score=0.0,
@@ -467,12 +504,14 @@ Your analysis:"""
                 "motivation": "",
                 "method": "",
                 "result": "",
-                "conclusion": ""
+                "conclusion": "",
             },
-            keywords=[]
+            keywords=[],
         )
 
-    def _try_parse_json(self, response_text: str, paper_id: str) -> Optional[PaperAnalysis]:
+    def _try_parse_json(
+        self, response_text: str, paper_id: str
+    ) -> Optional[PaperAnalysis]:
         """Attempt to parse LLM response as JSON. Returns PaperAnalysis or None."""
         import re
 
@@ -484,7 +523,7 @@ Your analysis:"""
             pass
 
         # Layer 2: regex extract JSON block
-        match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        match = re.search(r"\{.*\}", response_text, re.DOTALL)
         if match:
             try:
                 data = json.loads(match.group())
@@ -506,7 +545,13 @@ Your analysis:"""
 
         # Ensure summary has all required fields
         summary = data.get("summary", {})
-        required_summary_fields = ["tldr", "motivation", "method", "result", "conclusion"]
+        required_summary_fields = [
+            "tldr",
+            "motivation",
+            "method",
+            "result",
+            "conclusion",
+        ]
         for field in required_summary_fields:
             if field not in summary:
                 summary[field] = ""
@@ -527,10 +572,12 @@ Your analysis:"""
             recommendation=recommendation,
             summary=summary,
             keywords=keywords,
-            direction=direction
+            direction=direction,
         )
-    
-    def analyze_papers_batch(self, papers: List[Paper], research_directions: str) -> List[PaperAnalysis]:
+
+    def analyze_papers_batch(
+        self, papers: List[Paper], research_directions: str
+    ) -> List[PaperAnalysis]:
         """
         Analyze multiple papers with rate limiting and LLM analysis cache.
 
@@ -570,7 +617,9 @@ Your analysis:"""
                     self._assign_tags_to_paper(paper, analysis.keywords)
                     analyses.append(analysis)
                     cache_hits += 1
-                    logger.info(f"Cache HIT [{cache_hits}]: {paper.title[:50]}... → score={analysis.relevance_score}")
+                    logger.info(
+                        f"Cache HIT [{cache_hits}]: {paper.title[:50]}... → score={analysis.relevance_score}"
+                    )
                     continue
 
                 # ── Cache miss → call LLM ─────────────────────────
@@ -597,57 +646,71 @@ Your analysis:"""
 
                 # Log progress
                 if (i + 1) % 5 == 0 or i == len(papers) - 1:
-                    logger.info(f"Progress: {i + 1}/{len(papers)} papers (cache hits: {cache_hits}, misses: {cache_misses})")
+                    logger.info(
+                        f"Progress: {i + 1}/{len(papers)} papers (cache hits: {cache_hits}, misses: {cache_misses})"
+                    )
 
             except Exception as e:
                 logger.error(f"Failed to analyze paper {paper.id}: {e}")
                 # Add a failed analysis marker (don't cache failures)
-                analyses.append(PaperAnalysis(
-                    paper_id=paper.id,
-                    relevance_score=0.0,
-                    recommendation=False,
-                    summary={
-                        "tldr": f"Analysis failed: {str(e)[:50]}",
-                        "motivation": "",
-                        "method": "",
-                        "result": "",
-                        "conclusion": ""
-                    },
-                    keywords=[]
-                ))
+                analyses.append(
+                    PaperAnalysis(
+                        paper_id=paper.id,
+                        relevance_score=0.0,
+                        recommendation=False,
+                        summary={
+                            "tldr": f"Analysis failed: {str(e)[:50]}",
+                            "motivation": "",
+                            "method": "",
+                            "result": "",
+                            "conclusion": "",
+                        },
+                        keywords=[],
+                    )
+                )
 
-        logger.info(f"Completed analysis of {len(analyses)} papers "
-                     f"(cache hits: {cache_hits}, misses: {cache_misses}, "
-                     f"cache size: {self._cache.size})")
+        logger.info(
+            f"Completed analysis of {len(analyses)} papers "
+            f"(cache hits: {cache_hits}, misses: {cache_misses}, "
+            f"cache size: {self._cache.size})"
+        )
         return analyses
-    
-    def filter_and_rank_papers(self, papers: List[Paper], analyses: List[PaperAnalysis]) -> List[tuple[Paper, PaperAnalysis]]:
+
+    def filter_and_rank_papers(
+        self, papers: List[Paper], analyses: List[PaperAnalysis]
+    ) -> List[tuple[Paper, PaperAnalysis]]:
         """
         Filter and rank papers based on analysis results.
-        
+
         Args:
             papers: List of papers
             analyses: Corresponding analyses
-            
+
         Returns:
             List of (paper, analysis) tuples sorted by relevance score (descending)
         """
         # Create mapping from paper ID to paper
         paper_dict = {paper.id: paper for paper in papers}
-        
+
         # Combine papers with analyses
         paper_analyses = []
         for analysis in analyses:
             paper = paper_dict.get(analysis.paper_id)
             if paper:
                 paper_analyses.append((paper, analysis))
-        
+
         # Filter by minimum relevance score
-        filtered = [(p, a) for p, a in paper_analyses if a.relevance_score >= self.config.min_relevance_score]
-        
+        filtered = [
+            (p, a)
+            for p, a in paper_analyses
+            if a.relevance_score >= self.config.min_relevance_score
+        ]
+
         # Sort by relevance score (descending)
         filtered.sort(key=lambda x: x[1].relevance_score, reverse=True)
-        
-        logger.info(f"Filtered {len(paper_analyses)} papers to {len(filtered)} with score >= {self.config.min_relevance_score}")
-        
+
+        logger.info(
+            f"Filtered {len(paper_analyses)} papers to {len(filtered)} with score >= {self.config.min_relevance_score}"
+        )
+
         return filtered
