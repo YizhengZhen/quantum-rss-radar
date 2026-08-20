@@ -48,7 +48,7 @@ def load_config() -> Config:
     email_sender = os.getenv("EMAIL_SENDER")
     email_recipient = os.getenv("EMAIL_RECIPIENT")
     email_smtp_server = os.getenv("EMAIL_SMTP_SERVER")
-    email_smtp_port_str = os.getenv("EMAIL_SMTP_PORT", "587")
+    email_smtp_port_str = os.getenv("EMAIL_SMTP_PORT") or "587"
     email_smtp_username = os.getenv("EMAIL_SMTP_USERNAME")
     email_smtp_password = os.getenv("EMAIL_SMTP_PASSWORD")
 
@@ -59,23 +59,27 @@ def load_config() -> Config:
         email_smtp_port = 587
 
     # Get processing settings from environment variables
-    max_papers_per_feed = int(os.getenv("MAX_PAPERS_PER_FEED", "50"))
-    min_relevance_score = float(os.getenv("MIN_RELEVANCE_SCORE", "5.0"))
+    # NB: use `os.getenv("X") or default` so an env var that is PRESENT but
+    # EMPTY (e.g. an unset GitHub secret expands to "") still falls back to
+    # the default instead of crashing int()/float() on ''. This bit CI in
+    # run #160: 'invalid literal for int() with base 10: \'\''.
+    max_papers_per_feed = int(os.getenv("MAX_PAPERS_PER_FEED") or "50")
+    min_relevance_score = float(os.getenv("MIN_RELEVANCE_SCORE") or "5.0")
 
     # Get output directories
-    output_dir = os.getenv("OUTPUT_DIR", "data")
-    web_dir = os.getenv("WEB_DIR", "web_output")
+    output_dir = os.getenv("OUTPUT_DIR") or "data"
+    web_dir = os.getenv("WEB_DIR") or "web_output"
 
     # Get quarterly / archive settings
-    archive_dir = os.getenv("ARCHIVE_DIR", "data/all")
-    quarter_window_days = int(os.getenv("QUARTER_WINDOW_DAYS", "90"))
-    quarterly_top_n = int(os.getenv("QUARTERLY_TOP_N", "50"))
+    archive_dir = os.getenv("ARCHIVE_DIR") or "data/all"
+    quarter_window_days = int(os.getenv("QUARTER_WINDOW_DAYS") or "90")
+    quarterly_top_n = int(os.getenv("QUARTERLY_TOP_N") or "50")
 
     # Get advanced settings
-    rss_timeout = int(os.getenv("RSS_TIMEOUT", "30"))
-    llm_timeout = int(os.getenv("LLM_TIMEOUT", "60"))
-    llm_temperature = float(os.getenv("LLM_TEMPERATURE", "0.1"))
-    llm_max_tokens = int(os.getenv("LLM_MAX_TOKENS", "2500"))
+    rss_timeout = int(os.getenv("RSS_TIMEOUT") or "30")
+    llm_timeout = int(os.getenv("LLM_TIMEOUT") or "60")
+    llm_temperature = float(os.getenv("LLM_TEMPERATURE") or "0.1")
+    llm_max_tokens = int(os.getenv("LLM_MAX_TOKENS") or "2500")
     debug = os.getenv("DEBUG", "false").lower() == "true"
 
     config = Config(
