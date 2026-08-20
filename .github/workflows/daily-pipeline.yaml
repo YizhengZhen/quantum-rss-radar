@@ -179,8 +179,12 @@ jobs:
           # data/all is now per-source (data/all/<source>/data_*.jsonl), so
           # stage the whole tree to preserve the layout.
           mkdir -p /tmp/quantum-new-data
-          cp -r data/all     /tmp/quantum-new-data/all
-          cp -r data/reports /tmp/quantum-new-data/reports
+          # Only data/all is fetched from the data branch; data/reports is
+          # produced by the pipeline. If the pipeline failed before writing
+          # reports (e.g. a transient RSS/network outage), the dir may not
+          # exist — guard the copies so this step never hard-fails on that.
+          if [ -d data/all ];     then cp -r data/all     /tmp/quantum-new-data/all;     else mkdir -p /tmp/quantum-new-data/all;     fi
+          if [ -d data/reports ]; then cp -r data/reports /tmp/quantum-new-data/reports; else mkdir -p /tmp/quantum-new-data/reports; fi
 
           HAS_FILES=$(find /tmp/quantum-new-data/all /tmp/quantum-new-data/reports \
                             -type f \( -name 'data_*.jsonl' -o -name 'report_*.md' \) \
