@@ -43,6 +43,15 @@ LLM_API_KEY="sk-..."              # OpenAI / DeepSeek API 密钥
 LLM_PROVIDER="deepseek"           # openai | deepseek | azure | local
 LLM_BASE_URL="https://api.deepseek.com"
 LLM_MODEL="deepseek-chat"
+# LLM_REASONING_EFFORT（可选，默认 low）：
+#   deepseek-v4-flash 等推理模型会持续"思考"直到撞上 max_tokens，既拖慢每次调用，
+#   又可能在长思维链时返回空正文（score=0 的根因之一）。
+#   - "low"   ：限制思考，速度快且对"从摘要判相关性"这类简单任务足够（推荐）
+#   - "high"  ：允许更深入思考（更慢，适合复杂任务）
+#   - ""      ：不传该参数（用模型默认行为）
+#   说明：本地写 .env；CI 无需在 Secrets 里额外配置——未设置时自动回退 "low"。
+LLM_REASONING_EFFORT="low"
+LLM_MAX_TOKENS=2500               # 可选：单次输出上限（思考+正文），默认 2500
 
 # ===== 处理控制 =====
 MAX_PAPERS_PER_FEED=50            # 每源最大论文数
@@ -110,6 +119,8 @@ docker run --env-file .env quantum-rss-radar
 | `EMAIL_SMTP_PASSWORD` | 邮件 App 密码 |
 | `EMAIL_SENDER` / `EMAIL_RECIPIENT` | 发件人 / 收件人 |
 | `GITHUB_TOKEN` | 自动创建（Actions 内置）|
+
+**非必需 Secrets（不设置也能正常运行，代码有默认值）：** `LLM_BASE_URL`、`LLM_MODEL`、`EMAIL_ENABLED`、`EMAIL_SMTP_SERVER` / `PORT` / `USERNAME`、`ARCHIVE_DIR`、`QUARTER_WINDOW_DAYS`、`QUARTERLY_TOP_N`、`ARXIV_DOI_ENRICH`、`LLM_REASONING_EFFORT`。这些都在 `src/config_loader.py` 里用 `os.getenv("X") or 默认值` 处理——即使 secret 未设置（GitHub 展开为空字符串），也会回退到默认值。例如 `LLM_REASONING_EFFORT` 默认 `low`，只有想改成 `high` 或关闭时才需在 Secrets 里配置。
 
 ---
 
