@@ -80,6 +80,7 @@ def load_config() -> Config:
     llm_timeout = int(os.getenv("LLM_TIMEOUT") or "60")
     llm_temperature = float(os.getenv("LLM_TEMPERATURE") or "0.1")
     llm_max_tokens = int(os.getenv("LLM_MAX_TOKENS") or "2500")
+    llm_reasoning_effort = os.getenv("LLM_REASONING_EFFORT") or "low"
     debug = os.getenv("DEBUG", "false").lower() == "true"
 
     config = Config(
@@ -108,6 +109,7 @@ def load_config() -> Config:
     config._llm_timeout = llm_timeout
     config._llm_temperature = llm_temperature
     config._llm_max_tokens = llm_max_tokens
+    config._llm_reasoning_effort = llm_reasoning_effort
     config._debug = debug
     config._jekyll_site_dir = "jekyll_site/_site"
     config._deep_read_enabled = os.getenv("DEEP_READ_ENABLED", "true").lower() == "true"

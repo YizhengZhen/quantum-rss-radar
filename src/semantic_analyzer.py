@@ -403,6 +403,17 @@ Your analysis:"""
             result = result.replace(placeholder, str(value))
         return result
 
+    def _reasoning_effort_kwarg(self) -> dict:
+        """Return {'reasoning_effort': v} when configured (default 'low').
+
+        deepseek-v4-flash is a reasoning model that keeps 'thinking' until it
+        exhausts max_tokens, which produces EMPTY content for papers that
+        trigger a long chain-of-thought and makes every call slow. Capping
+        reasoning effort ('low') prevents the runaway and is much faster.
+        """
+        effort = getattr(self.config, "llm_reasoning_effort", "low")
+        return {"reasoning_effort": effort} if effort else {}
+
     def _call_llm(self, prompt: str, max_retries: int = 5) -> str:
         """Call LLM API with retry logic.
 
@@ -429,9 +440,11 @@ Your analysis:"""
                         temperature=getattr(self.config, "llm_temperature", 0.1),
                         max_tokens=getattr(self.config, "llm_max_tokens", 2500),
                         response_format={"type": "json_object"},
+                        **self._reasoning_effort_kwarg(),
                     )
                 except Exception:
-                    # Fallback: some local/custom models don't support response_format
+                    # Fallback: some local/custom models don't support
+                    # response_format and/or reasoning_effort
                     response = self.llm_client.chat.completions.create(
                         model=self.config.llm_model,
                         messages=[

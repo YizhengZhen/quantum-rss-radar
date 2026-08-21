@@ -207,6 +207,7 @@ class Config(BaseModel):
         self._llm_timeout = 60
         self._llm_temperature = 0.1
         self._llm_max_tokens = 2500
+        self._llm_reasoning_effort = "low"
         self._debug = False
         self._deep_read_enabled = True
         self._llm_cache_enabled = True
@@ -242,6 +243,16 @@ class Config(BaseModel):
         out of tokens before writing the JSON answer and returns empty content.
         """
         return getattr(self, "_llm_max_tokens", 2500)
+
+    @property
+    def llm_reasoning_effort(self) -> str:
+        """Get LLM reasoning_effort knob ('low'/'medium'/'high' or '' to disable).
+
+        deepseek-v4-flash keeps 'thinking' until it exhausts max_tokens, which
+        both slows every call and yields EMPTY content on long chain-of-thought.
+        Capping it low makes scoring fast and prevents the empty-response bug.
+        """
+        return getattr(self, "_llm_reasoning_effort", "low")
 
     @property
     def debug(self) -> bool:
