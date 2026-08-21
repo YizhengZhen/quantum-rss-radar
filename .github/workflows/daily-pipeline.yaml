@@ -267,7 +267,7 @@ jobs:
           done
           [ "$REMOVED" -gt 0 ] && echo "Removed $REMOVED expired file(s)" || echo "No expired files found"
 
-          # ── Commit and push ─────────────────────────────────────────
+          # ── Commit and push (with concurrent-run rebase retry) ──────
           git add -A
           if git diff --staged --quiet; then
             echo "Nothing new to commit on data branch"
@@ -275,8 +275,25 @@ jobs:
             NEW_JSONL=$(find /tmp/quantum-new-data/all -name 'data_*.jsonl'    2>/dev/null | wc -l)
             NEW_MD=$(find    /tmp/quantum-new-data/reports -name 'report_*.md' 2>/dev/null | wc -l)
             git commit -m "data: $(date -u '+%Y-%m-%d') — ${NEW_JSONL} JSONL, ${NEW_MD} MD (removed: ${REMOVED})"
-            git push origin data
-            echo "✅ Data pushed to data branch ($(git rev-parse --short HEAD))"
+            # The data branch is shared: a concurrent CI run may have pushed
+            # while we ran, causing a non-fast-forward rejection. Data files are
+            # per-run timestamped, so rebasing our commit onto the fresh remote
+            # tip is safe — both runs' files coexist. Retry fetch+rebase up to 3x.
+            PUSHED=0
+            for attempt in 1 2 3; do
+              if git push origin data 2>/dev/null; then
+                echo "✅ Data pushed to data branch ($(git rev-parse --short HEAD))"
+                PUSHED=1
+                break
+              fi
+              echo "  data push rejected (non-fast-forward) — attempt ${attempt}/3: rebasing onto origin/data..."
+              git fetch origin data
+              git rebase origin/data 2>/dev/null || git rebase --abort
+            done
+            if [ "$PUSHED" -ne 1 ]; then
+              echo "❌ Failed to push data branch after 3 attempts"
+              exit 1
+            fi
           fi
 
       # ─────────────────────────────────────────────────────────────────
