@@ -72,6 +72,10 @@ jobs:
           # Optional LLM settings
           LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
           LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          # Cap reasoning-model thinking (code default: low) to avoid the
+          # empty-response bug and keep the pipeline fast. Unset secret -> ""
+          # -> code falls back to "low".
+          LLM_REASONING_EFFORT: ${{ secrets.LLM_REASONING_EFFORT }}
 
           # Optional Email Configuration
           EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
