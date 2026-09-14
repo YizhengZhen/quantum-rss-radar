@@ -1,0 +1,1462 @@
+[
+  {
+    "id": "arx:2609.11952v1",
+    "title": "ChemMat-AgentSafetyBench: Evaluating Long-Horizon Attacks and Defenses in Chemistry and Materials Agents",
+    "authors": [
+      "Zhan'ao Yao, Zhihao Gao, Liang Yin, Boxuan Zhang, Xiaoyu Wu, Linjing Li, Rongyan Wang, Tingwei Chen, Youwei Wang, Xiaolin Zhao, Jiahui Shi, Jianjun Liu"
+    ],
+    "abstract": "arXiv:2609.11952v1 Announce Type: new \nAbstract: Chemistry and materials agents integrate literature retrieval, candidate generation, property prediction, and protocol planning into continuous discovery workflows. Consequently, the relevant safety question is shifting from whether a model answers a hazardous question to whether an agent releases a hazardous protocol through a tool-mediated workflow. We introduce \\bench, a benchmark that evaluates whether chemistry and materials agents can be steered toward hazardous endpoints through user input, tool observations, or persistent memory. The benchmark contains 432 fixed harmful case specifications spanning eight hazard classes, three scenario shells, four tool-and-memory environments, a single-turn direct-attack baseline, and five online long-horizon attacks: intent hijacking, tool chaining, objective drifting, task injection, and memory poisoning. The concrete language of each online attack is generated from the evolving trajectory at runtime and is therefore not counted in the static benchmark size. In the four-model main experiment with a fixed attacker, agents release complete hazardous synthesis or preparation procedures in 25.6\\% of runs. Replacing the attacker model yields mean success rates from 18.4\\% to 26.5\\%, indicating that the risk is not an artifact of a single attacker. Input- and state-level defenses adapted from general-purpose agent safety, as well as candidate checks designed for chemistry and materials, reduce some failures but still leave complete-path release rates between 9.2\\% and 22.5\\%. Existing defenses therefore do not simultaneously cover multi-entry contamination, tool state, and the final artifact boundary. These results highlight a widening gap between the rapid development of scientific agents and the safety evaluation and defenses available to the chemistry and materials community.",
+    "link": "https://arxiv.org/abs/2609.11952",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962726",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.11952v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.11991v1",
+    "title": "A Survey on Quantum-Safe Cryptographic Mechanisms: Building Blocks and Applications",
+    "authors": [
+      "Ricardo Parizotto, Preeti Yadav, Marcus Freire, Anderson Tomkelski, Maycon Peixoto, Emmanuel Zambrini Cruzeiro, Israat Haque"
+    ],
+    "abstract": "arXiv:2609.11991v1 Announce Type: new \nAbstract: The possible emergence of fault-tolerant quantum computers may enable widely used cryptographic algorithms to be broken. These algorithms for public key encryption and digital signatures could be exposed if an efficient algorithm is employed. This poses a threat to existing infrastructure, motivating the development of mechanisms that can withstand quantum-computer cybersecurity risks. However, the transition to new security mechanisms is still underway and faces many challenges, including identifying which applications are under threat and implementing agile, scalable migration processes. In this work, we survey the state of the art in quantum-safe cryptographic mechanisms, existing applications targeting migration, and open challenges. We examine the building blocks commonly used to integrate\n  quantum-safe mechanisms into existing applications and categorize them by the security mechanisms they employ. Next, we systematically review existing migrations into quantum-safe schemes and categorize them by application domain, including Telecommunications, the Internet of Things, and Blockchains. Finally, we summarize the challenges that must be addressed to enable a successful migration to quantum-resistant mechanisms, as well as the motivations for pursuing this migration.",
+    "link": "https://arxiv.org/abs/2609.11991",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962783",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.11991v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.NI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12001v1",
+    "title": "Scan the Skill, Govern the Action: Composing Registry Verdicts with Runtime Consequence Control",
+    "authors": [
+      "Rohit Taneja, Travis Weber"
+    ],
+    "abstract": "arXiv:2609.12001v1 Announce Type: new \nAbstract: Agent skill registries screen what they publish. OpenClaw's security team reported that its scanners overlap on at most 10.4% of combined positives, and 81.9% of flagged skills are caught by one scanner alone. We take that as given, and suggest the open question is not which scanner is right but which is being asked. Each answers a form of \"is this skill malicious?\", which is what it was built for. \"Is this action permitted here, by this operator, right now?\" is not one it is designed to express.\n  We report three measurements over 66,192 public ClawHub skill versions. First, 705 skills across 135 distinct publishers that every scanner and the registry's judge rate clean nonetheless instruct an action prohibited by CIS Control 2.7 and NIST SP 800-53 CM-11. A hand audit of 100 puts our detector at 92% precision and found no marker of malicious intent. One publisher contributes 506 of the 705, so we report the distribution with the count. This is reproducible from public artifacts.\n  Second, of 144 commands a live agent executed in a sandbox while following real skill documentation, 34.7% carried a consequence class absent from that document. Third, over 53 cleared skills documenting an action no clean record earns, the agent reached for one in 23 and the gate stopped all 23. The harness and every recorded command are released.\n  We offer one design for that gap: a deterministic resolver with no model in the decision path, feeding a per-(resource, class) trust ledger whose promotion thresholds derive from the operator's stated risk tolerance. Ten clean approvals cannot exclude a true failure rate of 25.9% at 95% confidence. We price the gate's interruptions across a spectrum of operator policies rather than quote one false-positive rate, since friction is a property of the policy, not the gate. We release a 64-case obfuscation benchmark; ours resolves 52%.",
+    "link": "https://arxiv.org/abs/2609.12001",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962809",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12001v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SE",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12003v1",
+    "title": "A Dark Forest First Attack Is Rational Only If the Attacker Accepts It as Its Last",
+    "authors": [
+      "Harvey Dam"
+    ],
+    "abstract": "arXiv:2609.12003v1 Announce Type: new \nAbstract: The Dark Forest argument holds that a civilization that detects another should strike it at once, so detection, and any transmission that invites it, is danger. Existing models make the detected civilization the object of the strike and play the strike on a roster the attacker knows; where they advise restraint, the advice rests on steps that fail in the cases it is for. This paper takes the object of hostility to be remaining uncontrolled capacity to warn or retaliate, on a roster no attacker ever knows to be complete. A first strike is rational only if the timing benefit of what it removes is at least the disclosure loss from every leftover that learns of it. A leftover able to bring about the attacker's destruction, by striking or by warning one who can, costs the attacker its whole stake, and the actors the attacker has never found are such a leftover that no strike removes. A Dark Forest believer that strikes first therefore accepts the strike as the last attack it will ever make; the strike is rational only if waiting would raise the cost of removing the target by about the attacker's whole stake. A transmission that reveals the sender gives a receiver a posterior over the sender's capacity, not a target, and proves that the sender can warn. A receiver need not be hostile; for one that is, the sender is a witness it must pay for, so a beacon delays every hostile that cannot be nearly sure of removing the sender's forces, and a free beacon harms its sender only through sure kill, whole-stake urgency, a receiver that fears no one the sender could warn, or an opening hidden from the sender. Messaging to extraterrestrial intelligence (METI) is judged by reach and by what a receiver must believe to act, not by fear of punishment, and a beacon deters by witnessing: the sender need not be able to strike anyone, only to tell someone who can.",
+    "link": "https://arxiv.org/abs/2609.12003",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962847",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12003v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12037v1",
+    "title": "One Click to Leak: Characterizing the Real-World Usage and Threat Impact of MNO-based Single Sign-On Websites",
+    "authors": [
+      "Jiasheng Huang, Mingxuan Liu, Pei Chen, Baojun Liu, Yiming Zhang, Geng Hong, Zhenrui Zhang, Hai Yang, Haixin Duan, Hui Jiang"
+    ],
+    "abstract": "arXiv:2609.12037v1 Announce Type: new \nAbstract: Mobile Network Operator (MNO)-based Single Sign-On (MSSO) is a password-free authentication framework relying on mobile data sessions. Unlike traditional SSO, it shifts the Identity Provider (IdP) to the MNO and the authentication anchor to the Service Provider (SP). MSSO is increasingly deployed and has expanded from mobile apps to websites, yet its web ecosystem and security risks remain largely unexplored. We analyze mainstream MSSO deployments and identify a 3-phase workflow with three trust defects enabling trust hijacking. We further demonstrate One-Click-to-Leak (OCL) attacks, where a single webpage visit can leak sensitive identity information (e.g., phone numbers). With a leading security company, we conduct the first large-scale, longitudinal study of web-based MSSO. We design a hierarchical detection framework using passive DNS correlations and URL reconstruction from search data to identify MSSO-enabled websites. Over one year, we identified 116,852 website URLs across 729 apex domains. Of these URLs, 73.6% exhibit at least one trust defect: 69.4% expose developer credentials, and 27.1% issue high-privilege tokens before user consent, indicating widespread OCL-enabling trust defects. Among the 729 apex domains, 31.8% rely on Resellers, obscuring the downstream SP from the MNO in the analyzed flows. Script analysis identifies 101 websites strongly associated with OCL attack behavior. With our partner, we trace a representative upstream platform subsequently seized by law enforcement and uncover a monetized underground ecosystem. Sanitized backend data shows that it collected 14,100 users' phone numbers within three days and linked them to sensitive information such as browsing activity. Our work provides a comprehensive study of web-based MSSO deployment and security implications. Through responsible disclosure, our work helps secure the mobile authentication ecosystem.",
+    "link": "https://arxiv.org/abs/2609.12037",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962869",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12037v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12069v1",
+    "title": "Feedback Capacity of Stationary Gaussian Channels: An Optimal Schalkwijk-Kailath Scheme",
+    "authors": [
+      "David Fay, Oron Sabag"
+    ],
+    "abstract": "arXiv:2609.12069v1 Announce Type: new \nAbstract: We consider channels with additive colored Gaussian noise and noiseless feedback. Kim's seminal work derived a stationary variational characterization of feedback capacity and further asserted that the capacity-achieving stationary input need not contain a feedback-independent Gaussian component. These results led to the construction of a simple coding scheme, based on the Schalkwijk--Kailath (SK) refinement principle, which was shown to be capacity-achieving. A recent note identified a gap in the proof of the feedback-independent component-removal assertion, thereby leaving the optimality of the SK scheme and subsequent results that rely on it incomplete. In this paper, we prove the component-removal assertion for channels with stationary Gaussian noise that has a rational power spectral density. Our proof uses a perturbation analysis of a convex optimization formulation of feedback capacity and, indeed, shows that every optimizer assigns zero power to the feedback-independent component. Using this stronger property, we construct from any optimizer an explicit SK coding scheme that achieves every rate below feedback capacity with doubly-exponentially decaying maximal error probability.",
+    "link": "https://arxiv.org/abs/2609.12069",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962891",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12069v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12077v1",
+    "title": "Deriving the Pure Price of Anarchy for Networked Resource Allocation Games",
+    "authors": [
+      "Vartika Singh, Philip N. Brown"
+    ],
+    "abstract": "arXiv:2609.12077v1 Announce Type: new \nAbstract: This work considers multi-agent coordination with arbitrary information networks among the agents using a game-theoretic approach. A system designer aims to assign local utility functions to the agents to guide their actions toward a desired system objective. The performance of the assigned local utilities is measured by the well known pure price of anarchy (pPoA) metric that equals the ratio of the system objective at the worst pure Nash equilibrium of the corresponding game to the optimal system objective. Our aim is to derive the utility functions which optimize the pPoA-based performance guarantees for any given information network and system objective. We develop a linear program that derives the optimal pPoA for any arbitrary information network and arbitrary system objective. Our work is the first to solve optimal utility design for arbitrary networks; our techniques generalize previous approaches which considered only the full-information setting. For supermodular objective functions, we prove that counterintuitively, a fully communication-denied utility design is optimal irrespective of the original information network. For submodular system objectives, an exhaustive numerical analysis suggests that the optimal utility design is robust to communication failures even for this case. When the system objective is weighted maximum coverage, the marginal contribution utility design provably optimizes the pPoA for a wide variety of information networks of interest.",
+    "link": "https://arxiv.org/abs/2609.12077",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962913",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12077v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.MA",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.OC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12089v1",
+    "title": "Receiver-Surface Hit Patterns via Legendre Approximation for Molecular Signal Detection",
+    "authors": [
+      "Yasin Bastug, Erencem Ozbey, H. Birkan Yilmaz"
+    ],
+    "abstract": "arXiv:2609.12089v1 Announce Type: new \nAbstract: Detecting whether a transmitter is actively communicating with a receiver is a fundamental problem in molecular communications. A spherical receiver may measure not only the number and arrival times of absorbed molecules, but also their absorption locations on the receiver surface. These locations contain a directional signature that is lost in count-only detection. In this letter, we develop a molecular signal detector based on a Legendre polynomial expansion of the receiver-surface hit density and extend it to a Legendre-based Viterbi sequence detector. By exploiting the surface-level directional signature of molecular arrivals, the proposed detectors provide geometry-aware, efficient, and better-performing alternatives to count-only detection.",
+    "link": "https://arxiv.org/abs/2609.12089",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962933",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12089v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12140v1",
+    "title": "Joint Random Access and Localization in Cell-Free User-Centric Networks with Frequency-Selective Fading Channels",
+    "authors": [
+      "Simon Tarboush, Eleni Gkiouzepi, Giuseppe Caire"
+    ],
+    "abstract": "arXiv:2609.12140v1 Announce Type: new \nAbstract: We study random access (RACH) schemes for cell-free (CF) user-centric networks to handle many geographically distributed users with sporadic traffic and intermittent activity. The RACH must allow the system to: 1) detect preambles sent by the (yet unknown) random access users in the RACH slot; 2) localize them for fast allocation of user-centric radio-unit (RU) clusters. Most prior work uses simplified models, neglecting frame-synchronous but chip-asynchronous transmission, possible line-of-sight (LoS) propagation for certain user-RU pairs, and multipath non-line-of-sight (NLoS) propagation yielding frequency-selective channels. Building on our previous work, we consider location-dependent partitioned random access codebooks where users in a geographic area (location) use the corresponding subset of random access preambles. We present a unified framework for joint detection and localization over a spatially consistent network-wide channel model, incorporating these neglected aspects. We evaluate two schemes: 1) a ``legacy'' scheme using Zadoff-Chu (ZC) sequences, extending the 3GPP 2-step RACH to the CF case; 2) our multisource approximate message passing (AMP) approach extended to multipath frequency-selective fading. For both schemes, we develop novel approximated GLRT preamble detection and Maximum-Likelihood position estimators with super-resolution refinement, implicitly exploiting received signal strength, angle of arrival, and time-difference of arrival information embedded into LoS components. Numerical results show that the AMP-based scheme achieves superior preamble detection, while both schemes have similar and excellent localization capability.",
+    "link": "https://arxiv.org/abs/2609.12140",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962954",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12140v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12141v1",
+    "title": "Random Access and Localization in Cell-Free User-Centric Networks with Multipath Channels",
+    "authors": [
+      "Simon Tarboush, Eleni Gkiouzepi, Giuseppe Caire"
+    ],
+    "abstract": "arXiv:2609.12141v1 Announce Type: new \nAbstract: In a wireless network, the initial/random access mechanism (RACH) allows idle/new users to join the network and (possibly) request allocated transmission resources for subsequent traffic. Building on our own previous work, for cell-free user-centric networks, we consider location-dependent random access codebooks such that users in a certain geographic area (location) make use of the corresponding set of random access preambles (codewords). We expand our previous work in two ways: (1) we consider multipath channels with line-of-sight (LoS) propagation within a given radius; (2) we consider two different approaches. The first makes use of Zadoff-Chu (ZC) sequences and GLRT detection to cope with the unknown delay, and it is conceptually similar to the 3GPP 2-step RACH specification (here extended to the cell-free case). The second builds on our previous work on multisource approximate message passing (AMP). For both schemes, we also consider a novel near Maximum-Likelihood approach for localization of the random access users directly from the detected RACH preambles, implicitly using angle of arrival and time difference of arrival information embedded into the LoS components. Simulation results show that the AMP approach achieves generally better performance for random access user detection, while both approaches have similar localization capability with a slight superiority for the frequency-domain scheme.",
+    "link": "https://arxiv.org/abs/2609.12141",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962975",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12141v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12145v1",
+    "title": "Hardware Fingerprinting FTQC via Quantum Decoder Timing",
+    "authors": [
+      "Friedrich Doku, Jakub Szefer, Kaitlin N. Smith"
+    ],
+    "abstract": "arXiv:2609.12145v1 Announce Type: new \nAbstract: As the quantum computing field transitions toward Fault-Tolerant Quantum Computing (FTQC), intensive efforts are focused on scaling architectures and realizing active error correction. However, this shift introduces security surfaces that remain largely unexplored. Fault-tolerant quantum computers pair a quantum processor with a classical decoder that sits on the critical path of every syndrome-extraction round. For the first time, this work demonstrates that the wall-clock time each decoder takes to process a syndrome measurement and decoding round constitutes a novel, exploitable hardware side channel on physical quantum hardware. Using per-shot decoder timings from three IBM Heron processors collected over a 68-day window, the decode-time distribution alone allows a passive observer to (i) reconstruct the shot-by-shot detector-firing distribution and estimate the workload's logical error rate $p_L$, (ii) infer the code distance in use, and (iii) fingerprint the specific physical device with up to 89% accuracy (a random guess is 33%), with a pooled two-sample Kolmogorov-Smirnov test confirming the decode-time distributions are statistically distinct. In noisy simulation inspired by public data from Google's 105-qubit Willow processor, decoder timing further distinguishes 9 surface-code patches at different locations on the chip with 81% accuracy, showing the side channel persists on below-threshold fault-tolerant hardware from a different vendor and code family.",
+    "link": "https://arxiv.org/abs/2609.12145",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.962996",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12145v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12164v1",
+    "title": "The Information Complexity of Decision Trees",
+    "authors": [
+      "Avantika Agarwal, Shalev Ben-David, Eric Blais"
+    ],
+    "abstract": "arXiv:2609.12164v1 Announce Type: new \nAbstract: We define and study a measure of information complexity for randomized decision trees. We prove three main results about this complexity measure:\n  Information equals amortized size complexity. We show that the information complexity of randomized decision tree is equal to the logarithm of the amortized worst-case randomized tree size complexity of computing a function f. That is, when computing f on n inputs, the logarithm of the randomized tree size is exactly equal to the amount of information needed to compute the function.\n  Information allows for tree size compression. We show that even when computing f on a single input, the information complexity can be used to compress the size of a tree, if we allow a small loss in success probability. With the recent characterization of Chattopadhyay, Dahiya, Mande, Radhakrishnan, and Sanyal (2023), this result shows that the depth of AND-OR trees can also be compressed in terms of information complexity.\n  Direct Product Theorems. We show that the success-conditioned variant of information complexity satisfies a perfect direct product theorem. This result gives an information complexity analogue of the direct product theorem for success-conditioned randomized query complexity by Ben-David and Blais (2025).",
+    "link": "https://arxiv.org/abs/2609.12164",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963020",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12164v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12197v1",
+    "title": "Opening the Strategic Pandora Box: Conditional Transaction Mechanisms",
+    "authors": [
+      "Yonatan Sompolinsky, Ori Newman, Xintong Wang, David Parkes"
+    ],
+    "abstract": "arXiv:2609.12197v1 Announce Type: new \nAbstract: Conditional transaction engines (CTEs) execute conditional instructions for offline users. This paper formalizes the mechanism-design problem within each engine invocation. A conditional transaction mechanism (CTM) decides which pending conditions to evaluate first because each evaluation delays the eventual write. We model this problem as Strategic Pandora, a discounted variant of the Pandora's box model with independent Bernoulli boxes. Agents report privately assessed success probabilities and, in the full model, values for the write action. We propose the reported-Weitzman mechanism (RW) and the reported-values second-price mechanism (RWSP). To compare revenue without a common prior, we introduce dynamic No-Betting Revenue. Under the stated competition and equilibrium conditions, every qualifying pure equilibrium of RW or RWSP earns a constant fraction of its corresponding dynamic NBR benchmark.",
+    "link": "https://arxiv.org/abs/2609.12197",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963043",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12197v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12220v1",
+    "title": "On the Fragility of Worst-Case Nash Equilibria in Atomic Congestion Games",
+    "authors": [
+      "Colton Hill, Brandon Collins, Philip N. Brown"
+    ],
+    "abstract": "arXiv:2609.12220v1 Announce Type: new \nAbstract: Aggregate performance in smart mobility systems depends heavily on the emergent behavior of selfish, resource-sharing agents that participate within the systems. As a result, recent work has focused on how a system designer can leverage incentives to influence behavior so that system cost (e.g., traffic congestion) is minimized. These results show that worst-case equilibria can be quite inefficient compared to system-optimal allocations. However, it is unclear to what extent agents are ``satisfied'' with their decisions in these worst-case scenarios. We demonstrate that in any incentivized atomic congestion game, agents' aggregate satisfaction at equilibrium (relative to their actions in an optimal allocation) is correlated with the efficiency of the corresponding system cost, in the sense that if agents are very satisfied with their equilibrium choices, the equilibrium must be relatively efficient. Further, we show that worst-case Nash equilibria are fragile, as every agent is indifferent between their action in a worst-case equilibrium and their action in a system-optimal allocation. In summary, at equilibrium, either agents are highly satisfied with their decisions or their decisions are highly inefficient, but both cannot be true simultaneously. This work adds to recent results for other classes of games which indicate that worst-case equilibrium efficiency guarantees only occur when agents are indifferent about their decisions.",
+    "link": "https://arxiv.org/abs/2609.12220",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963079",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12220v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12242v1",
+    "title": "Evaluating Practical Enumeration and Blocking Attacks on the Snowflake Circumvention System",
+    "authors": [
+      "Linden Chen, Ryan Sangha, Cecylia Bocovich, Ram Sundara Raman"
+    ],
+    "abstract": "arXiv:2609.12242v1 Announce Type: new \nAbstract: Proxy-based Internet censorship circumvention tools like Snowflake rely on large, dynamic pools of third-party proxies to resist IP-based blocking. We focus on two assumptions underpinning the security of Snowflake: that adversaries cannot easily enumerate proxy IPs, and that blocking those proxies would incur unacceptable collateral damage. In this paper, we test these assumptions by studying practical enumeration and blocking attacks against Snowflake conducted by malicious clients.\n  We combine bounded, ethical real-world measurements with large-scale simulation to evaluate both present-day enumeration and blocking risk and broader attacker capabilities. Over 48 days of real-world measurements from May--June 2025, our attack enumerated over 21,000 unique proxy IP addresses belonging to almost 1,000 autonomous systems. Despite this high number, we find that proxy churn limits the overall effectiveness of enumeration over time, and reduces the impact on clients of individual proxy addresses being blocked. However, at the network level, blocking the top 1% of observed autonomous systems blocks more than 30% of observed Snowflakes while affecting 0% of Tranco Top 100 domains and ~2.5% of Top 1M domains. We discover that the broker's load-aware matching reveals stable, high-capacity proxies to attackers early, especially during periods of elevated demand such as the censorship even in Iran of June 2025, subsequently exposing the networks that contribute disproportionately to system connectivity. In simulation, increasing attacker scale sharply improves both enumeration and blocking success, while higher proxy churn significantly reduces blocking effectiveness. We conclude by discussing and evaluating practical mitigations, some of which have been integrated into Snowflake.",
+    "link": "https://arxiv.org/abs/2609.12242",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963101",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12242v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12263v1",
+    "title": "A First-Principles Evaluation of Graph-Based Network Intrusion Detection Systems",
+    "authors": [
+      "Rui Zhao, Wajih Ul Hassan"
+    ],
+    "abstract": "arXiv:2609.12263v1 Announce Type: new \nAbstract: Graph-based network intrusion detection systems (GIDS) report strong benchmark detection metrics, but those metrics establish little about deployability. We approach the problem from first principles: rather than inheriting the preprocessing, windowing, and thresholding conventions of each published system, we ask what a controlled comparison requires and impose it uniformly. The result is GIDS-Eval, an evaluation framework that decomposes a GIDS into six interchangeable stages and turns those conventions into explicit experimental variables, so reported performance can be attributed to individual stages instead of whole pipelines. We survey nine representative GIDS, reimplement five of them within GIDS-Eval, and evaluate them on four datasets under one matched protocol. We identify nine recurring evaluation gaps and quantify the impact of each: two crafted edges achieve full evasion against three of the eight detector-dataset pairs with anything to hide; the snapshot window alone accounts for a mean 38.3% relative swing in average precision (AP); aligning preprocessing across systems moves AP by up to 61.8 percentage points for a single detector; and none of the 18 detector-dataset pairs we replay can alert as events arrive. We introduce GIDS-Lite, an encoder-free control built in the same framework, which ranks first by AP on two of the four datasets at up to 575$\\times$ lower runtime. Architectural complexity is therefore not a consistent driver of detection quality under our matched protocol on current benchmarks, but it does enlarge the runtime, calibration, and attack surfaces operators must defend.",
+    "link": "https://arxiv.org/abs/2609.12263",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963121",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12263v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12305v1",
+    "title": "Self-Verifying Anomaly Detection using Explainable AI for Cybersecurity of DER Networks",
+    "authors": [
+      "Damilola Popoola, Souradeep Bhattacharya, Manimaran Govindarasu"
+    ],
+    "abstract": "arXiv:2609.12305v1 Announce Type: new \nAbstract: The rapid growth of Distributed Energy Resources (DERs) has significantly expanded the cyber attack surface of modern power grids. Furthermore, increasing sophistication in attack techniques demands anomaly detection systems (ADS) that are accurate, interpretable, and reliable to support DER cybersecurity. While ML-based ADS provide strong detection capabilities, their black-box nature reduces operator trust and limits Security Operation Center's (SOC) ability to effectively interpret alerts and respond, highlighting the need for explainable Artificial Intelligence (XAI) to ensure transparency and operational confidence. This paper presents an XAI-based anomaly detection framework tailored for DER networks (ExCYDER). The proposed framework uses a self-verifying mechanism that validates ADS alerts to ensure trustworthy decision-making. ExCYDER combines LightGBM with SHAP to check whether each model decision aligns with its feature-attribution evidence, allowing the system to confirm that its internal reasoning is consistent and reliable. Experiments on a realistic DNP3 dataset achieved over 98% detection accuracy, an average rule--SHAP consistency of 44.6%, a SHAP latency of 14.5 ms per alert, and a confidence deviation within 5%, demonstrating stable verification behavior with minimal computational overhead. The framework distinguished between coherent and inconsistent alerts without compromising detection accuracy, demonstrating that integrated verification within XAI-based ADS enhances interpretability, auditability, and operational robustness for DER-focused SOCs.",
+    "link": "https://arxiv.org/abs/2609.12305",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963142",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12305v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12315v1",
+    "title": "Function Name Is All You Need to Detect Blockchain Application Attacks",
+    "authors": [
+      "Rui Xi, Zehua Wang, Karthik Pattabiraman"
+    ],
+    "abstract": "arXiv:2609.12315v1 Announce Type: new \nAbstract: Blockchain application attacks, targeting business logic bugs in decentralized applications (dApps), have been an increasing concern to their developers and users, causing significant financial loss. Existing attack detectors either rely on handcrafted rules for detection, or need difficult-to-obtain smart contract source code to analyze attack transactions. This makes them brittle and inapplicable in practice. In this paper, we argue that function name sequences suffice to capture the high-level semantics of a transaction, and hence can be used to detect blockchain application attacks. Our empirical study on transactions from 424 real-world attack incidents shows that 98.46% of call traces can be resolved to function names, whereas only 74.78% invoke contracts with available source code. Based on this observation, we propose TxLucent (pronounced \"translucent\"), an automated framework to detect blockchain application attacks by extracting application semantics from transaction call traces. TxLucent maps call traces to function name sequences and uses a transformer to learn semantics from such sequences. Consequently, TxLucent can detect attacks without relying on hand-coded patterns or source code. Our results show that TxLucent achieves a 1.56% false negative rate on 424 known incidents with 14,611 attack transactions, and an estimated 0.0017% false positive rate for benign transactions from over 500 million transactions on the Ethereum blockchain. Finally, TxLucent takes an average of 24.90 milliseconds to analyze a transaction, thus supporting real-time attack detection on popular blockchains.",
+    "link": "https://arxiv.org/abs/2609.12315",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963162",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12315v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12360v1",
+    "title": "An Evidence-First Multi-LLM Framework for Auditable Critical-Infrastructure Dependency Modeling",
+    "authors": [
+      "Nurjahan, Mst Eshita Khatun, Lamine Noureddine, Aisha Ali-Gombe"
+    ],
+    "abstract": "arXiv:2609.12360v1 Announce Type: new \nAbstract: Critical-infrastructure knowledge is distributed across heterogeneous, incomplete, and weakly structured evidence, making dependency models difficult to construct automatically and difficult to trust. Large language models (LLMs) can extract structured knowledge from such evidence, but direct LLM-to-graph generation risks unsupported relationships, inconsistent terminology, incorrect entity identities, and erroneous dependency endpoints. We present an evidence-first multi-LLM framework for constructing Infrastructure Knowledge Bases (IKBs) and Infrastructure Dependency Graphs (IDGs) from heterogeneous infrastructure documentation. Multiple open-weight LLMs independently extract candidate entities and dependencies from normalized evidence, after which the framework separates evidence verification, ontology grounding, entity resolution, dependency alignment, validation, fusion, and human review. Evidence support, ontology reconciliation, endpoint resolution, model agreement, and human validation remain distinct states, while provenance and unresolved cases are preserved throughout. The validated IKB is then projected deterministically into the IDG without introducing new LLM-generated knowledge. Evaluation in nine infrastructure projects shows that entity recovery achieves substantially higher recall than complete directed dependency recovery and that canonical endpoint resolution is a major constraint in dependency construction. Cross-model overlap is also much lower for dependencies than for entities, indicating that the models often produce non-overlapping candidate assertions rather than a stable majority consensus. These findings support an auditable evidence-to-IKB-to-IDG process in which uncertainty is preserved and resolved progressively rather than collapsed into a single confidence or voting decision.",
+    "link": "https://arxiv.org/abs/2609.12360",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963183",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12360v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12378v1",
+    "title": "An Open-Source End-to-End FHE Implementation for Privacy-Preserving Llama 3 8B Inference",
+    "authors": [
+      "Yuhang Fan, Yusi Chen, Kanyu Ye, Zhuoran Ji"
+    ],
+    "abstract": "arXiv:2609.12378v1 Announce Type: new \nAbstract: Cloud LLM services typically require users to send prompts to a model provider, creating a privacy risk. Fully homomorphic encryption (FHE) lets a server perform inference without decrypting the input, but representing data as ciphertexts adds storage and computational overhead. In CKKS-based LLM inference, the packing scheme maps logical tensors to ciphertexts and slots. It therefore determines the ciphertext count and the homomorphic cost of linear layers, and it constrains how data pass between linear layers, attention, and nonlinear computation. As models and sequences grow, inefficient layouts accumulate encoding, compute, and layout-conversion overhead.\n  We present Odin, an FHE inference system that co-designs ciphertext packing and model execution for Llama. Starting from a THOR-style baseline whose bottleneck is weight encoding, Odin uses a feature-major cross-layer layout to unify residual connections and layer interfaces, and builds transient intra-operator layouts for linear projections and attention. This reduces redundant plaintext encoding of weights in wide projections. Within attention, QK^T produces scores that Softmax can consume directly, and PV consumes the resulting probabilities, avoiding intermediate repacking. For nonlinear ops, we use minimax polynomial approximation with input-range control and joint error allocation guided by model quality, reducing polynomial degree and multiplicative depth. To our knowledge, Odin is the first open-source end-to-end GPU CKKS implementation of Llama-3.\n  With Llama-3-8B weights and a 128-token input, Odin evaluates all 32 Transformer layers on a single NVIDIA H100 80 GB GPU. Server-side end-to-end FHE evaluation takes 366.4 s and 58.9 GiB peak device memory. Under the same model, input, CKKS parameters, and hardware, THOR takes 1651.9 s, a 4.51x speedup.",
+    "link": "https://arxiv.org/abs/2609.12378",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963207",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12378v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12389v1",
+    "title": "Error-Rate Reduction in LDPC Decoding via Bit-Aligned Temporal Reinforcement in Parallel Probabilistic-Bit Dynamics",
+    "authors": [
+      "Naoya Onizawa, Takahiro Hanyu"
+    ],
+    "abstract": "arXiv:2609.12389v1 Announce Type: new \nAbstract: Probabilistic bits (p-bits) provide a physical and algorithmic primitive for stochastic inference, but highly parallel updates can alter their collective dynamics. We study the decoding of random-regular (3, 6) low-density parity-check (LDPC) codes using Jacobi-type p-bit annealing with stochastic partial activation. An additive response-path rule stores each bit's saturated response and reuses it before stochastic readout. High-statistics simulations with independent parameter optimization for each method show pooled bit-error-rate reductions of 33.5%, 74.8%, and 81.8% relative to memoryless probabilistic simulated annealing (pSA) for representative codes of block lengths 96, 192, and 288, respectively. Static gain, normalized averaging, response shuffling, and same-bit binary-state feedback with only its coefficient tuned under the same nonmemory parameters do not reproduce the full saturated-response benefit. Trajectory analysis links the improvement to acquisition of the channel-consistent valid-codeword basin and enhanced post-acquisition stability; the acquisition advantage persists from random and channel-hard-decision starts under the tested conditions. Across all 30 independent code realizations, fixed additive parameter-and-readout packages achieve lower bit- and frame-error rates than separately optimized pSA-specific packages, with neither package retuned for individual codes. These results show that the computational effect of temporal state depends on the retained quantity and its reinjection into stochastic dynamics.",
+    "link": "https://arxiv.org/abs/2609.12389",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963227",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12389v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.ET",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.comp-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12426v1",
+    "title": "IDORacle: Template-Guided SQL-Sink Mediation for Object-Level Authorization in Java Applications",
+    "authors": [
+      "Yuewantong Song, Guanhang Shi, Yin Cai, Changhui Wang, Jin Wei, Ping Chen, Lei Shi, Jiangxing Wu"
+    ],
+    "abstract": "arXiv:2609.12426v1 Announce Type: new \nAbstract: Insecure Direct Object Reference (IDOR), often modeled as Broken Object-Level Authorization (BOLA), remains prevalent in Java database applications because identity and authorization checks at the controller or service layer are disconnected from SQL execution based on resource identifiers. Existing work largely detects these vulnerabilities but offers limited low-intrusion runtime protection for legacy Java-SQL applications. We present IDORacle, a template-guided SQL-sink interception and rewriting framework for preventing horizontal privilege escalation at runtime. IDORacle propagates authenticated identity context across HTTP requests, asynchronous tasks, and data-access boundaries through a server-side trace identifier. At the MyBatis/JDBC boundary, it extracts SQL templates, computes dual fingerprints, and performs one-time template analysis to generate reusable mediation plans. During execution, it combines subject context, SQL ASTs, table metadata, and cached authorization proofs to permit, rewrite, or block operations. Its guard model supports direct ownership predicates, join-derived ownership, probes for group-owned resources, role-sensitive state transitions, and sensitive-column mediation. A Java-SQL benchmark grounded in real-world CVE reports shows that IDORacle prevents the tested horizontal authorization violations with a worst-case guard latency of 0.17 ms. Redundancy-aware optimization reduces average per-instance overhead by more than 90%, to 0.017 ms for hot SQL templates.",
+    "link": "https://arxiv.org/abs/2609.12426",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963248",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12426v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12450v1",
+    "title": "PDoS: A Profitable Denial-of-Service Attack against Proof-of-Work Blockchain Liveness",
+    "authors": [
+      "Junjie Hu, Tianzhu Han, Na Ruan"
+    ],
+    "abstract": "arXiv:2609.12450v1 Announce Type: new \nAbstract: The security and liveness of Proof-of-Work (PoW) blockchains fundamentally depend on the economic rationality of miners. Existing incentive-driven denial-of-service attacks, such as BDoS, can deter rational miners from participating, but require the attacker to continuously absorb substantial economic losses and are therefore difficult to sustain in high-value networks. Meanwhile, prior infiltration-based withholding attacks are designed to extract revenue rather than to directly disrupt chain liveness.\n  We present PDoS, a hybrid attack that combines block header signal deterrence with parasitic revenue extraction. PDoS disrupts blockchain liveness while exploiting the victim pool's share-reward mechanism to subsidize the attack cost, thereby lowering the adversarial hash-power threshold required to induce rational miners to shut down. We further show a counterintuitive result: in high-fee or high-MEV environments, higher block value can make PoW systems less secure by increasing the attacker's parasitic revenue and pushing the attack across the break-even point into a self-sustaining, or even profitable, regime. To the best of our knowledge, PDoS is the first attack to demonstrate that disrupting PoW blockchain liveness can be economically self-sustaining and even profitable.",
+    "link": "https://arxiv.org/abs/2609.12450",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963268",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12450v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12488v1",
+    "title": "Access Control as Verified Parse Constraints",
+    "authors": [
+      "Saranachon Iammongkol, Zhiyi Huang, David Eyers"
+    ],
+    "abstract": "arXiv:2609.12488v1 Announce Type: new \nAbstract: Commercial security gateways repeatedly ship implementation bugs in the code path between the network and the policy decision: hand-written enforcement logic that diverges from the policy author's intent, and ad-hoc request parsers at the network boundary that introduce memory-safety flaws of their own. In both cases the bug is in the deployed enforcement code, not in the policy. Existing approaches either leave the enforcement runtime unverified or connect a formal model to a hand-written engine only by differential testing.\n  Our contribution is a class result: a forward-only, backtrack-free EverParse validator is a verified recognizer for a bounded, finite-state class, and access-control decision functions with fixed-offset fields and bounded disjunction belong to it, so one machine-checked proof transfers to every policy in the class rather than being re-established per policy. Concretely, we encode a bounded policy language's decision function into a fixed-size byte buffer and verify the enforcement code once---covering all byte values---with an SMT solver, proving the validator accepts if and only if the decision function accepts, for every policy, request, and session. Editing rule content over a fixed endpoint set then needs no new proof; adding endpoints reruns the toolchain; extending the language needs new proofs. We establish faithful enforcement of a policy, not that a policy is itself secure.\n  The verified gate is platform-independent, requiring only EverParse/Z3 and a C compiler, whose correctness we assume. We demonstrate a deployment on the seL4 microkernel, which ensures every request passes through the gate and that unverified components cannot corrupt the verified enforcement chain.",
+    "link": "https://arxiv.org/abs/2609.12488",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963288",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12488v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12554v1",
+    "title": "Omniscience for the Masses: New Threats in the Metaverse's Democratized World Creation",
+    "authors": [
+      "Andrea Mengascini, Ryan Aurelio, Jason Polakis, Giancarlo Pellegrino"
+    ],
+    "abstract": "arXiv:2609.12554v1 Announce Type: new \nAbstract: Metaverse platforms increasingly derive their success from user-generated virtual worlds: self-contained social and interactive environments, which can be created by any ordinary user and scale to billions of visits. Platforms such as Roblox, Horizon Worlds, and VRChat now host millions of creator-built worlds that govern how users see, hear, and interact with one another. While this model enables rapid growth and creativity, it fundamentally delegates control over social interactions and world behavior to untrusted users. In this paper, we present the first systematic security and privacy assessment of metaverse world creators. We survey 25 platforms that support user-created worlds and analyze their world-creation capabilities. Guided by this analysis, we design and implement five novel attacks that exploit creator-provided tools to violate spatial, visual, and auditory constraints in immersive environments, enabling covert user surveillance and manipulation without software vulnerabilities or developer-level privileges. We further show that five previously-proposed attacks can be replicated using only standard world-creation features. Finally, we find that existing platform vetting, runtime protections, and creator policies are insufficient to mitigate malicious world-creator behavior, revealing a fundamental mismatch between users' privacy expectations and the powers granted to world creators.",
+    "link": "https://arxiv.org/abs/2609.12554",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963309",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12554v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12571v1",
+    "title": "PIA-Bench: Towards Automated Privacy Impact Assessment with Large Language Models",
+    "authors": [
+      "Jiamin Zheng, Hao-Ping Lee, Luo Mai, Jingjie Li"
+    ],
+    "abstract": "arXiv:2609.12571v1 Announce Type: new \nAbstract: Privacy impact assessment (PIA) is a critical instrument for institutions to proactively identify privacy risks and develop mitigation strategies before system deployment. While mandated across regulatory and institutional contexts, executing PIA requires extensive privacy and technical expertise, posing a particular challenge for teams without access to such resources. Prior work shows the potential of leveraging large language models (LLMs) to assist practitioners' privacy decisions, but little is known about how accurately and reliably LLMs can automate PIA. To this end, we develop PIA-Bench, the first open benchmark for evaluating LLMs on real-world PIAs. We first audited 499 expert-authored PIAs published by US federal agencies and curated 73 structured PIAs, comprising a total of 451 privacy risk and 831 mitigation items, to evaluate LLMs' ability to assess privacy risks and propose mitigations of complex systems. Our results show that off-the-shelf LLMs produce meaningful assessments and identify avenues for future improvement. Finally, we call for improving domain-specific workflows for LLM agents, developing accountable LLM infrastructure, and designing new quality standards for PIAs.",
+    "link": "https://arxiv.org/abs/2609.12571",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963329",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12571v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12572v1",
+    "title": "The Fixed Server Locality Gap of Count Load Assignment Games",
+    "authors": [
+      "Hao Li, Mengfan Ma"
+    ],
+    "abstract": "arXiv:2609.12572v1 Announce Type: new \nAbstract: Marginal-contribution pricing makes the social objective an exact potential, but does not ensure that every stable assignment is efficient. We study indivisible clients with heterogeneous workloads, arbitrary nonnegative assignment costs, and private eligibility menus over a fixed number of shared servers and optional local execution. Each server's social cost is its occupancy multiplied by its aggregate workload and a server-specific coefficient. For every fixed server cap $M$, we prove that the price of anarchy over this class is $\\Theta_M(\\kappa^{1-2^{-M}})$ as the workload-ratio cap $\\kappa$ grows. The upper bound applies to every equilibrium and every feasible comparison, without an acyclic-comparison or strongly-connected-component restriction. Its proof combines a common-multiplier certificate, a source-weighted residual inequality and an ordered moment recurrence. A matching chain family has a realization by mobile unmanned aerial vehicle (UAV) clients and fixed ground servers, with positive altitude, positive-width coverage and an explicitly paid wireless baseline. We prove exact waypoint elimination and give an input-computable component refinement. Scheduling and congestion identities delimit which established bounds transfer. Exact enumeration of 2,800 synthetic games identifies inefficient equilibria, while 270 primary-parameterized synthetic instance-budget records evaluate incremental latency relative to a feasible multistart reference. Tightness concerns the heterogeneity exponent for fixed $M$, not matching leading constants or measured frequency of the worst-case configurations.",
+    "link": "https://arxiv.org/abs/2609.12572",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963349",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12572v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12580v1",
+    "title": "MicroHasTEE: Bare-Metal Haskell for Type-Level Peripheral Ownership on Armv8-M",
+    "authors": [
+      "Robert Krook"
+    ],
+    "abstract": "arXiv:2609.12580v1 Announce Type: new \nAbstract: Arm TrustZone for Armv8-M isolates Secure and Non-secure software, but developers must still coordinate peripheral attribution, interrupt routing, initialization, and gateway interfaces across separately built firmware images. Inconsistent assumptions between these images can compile successfully and emerge only as faults on the target device.\n  We present MicroHasTEE, a multiparty programming framework that expresses both firmware applications as participants in one typed Haskell program. MicroHasTEE represents peripheral authority with type-level capability ledgers and uses indexed setup computations to track resource acquisition, configuration, transfer, and finalization. Domain-specific effect types restrict peripheral operations and interrupt callbacks to the participant that holds the corresponding authority, while typed callable handles describe the Secure services available to Non-secure code. MicroHs compiles the shared program twice to produce separate bare-metal Secure and Non-secure firmware images.\n  We implement MicroHasTEE for an STM32U5 Nucleo board, including TrustZone configuration, peripheral drivers, and a serialized gateway for cross-domain Haskell calls. For programs expressed through its interface, MicroHasTEE rejects inconsistent resource use, attribution changes after configuration, callbacks in the wrong domain, and calls to unregistered Secure services. A door-lock case study demonstrates feasibility, with firmware images occupying 232.7 KiB and 228.4 KiB of flash and approximately 220 KiB of SRAM per domain.",
+    "link": "https://arxiv.org/abs/2609.12580",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963370",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12580v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12582v1",
+    "title": "NovaFabric: Tamper-Evident, Replayable Evidence for Autonomous AI Agent Runs",
+    "authors": [
+      "Mohsen Seyedkazemi Ardebili"
+    ],
+    "abstract": "arXiv:2609.12582v1 Announce Type: new \nAbstract: When an autonomous AI agent does something consequential, what can be proven about what it did? Agent-observability platforms capture traces, but a trace is mutable: alterable undetected, with no recipe for re-executing it, silent on whether captured secrets were removed. Regulation (EU AI Act, ISO 42001, NIST AI RMF) presumes records an independent party can check.\n  We present NovaFabric, producing audit-grade execution evidence: provider-neutral, tamper-evident, replayable, shareable. It records an agent run, without modifying agent logic, into a portable Run Capsule (fifteen-entity schema), sealed with a holistic DSSE signature, RFC 3161 timestamp, Merkle log and redaction attestation. Sealed runs are re-executable under a four-mode replay protocol and exportable as an Evidence Bundle for third-party verification with stock tooling (specified, not evaluated). The contribution is integration, not new cryptography: OpenTelemetry, DSSE/in-toto and W3C PROV.\n  We evaluate eight research questions at measured scope. Mocked replay serves every model response from the capsule (no live model call, 10/10) but is offline w.r.t. models, not the network; only 2/10 tool-using workloads completed; the gap is missing tool-response substitution. Tampering is rejected across three tested classes. Declared-stream completeness is 0.652 (95% CI +/-0.064, ten scenarios). A repaired rule pack redacts 14/14 credential types, preserving 9/9 decoys; diff localises 140/140 mutations. Blast-radius queries: 45.5ms p99 over 10M edges (3.3x faster than a columnar baseline), 167.9ms over 100M (1 client, n=30). A 314-machine, ten-region run finds capsule REST ingest lossless but capped at 61.6 req/s (p99 26.8s) by per-worker serialisation. Six defects found in NovaFabric and its evaluation corpus: four fixed, one withdrawn, one open.\n  Verification is conditional on a stated trusted computing base.",
+    "link": "https://arxiv.org/abs/2609.12582",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963391",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12582v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.DC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12605v1",
+    "title": "A Feature-Rich Embedded NIDS with eBPF/XDP: Detector and Architecture Trade-offs",
+    "authors": [
+      "Shiqi Wu, Oleksii Koshovyi, Georgios Pseiridis Pseiras, Victor Morel, Romaric Duvignau"
+    ],
+    "abstract": "arXiv:2609.12605v1 Announce Type: new \nAbstract: Distributed Denial-of-Service (DDoS) attacks remain a serious threat to transport networks, with recent attack volumes exceeding 30 Tbps, and the telecommunications industry being the main target. Recent work has yet to study the impact of the hosting software architecture on network monitoring solutions, or to assess recent algorithms for improving attack detection. This paper presents a Network Intrusion Detection System (NIDS) for DDoS detection in transport networks, developed in collaboration with Ericsson. Building on a statistical baseline, we improve detection effectiveness with an Isolation Forest trained on a wider set of flow features, extracted by GoFlowMeter, our open-source Go implementation of CICFlowMeter, and we integrate eBPF/XDP so that the NIDS filters real traffic at the kernel level. We further compare three deployments, monolithic, Kafka-based, and gRPC-based microservices, on a Raspberry Pi 5 testbed replaying the CIC-DDoS2019 dataset as real network traffic. Detection quality is governed mainly by the choice of detector rather than by the transport: the Isolation Forest raises recall and F1 score (0.965 live in the monolithic variant) over the baseline by flagging low-volume attack windows that the baseline misses. The transport is not neutral, however: gRPC reaches almost the same accuracy as the monolithic variant while adding less than 2 milliseconds of transport time per window, whereas the asynchronous Kafka pipeline trails by roughly nine percentage points and adds about 27 milliseconds. These findings clarify the trade-off between detection quality and architectural overhead when deploying a NIDS on resource-constrained hardware.",
+    "link": "https://arxiv.org/abs/2609.12605",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963412",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12605v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.DC",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.NI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12621v1",
+    "title": "Universally truthful mechanisms for scheduling",
+    "authors": [
+      "Georgios Anastasiadis, George Christodoulou, Elias Koutsoupias, Annamaria Kovacs, Conrad Schecker"
+    ],
+    "abstract": "arXiv:2609.12621v1 Announce Type: new \nAbstract: We consider universally truthful randomized mechanisms for the problem of scheduling $m$ jobs on $n$ unrelated machines. We prove a lower bound on the expected approximation ratio of every such mechanism whose probability distribution has discrete support. We show that no universally truthful randomized mechanism in this class can achieve approximation ratio smaller than $n/12 - o(n)$ with respect to the optimal makespan. We match this, up to a constant factor, by a mechanism with approximation ratio $n/2 + o(n)$.",
+    "link": "https://arxiv.org/abs/2609.12621",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963435",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12621v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12624v1",
+    "title": "Subgroup Packing for Batched PASTA Transciphering",
+    "authors": [
+      "Mugurel Barcau, Vicen\\c{t}iu Pa\\c{s}ol, George C. \\c{T}urca\\c{s}"
+    ],
+    "abstract": "arXiv:2609.12624v1 Announce Type: new \nAbstract: With transciphering, a server converts symmetrically encrypted records into homomorphic ciphertexts without learning the records or the symmetric key. For the PASTA cipher, this conversion involves dense linear maps whose implementation depends on how record words are arranged in the ciphertext. We ask whether rearranging a fixed batch can reduce its conversion cost. Instead of storing each record's words in a contiguous block, our layout interleaves records so that cyclic word shifts preserve each record's positions, which form a coset of a cyclic subgroup. For direct evaluation as a sum of masked translations, we characterize the required displacements and relate their counts, 255 for the contiguous layout and 128 for the subgroup layout, to a prior transversal-difference invariant.\n  We implement three equally batched schedules for complete PASTA-3 conversion and subsequent public subset-sum queries in HElib. Across twelve paired corpora under six homomorphic keys, all 24 direct and subgroup conversions and all 48 subsequent queries return the expected values and required zeroes. The median paired ratio of direct to subgroup server cost is 1.60, including fresh public generation, conversion and two queries. The reduction comes with less remaining noise capacity. These results establish a packing-dependent cost--noise tradeoff.",
+    "link": "https://arxiv.org/abs/2609.12624",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963455",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12624v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12631v1",
+    "title": "Confusion-Erasure Bounds of Error-Bounded Decoders under QAM",
+    "authors": [
+      "Wenwen Chen, Bin Han, Hans D. Schotten"
+    ],
+    "abstract": "arXiv:2609.12631v1 Announce Type: new \nAbstract: 6G is expected to push ultra-reliable low-latency communication (URLLC) toward stringent residual-error targets for mission-critical services, where undetected errors and erasures carry fundamentally different costs. Block error rate (BLER) conflates block confusions (undetected errors) and block erasures, which have fundamentally different impacts on system reliability. This paper extends the confusion and erasure analysis of error-bounded decoders to square quadrature amplitude modulation (QAM) constellations in the finite blocklength (FBL) regime. To handle QAM's heterogeneous symbol energies - which make the per-pair Euclidean distance a distribution rather than a single value - we derive analytical lower and upper bounds on the block confusion rate by, respectively, collapsing this distribution to its root-mean-square (RMS) distance and averaging the pairwise confusion over it. These bounds are proven to be monotonically decreasing in both the average symbol energy and the blocklength, with the decrease rate governed by the constellation order. Numerical results confirm that as the signal-to-noise ratio (SNR) or redundancy increases, the confusion rate falls many orders of magnitude below the reliability target, leaving detectable erasures as the dominant residual error.",
+    "link": "https://arxiv.org/abs/2609.12631",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963476",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12631v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12646v1",
+    "title": "Poster: Towards Selecting Threat Appropriate Industrial Intrusion Detection Systems",
+    "authors": [
+      "Stefan Lenz, Johannes Weidmann, Martin Henze"
+    ],
+    "abstract": "arXiv:2609.12646v1 Announce Type: new \nAbstract: As the threat landscape against industrial control systems is dynamic, effective security requires detection strategies capable of timely reactions to these evolving threat situations. To address this problem, we propose the idea of a counter-threat intelligence sharing based mechanism to select appropriate detectors for current circumstances. To highlight the potential of this mechanism, we conduct attack-level performance evaluations of various intrusion detection systems. Results show the variance of intrusion detection performance depending on the attack scenario, emphasizing the benefits of such a mechanism for industrial control system security",
+    "link": "https://arxiv.org/abs/2609.12646",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963495",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12646v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12669v1",
+    "title": "Deterministic NC Quadratic Root Counting in Characteristic Two",
+    "authors": [
+      "Sanyam Agarwal, Gorav Jindal"
+    ],
+    "abstract": "arXiv:2609.12669v1 Announce Type: new \nAbstract: Counting satisfying assignments of Boolean formulas is a basic problem in theoretical computer science, with $\\#3\\text{-}\\SAT$ as the standard $\\SharpP$-complete problem. More generally, counting the solutions of a system of polynomial equations over $\\F_2$ is $\\SharpP$-complete. Here we focus on the more structured problem of counting the solutions of a single polynomial equation. For polynomial equations over finite fields, Ehrenfeucht and Karpinski \\cite{computationalcomplexityofxorandcountingproblems1990} showed a sharp difference between degrees two and three: quadratic root counting is solvable in polynomial time, while the degree-three problem is $\\SharpP$-complete. Their quadratic algorithm is sequential. For fixed finite fields, Ishai et al.~\\cite{ishai2012randomizing} later gave deterministic parallel algorithms in odd characteristic and randomized parallel algorithms in characteristic two.\n  We give a deterministic $\\NC$ algorithm for exactly counting the solutions of a quadratic polynomial equation over every fixed finite field of characteristic two. Our algorithm separates the radical and uses the absolute trace to realize the bit distinguishing the two nondegenerate finite-field types as the Arf invariant \\cite{arf1941untersuchungen} of a quadratic form over $\\F_2$. It then recovers that invariant from an integral matrix using Browder's determinant criterion \\cite{browder2006complete}. This replaces the randomized canonical-form step in the algorithm of Ishai et al.",
+    "link": "https://arxiv.org/abs/2609.12669",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963517",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12669v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12681v1",
+    "title": "Bridging the First-Hour Gap: Evaluating AI Reliability and Benchmarking Deficiencies in Cyber Incident Response for Law Enforcement",
+    "authors": [
+      "Roshin Sleeba C, Hiran V Nath"
+    ],
+    "abstract": "arXiv:2609.12681v1 Announce Type: new \nAbstract: The actions of frontline law enforcement officers in the initial hour of a cyber incident play a vital role in determining the ultimate success of an investigation. The minor mistakes they commit might result in irreversible critical impacts. The integrity of the investigation can be compromised, and the prosecution of cyber criminals can be hindered due to minor mistakes that happen in the initial hour. These are mainly because of the volatile nature of digital artifacts that might lead to procedural errors and evidence attrition. This paper provides a systematic survey of decision-support architectures designed to assist first responders of a cybercrime, categorizing them into playbooks, Large Language Models (LLMs), Retrieval-Augmented Generation (RAG) frameworks, and Agentic AI systems. The survey critically considers the constraints of limited technical proficiency and inconsistent forensic infrastructure in a practical scenario. Our analysis identifies RAG-based systems as a relatively viable intermediate solution due to their natural language adaptability. However, significant risk factors like prompt sensitivity and the potential for confident hallucinations in legal contexts pose a major challenge. Furthermore, we review current benchmarks in cybersecurity and demonstrate that they are not sufficient to capture the specific safety and legal requirements of law enforcement, focusing on the initial hour of the cybercrime. We conclude by arguing for the necessity of a new evaluation benchmark focused on naive query robustness and evidence preservation, so as to ensure that AI-driven guidance aligns with the mandatory demands of judicial proceedings.",
+    "link": "https://arxiv.org/abs/2609.12681",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963538",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12681v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12715v1",
+    "title": "Supermartingale Certificates for Parametric MDPs",
+    "authors": [
+      "Kaushik Mallik, {\\DH}or{\\dj}e \\v{Z}ikeli\\'c"
+    ],
+    "abstract": "arXiv:2609.12715v1 Announce Type: new \nAbstract: We consider the problems of formal verification and synthesis in parametric Markov decision processes (MDPs) with general measurable state and action spaces. The heart of our approach is a parameter flattening transformation, which allows us to transform parametric MDPs into semantically equivalent non-parametric MDPs. Building on this transformation, we introduce the novel notion of parametric supermartingale certificates, which generalize the traditional supermartingale certificates---used for non-parametric MDPs---to the parametric setting. We use our parametric supermartingale certificates to design algorithms for verification and approximate synthesis in polynomial arithmetic parametric MDPs. This leads to the first verification and synthesis algorithms for parametric MDPs with general state and action spaces. We implement our algorithms and experimentally evaluate them on several continuous parametric random walk benchmarks.",
+    "link": "https://arxiv.org/abs/2609.12715",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963558",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12715v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SY",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12727v1",
+    "title": "Fresh-Challenge VDF Attestations for Model-Relative Response Latency",
+    "authors": [
+      "Ansar Yesmukhanov, Aruzhan Tlessova"
+    ],
+    "abstract": "arXiv:2609.12727v1 Announce Type: new \nAbstract: Can a finite verifier obtain public, model-relative evidence about response latency for sequential computation? Verifiable delay functions (VDFs) make this possible in principle: evaluation requires T sequential steps, whereas verification is efficient in the security parameter and polylogarithmic in the numerical value of T for standard constructions. Thus a delay can be astronomically large to evaluate yet succinctly represented and feasibly checked. A VDF proof for a chosen message alone is insufficient because it may be precomputed. We specify and analyze Fresh-Challenge VDF Attestations (FCLA), a protocol composition that binds a VDF to an unpredictable public challenge, a message, and independently auditable release and receipt records. Under explicit assumptions about VDF sequentiality, the challenge source, witness logs, and a calibrated upper bound on an adversary's sequential evaluation rate, an accepted FCLA transcript is inconsistent with post-challenge generation by an adversary in that bounded model. The result neither identifies a named claimant nor excludes relaying, outsourcing, or a faster unmodeled machine. A benchmark of the public reference implementation confirms the expected empirical separation between evaluation and verification on one documented machine. Our contribution is a protocol/design analysis and benchmarked reference implementation layer, not a new VDF construction or cryptographic primitive.",
+    "link": "https://arxiv.org/abs/2609.12727",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963577",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12727v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12792v1",
+    "title": "A Randomized $\\frac32$-Approximation for Strategic Facility Location on a Circle",
+    "authors": [
+      "Hau Chan, Jianan Lin, Chenhao Wang"
+    ],
+    "abstract": "arXiv:2609.12792v1 Announce Type: new \nAbstract: We study strategyproof mechanisms for locating a single facility on a circle so as to serve a set of strategic agents under the utilitarian social cost objective. We analyze a simple parity-dependent mechanism that randomizes between the Random Dictator (RD) mechanism and the Proportional Circle Distance (PCD) mechanism. For an odd number \\(n\\) of agents, this mechanism mixes RD and PCD with equal probability, as originally proposed by Rogowski and Dziubi{\\'n}ski (IJCAI 2025). For even \\(n\\), it mixes RD with a random-deletion extension of PCD, in which one agent is removed uniformly at random before PCD is applied to the remaining agents. Our main result shows that this mechanism is strategyproof and achieves an approximation ratio of \\(\\frac32\\) for every \\(n\\ge 3\\). This improves the \\(\\frac74\\) upper bound of Rogowski and Dziubi{\\'n}ski, which applied only to odd \\(n\\), and extends the guarantee to even numbers of agents. Finally, we establish a lower bound of \\(\\frac{11}{10}\\) on the approximation ratio of any randomized strategyproof mechanism, improving on the previous lower bound of \\(1.0456\\) due to Meir (SAGT 2019).",
+    "link": "https://arxiv.org/abs/2609.12792",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963597",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12792v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12810v1",
+    "title": "Batten the Hatches: Cybersecurity with Military Mariners",
+    "authors": [
+      "Ryan Von Brock, Anna Raymaker, Animesh Chhotaray, Frank Li, Saman Zonouz, Raheem Beyah"
+    ],
+    "abstract": "arXiv:2609.12810v1 Announce Type: new \nAbstract: Cyberwarfare has become a key component of contemporary geopolitical conflict. However, there has been extremely limited systematic investigation into how cybersecurity is handled by military organizations and personnel. The military context is unique compared to other operational ones, with immense resource availability (U.S. military spending approached 1 trillion dollars in 2024), a rigid chain of command, and extraordinary consequences for its actions. Thus, military cybersecurity is a distinct yet understudied topic.\n  In this paper, we take an early step at understanding military cybersecurity by investigating how service members understand, recognize, and respond to cyber risk. We focus on maritime services and carefully consider organizational barriers to design an unclassified study and conduct semi-structured interviews with 20 military mariners from U.S. Navy and Coast Guard vessels. Through our investigation, we identify unique consequences of compromising military systems, including weapon takeover and purposeful geopolitical escalation. We find that cybersecurity is organizationally abstract on ships, so mariners build cyber risk models from informal experience rather than formal instruction. They nonetheless make cybersecurity actionable by recognizing operational impacts and responding with a safety-oriented incident-response model that creates resilience but may delay cyber attribution and containment. These findings inform actionable recommendations to help military operators frame cyber threats, merge longstanding nautical doctrine with modern systems, and apply military insights to the civilian sector, all to secure the broader maritime environment.",
+    "link": "https://arxiv.org/abs/2609.12810",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963617",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12810v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12829v1",
+    "title": "Learning-Augmented Strategyproof Facility Location in $\\mathbb{R}^d$ with $\\ell_p$ Distances",
+    "authors": [
+      "Hau Chan, Jianan Lin, Chenhao Wang"
+    ],
+    "abstract": "arXiv:2609.12829v1 Announce Type: new \nAbstract: We study learning-augmented mechanism design for locating a single facility in $\\mathbb{R}^d$ to minimize the sum of the agents' $\\ell_p$ distances to the facility. We analyze the coordinate-wise median with predictions (CMP) mechanism, which adds $cn$ virtual agents at a predicted optimal facility location to the $n$ reported locations and returns their coordinate-wise median. The parameter $c\\in[0,1)$ represents confidence in the prediction; CMP is known to be strategyproof when both are fixed independently of the reports. We determine its approximation guarantees under correct predictions (consistency) and arbitrary predictions (robustness) in two settings. First, for $d=2$, we establish exact guarantees for every $p\\in[1,+\\infty]$. For $1<p><+\\infty$, the consistency and robustness are respectively $\\Bigl(1+\\bigl(\\frac{1-c}{1+c}\\bigr)^{\\frac{p}{p-1}}\\Bigr)^{\\frac{p-1}{p}}$ and $\\Bigl(1+\\bigl(\\frac{1+c}{1-c}\\bigr)^{\\frac{p}{p-1}}\\Bigr)^{\\frac{p-1}{p}}$. We use the median condition in each coordinate to compare the mechanism's cost with the optimal cost, and establish tightness using instances with agents at only three distinct locations.\n  Second, for $1<p><+\\infty$, we obtain dimension-independent consistency and robustness upper bounds valid for every $d\\ge1$. For each fixed $p$ and $c$, we construct families of instances whose ratios approach the respective upper bounds as $d\\to\\infty$, proving asymptotic tightness. We also establish exact guarantees for $p=1$ in every dimension and asymptotically tight bounds for $p=+\\infty$. Our high-dimensional results recover the prediction-free bounds of Gravin and Jia (STOC 2025) when $c=0$ and their learning-augmented bounds in arbitrary-dimensional Euclidean spaces when $p=2$.",
+    "link": "https://arxiv.org/abs/2609.12829",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963636",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12829v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12839v1",
+    "title": "Evaluating Context Segmentation in Locally Deployable SLMs for Cybersecurity CTF Tasks",
+    "authors": [
+      "Sebastiano Nordio, Michele Lotto"
+    ],
+    "abstract": "arXiv:2609.12839v1 Announce Type: new \nAbstract: The proliferation of highly capable open-weight Small Language Models (SLMs) democratizes access to advanced cybersecurity capabilities, posing a escalating risk as these models can bypass proprietary API guardrails when deployed locally. However, SLMs deployed as autonomous agents often struggle with long-horizon, exploratory tasks like cybersecurity Capture The Flag (CTF) challenges due to context bloat and cognitive degradation from accumulated tool-call outputs. To understand and mitigate this cybersecurity threat, we introduce \\textit{context segmentation}, a two-level agentic framework that divides complex exploitation tasks into manageable, contextually isolated sub-problems. Evaluating on the \\texttt{picoCTF} dataset using memory-constrained \\texttt{gemma-4} models, we demonstrate that for the E4B model, our strategy acts as an intelligent search, achieving competitive rewards with superior token efficiency compared to brute-force retries, and successfully solving 18.52\\% of tasks that standard agentic execution fails to complete. Code is available at https://github.com/9xeb/context-segmentation.",
+    "link": "https://arxiv.org/abs/2609.12839",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963656",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12839v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12841v1",
+    "title": "A Graph-Based Approach for Mapping Kernel-Level Telemetry to MITRE ATT&CK",
+    "authors": [
+      "Matteo Lupinacci, Luigi Arena, Francesco Blefari, Angelo Furfaro"
+    ],
+    "abstract": "arXiv:2609.12841v1 Announce Type: new \nAbstract: Mapping observed system behavior to standardized frameworks like MITRE ATT&amp;CK is essential for threat-informed defense, but remains largely manual. Existing automated methods depend on Cyber Threat Intelligence reports, which offer only retrospective accounts of attacks. Low-level telemetry, i.e. kernel-level system calls, instead provides evidence of adversary behavior, yet its volume and complexity have limited its use for automated mapping. We present a methodology that collects kernel-level events via eBPF, correlates attacker commands into a provenance graph, and derives compact graph representations suitable for LLM-based reasoning. These representations are mapped to the MITRE ATT&amp;CK framework using both pure LLM prompting and retrieval-augmented generation (RAG) grounded in the ATT&amp;CK knowledge base, producing ranked technique candidates along with supporting rationales. We implement this methodology as an end-to-end pipeline, named Trace2ATT&amp;CK and evaluate it on 347 Linux Atomic Red Team tests using locally deployed open-weights LLMs. RAG consistently improves ATT&amp;CK mapping performance over pure prompting, while provenance graph substantially outperforms raw telemetry. These results show that local inference over graph-based behavioral descriptions can make automated ATT&amp;CK mapping from kernel-level telemetry operationally viable, without compromising data confidentiality.",
+    "link": "https://arxiv.org/abs/2609.12841",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963676",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12841v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12909v1",
+    "title": "Forging Tree-Ring: Reproducing and Instrumenting Black-Box Semantic Watermark Forgery",
+    "authors": [
+      "Saifur Rahman Tamim, Md Taslimul Hasan Toufique, A. M. Tayeful Islam"
+    ],
+    "abstract": "arXiv:2609.12909v1 Announce Type: new \nAbstract: Semantic watermarking schemes such as Tree-Ring hide a detectable pattern in the initial noise latent of a diffusion model. Recent work shows these watermarks are not only removable but forgeable: an attacker who never sees the watermarking key can still produce images the genuine detector accepts. We reproduce the Reprompt forgery attack of M\\\"uller et al. against Tree-Ring on Stable Diffusion XL, using the authors' released code, on free-tier dual T4 GPUs with 14.6 GB of usable memory per device, substantially less per-GPU memory than the A40 hardware used in the original study. The attack reproduces. Over six trials of three arms we detect genuine images 6/6, clean images 0/6, and forged images 5/6, at 325-332 s per attack. Three further results came out of running it under constraint. The released detector computes a non-central $\\chi^2$ statistic and hands back only its CDF, so we recovered the discarded statistic; our recovery matches the released detector exactly, and two natural scores built from it separate the forged arm from the clean null at AUC 0.861 and 0.972 on the same eighteen observations. Running SDXL in half precision requires patching the pipeline's direct autoencoder calls, and a controlled probe confirms the patched path leaves the detector statistic unchanged. Finally, we report a prediction we made from reading the detector source that our measurements then contradicted. The notebook, the pinned fork and every measurement artifact are released with the paper.",
+    "link": "https://arxiv.org/abs/2609.12909",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963696",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12909v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12911v1",
+    "title": "Shuffling is Not Enough: Breaking Permutation-Based Model Confidentiality in Hybrid FHE Inference",
+    "authors": [
+      "Jiseung Kim, Hyung Tae Lee"
+    ],
+    "abstract": "arXiv:2609.12911v1 Announce Type: new \nAbstract: Hybrid fully homomorphic encryption~(FHE) inference improves the practicality of private inference by letting the server evaluate linear layers homomorphically while the client decrypts and applies nonlinearities. Recent schemes attempt to protect model confidentiality by returning noisy, output-permuted responses and appealing to shuffle-model differential privacy~(DP). We show that this protection fails in the correctness regime required by hybrid FHE systems. For a $d$-input linear layer, $d+1$ admissible queries suffice for exact recovery of a permutation-invariant layer summary, hence for perfect model distinguishability. We further show that input DP is orthogonal to model confidentiality and that the local-DP premise required for shuffle amplification cannot hold under correctness-bounded noise. We recover all linear layers of a \\safhire{}-style ResNet-20 end-to-end from TFHE transcripts with zero error, using $d+1$ queries per layer for a total of $5{,}712$ direct queries. Under the same query model, we also confirm exact per-layer recovery on pretrained ImageNet-scale CNNs and ViT-B/16. The leaked spectra enable fingerprinting, lineage attribution, and improved logit-based extraction, while suppressing them destroys inference utility.",
+    "link": "https://arxiv.org/abs/2609.12911",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963716",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12911v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.12946v1",
+    "title": "The possibility of solving a 3x3 Rubik's Cube under 2 seconds - Optimizing block building",
+    "authors": [
+      "Chung To Kong"
+    ],
+    "abstract": "arXiv:2609.12946v1 Announce Type: new \nAbstract: Block building is an essential skill in speedcubing competitions. However, there is currently no systematic method to understand or analyze block-building techniques. Rewatching gameplay reveals only the outcome, not the underlying mechanism. This paper presents a systematic approach, the \"AK-cubie method\" (or \"cubie method\" for short), for constructing near-optimal block-building move sequences within a short computation time. Speedcubers can use the accompanying software to train their look-ahead and block-building skills. We hope this work will contribute to breaking the 2-second world record in the near future.",
+    "link": "https://arxiv.org/abs/2609.12946",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963735",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.12946v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.13004v1",
+    "title": "IntentFuzz: A Protocol-Aware Fuzzer for Automated Invariant Violation Detection in Intent-Based Cross-Chain Bridges",
+    "authors": [
+      "Andr\\'e Augusto, Christof Ferreira Torres, Andr\\'e Vasconcelos, Miguel Correia"
+    ],
+    "abstract": "arXiv:2609.13004v1 Announce Type: new \nAbstract: Cross-chain bridges move value between blockchains. Intent-based bridges are a variant where a solver fulfills a user's declared outcome and an off-chain settlement layer later reconciles the fill against the deposit. Existing smart-contract fuzzers and static analyzers only flag known-bad code patterns or require protocol-specific hand-written assertions. This work formalizes a taxonomy separating invariant violations, safety properties a contract must enforce locally, from settlement exposures legitimately delegated to the off-chain settlement layer, and proposes IntentFuzz: a protocol-aware fuzzer that recovers a bridge's intent structure and deposit/fill function roles directly from unannotated Solidity source, then synthesizes multi-step fuzz sequences using an LLM-based fallback to help build call arguments. IntentFuzz recovers the correct intent structure in 9/9 benchmark protocols and classifies deposit and fill functions with 100% recall and 82% combined precision; across a corpus of 77 manually labeled contracts, it reaches 79.5% bridge-classification precision and 97.2% recall, and among confirmed bridges, struct selection reaches 88.6% precision and recall while deposit and fill classification each reach 100% recall. On 23 planted-bug mutants, IntentFuzz attains 100% recall and 100% precision, executing 273 templates (507 transactions in a median of 14ms per template). Across 24 real-world deployments, it confirms 17 genuine invariant violations under heuristic-only input generation, rising to 22 with its LLM-assisted tier enabled, spanning eight vulnerable GitHub repositories, each finding reproducible against public, deployed bytecode.",
+    "link": "https://arxiv.org/abs/2609.13004",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963754",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.13004v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.13037v1",
+    "title": "Mitigating Emergent Collusion in LLM Pricing Agents",
+    "authors": [
+      "Abdullah Garra"
+    ],
+    "abstract": "arXiv:2609.13037v1 Announce Type: new \nAbstract: Recent work shows that LLM-based pricing agents can produce supracompetitive outcomes in repeated oligopoly environments without being explicitly instructed to collude. We reproduce the qualitative prompt-sensitivity effect of Fish et al. using DeepSeek-V3.1: the P1 prompt produces significantly higher prices and profits than P2, although our outcomes are less monopoly-like than the original GPT-4 results. We then evaluate three regulatory interventions: a prompt-only warning, a Harrington-inspired expected-damages payoff regulator, and an active random entrant. The prompt-only regulator reduces but does not eliminate above-Nash pricing. The Harrington regulator brings P1 outcomes close to the duopoly Nash benchmark and removes the statistically significant P1--P2 gap. The active entrant produces the strongest effect, pushing both prompts below the appropriate random-entrant Nash benchmark. Overall, our experiments provide preliminary evidence that interventions that alter incentives or market participation can reduce supracompetitive pricing more effectively than prompt warnings alone.",
+    "link": "https://arxiv.org/abs/2609.13037",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963774",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.13037v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.13132v1",
+    "title": "A Dichotomy for Boolean Complex Holant Problems with Conjugate-Closed Signature Sets",
+    "authors": [
+      "Jincheng Guan, Shuai Shao, Zhuxiao Tang"
+    ],
+    "abstract": "arXiv:2609.13132v1 Announce Type: new \nAbstract: We study Boolean Holant problems with complex-valued signature sets closed under conjugation. Such sets arise naturally in tensor-network expressions for classical strong simulation of quantum circuits. We prove a complexity dichotomy for such problems with an explicit tractability criterion. This extends the dichotomy for real-valued Holant problems, with the same four tractability conditions. Our proofs use Xia's projective binary group framework and quantum entanglement theory. The conjugate closure assumption precisely makes $k$-uniformity, directly applicable to the classification of Holant problems, by realizing reduced density matrices via Holant gadgets. We also use the classification of absolutely maximally entangled states to resolve a particular $6$-ary obstruction in our inductive proof of the \\#P-hardness.",
+    "link": "https://arxiv.org/abs/2609.13132",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963802",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.13132v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2202.10883v6",
+    "title": "Information Design in Smooth Games",
+    "authors": [
+      "Alex Smolin, Takuro Yamashita"
+    ],
+    "abstract": "arXiv:2202.10883v6 Announce Type: cross \nAbstract: We study information design in games where players choose from a continuum of actions and have continuously differentiable payoffs. We show that an information structure is optimal when the equilibrium it induces can also be implemented in a principal-agent contracting problem. Building on this result, we characterize optimal information structures in symmetric linear-quadratic games. With common values, targeted disclosure is robustly optimal across all priors. With interdependent and normally distributed values, linear disclosure is uniquely optimal. We illustrate our findings with applications in venture capital, Bayesian polarization, and price competition.",
+    "link": "https://arxiv.org/abs/2202.10883",
+    "published": "2026-09-14 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-09-14 11:58:50.963822",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2202.10883v6",
+      "categories": [
+        {
+          "term": "econ.TH",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.MA",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  }
+]
