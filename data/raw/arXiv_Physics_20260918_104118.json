@@ -1,0 +1,1592 @@
+[
+  {
+    "id": "arx:2609.19147v1",
+    "title": "Qupertino: Pure MLX Array Kernels versus Hand-Tuned Metal Shaders for Quantum Circuit Simulation on Apple Silicon",
+    "authors": [
+      "Shlomo Kashani"
+    ],
+    "abstract": "arXiv:2609.19147v1 Announce Type: new \nAbstract: We present Qupertino, an open-source quantum circuit simulator for Apple Silicon, and use it to ask how far a simulator written purely in MLX array operations can go and what remains for hand-tuned Metal shaders. The framework ships two measured tiers. The pure tier dispatches structured gates to specialized MLX kernels: diagonal gates run as broadcast phase multiplies, controlled gates as masked half-state updates, and SWAP as an axis permutation; a paired dense-path ablation attributes a 25-33x speedup to this dispatch alone. The opt-in shader tier adds hand-written Metal kernels for every structured layer family in our benchmarks, including phase-LUT diagonals, GF(2) affine permutation gathers, fused tensor-product single-qubit layers, radix-4 QFT and Walsh-Hadamard butterflies, and basis-conjugated XX/YY Trotter layers; runtime fusion detectors route work to them while preserving circuit semantics exactly, confirmed by parity tests. In a four-way interleaved campaign on M1 Max (two warmups, ten measured repeats per cell), the shader tier is fastest by mean runtime in all 18 comparison cells against same-machine Qiskit Aer CPU and PennyLane lightning.qubit. At 25 qubits, gate-stream QFT runs in 0.0591 +/- 0.0029 s (paired 47.2x over Aer, 95.3x over PennyLane) and TFIM Trotter evolution in 0.495 +/- 0.035 s (36.2x and 67.2x). Across a 29-workload suite, the shader tier's paired speedup over pure MLX reaches 25x, with 25 of 29 workloads accelerating above parity. The framework also supports variational ansatz workloads, QAOA, QCBM, Trotter-Suzuki Hamiltonian simulation, and OpenQASM 2.0 import (unitary subset); a preliminary MPS backend reaches 150 qubits on limited-entanglement workloads. Correctness rests on 253 Python tests, independent complex128 checks, and a Trotter-error curve against exact diagonalization. State-vector memory remains exponential in qubit count.",
+    "link": "https://arxiv.org/abs/2609.19147",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042682",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19147v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19159v1",
+    "title": "Three-Dimensional Coulomb Discrete Spectrum via Symplectic Geometry and Phase-Space Constraints: A Geometric Framework for Condensed-Matter Coulomb-Like Systems",
+    "authors": [
+      "Gang Zheng, Peng Chen, Mengli Wang, Wenqi Xue, Benniu Zhang"
+    ],
+    "abstract": "arXiv:2609.19159v1 Announce Type: new \nAbstract: Discrete energy-level structures in Coulomb-like localized bound states are conventionally obtained by direct diagonalization of the Schr\\\"odinger equation or by semiclassical approximations that fail at low energies. Here we develop a geometric phase-space framework that recovers the exact discrete energy levels and shell degeneracy of three-dimensional Coulomb bound states from classical symplectic geometry and global boundary constraints, bypassing explicit operator diagonalization. Using Kustaanheimo--Stiefel regularization, we map negative-energy Kepler orbits to four-dimensional isotropic harmonic oscillators. The group composition law of the symplectic flow determines an integral kernel built from the classical two-point action and Van Vleck amplitude, whose infinitesimal generator satisfies an exact linear evolution equation---a property we term \\textit{quadratic closure}. Imposing three geometric constraints---decay at infinity, regularity at the origin, and fiber invariance under the Hopf fibration---we recover the exact $E_n/E_1=1/n^2$ scaling and $g_n=n^2$ degeneracy. The phase scale $\\alpha$ sets the action unit; all spectral structural features are independent of its value. This framework offers a symmetry-transparent route to spectral data: for quadratic Hamiltonians, the classical kernel incurs zero semiclassical error even at ground-state energies, and the geometric constraints directly identify symmetry-protected degeneracies without diagonalization. We apply the method to shallow impurity states, moir\\'e superlattices, and semiclassical transport, demonstrating how geometric screening rules simplify spectral analysis in condensed-matter environments.",
+    "link": "https://arxiv.org/abs/2609.19159",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042742",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19159v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.mes-hall",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19160v1",
+    "title": "AlchemQ: Proof-Carrying Quantum Circuit Optimization with Per-Result Equivalence Certificates",
+    "authors": [
+      "Adam Laabs"
+    ],
+    "abstract": "arXiv:2609.19160v1 Announce Type: new \nAbstract: We present AlchemQ v0.5, a proof-of-concept system that couples an untrusted beam-search optimizer with a machine-checkable per-result certification layer and a versioned certificate protocol (0.2.0), so that every optimized circuit ships with a verifiable artifact rather than a bare claim. The certifier proves equivalence up to global phase by ZX-calculus full reduction, with a numeric-tensor fallback based on the optimal Hilbert-Schmidt overlap. Certificates are self-contained and tamper-evident: canonical gate-canon-v1 hashes, measured residuals, tri-state verdicts (certified/rejected/inconclusive), and versioned phase-note schemas for cross-platform reproducibility. The agent aggregates three fuzzy t-norms, cannot return an uncertified circuit, and since v0.4 guarantees no componentwise regression against the original. On a benchmark of 100 circuits, all 400 optimizations terminate without error, every returned circuit is certified, every mutation is detected, and a 2998-test suite passes on two platforms. The PyZX baseline is strong (21.4% mean T-count reduction over 82 circuits) and the agent is strictly better on 9/100; the three t-norms return identical circuits on all 100 standard instances, diverging only on 4/38 of an adversarial suite. Two case studies are new: a false negative root-caused to a pivot-normalization bug in PyZX's compare_tensors (pivot 4.7e-9; the optimal-overlap residual is 7.4e-11), and eight certificates rejected on macOS due to BLAS-dependent floats in phase_note. Both were fixed; all artifact sets validate 400/400 on both platforms. A pilot run on IBM Heron r2 gives a certified circuit 78% shallower with 65% fewer two-qubit gates; output quality favors it on all three metrics but is not significant at 1024 shots. We release the certificate specification and a standalone reference verifier (Apache-2.0) with data and scripts; the engine is proprietary.",
+    "link": "https://arxiv.org/abs/2609.19160",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042770",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19160v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19161v1",
+    "title": "Femtoscopic Correlation Functions in Density Operator Representation",
+    "authors": [
+      "Hao-Nan Liu, Duo-Lun Ge, Zhi-Wei Liu, Jun-Xu Lu, Li-Sheng Geng"
+    ],
+    "abstract": "arXiv:2609.19161v1 Announce Type: new \nAbstract: Femtoscopic correlation functions (CFs) have been increasingly used to extract strong interactions between pairs of unstable particles, but their physical soundness has recently been questioned. To answer this, we formulate CFs at the operator level, with the observed subsystem described by a reduced density operator and subsequent dynamics absorbed into an effective measurement operator. The Koonin-Pratt form is recovered under four well-motivated reductions. The formulation makes explicit that the source-side and interaction-side representations must be consistently matched, and motivates an operational convention in which a measured reference correlation establishes a compatible source--interaction pairing that can be extended to other pairs for CF-to-CF predictions.",
+    "link": "https://arxiv.org/abs/2609.19161",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042800",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19161v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "hep-ex",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "hep-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "nucl-ex",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "nucl-th",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19162v1",
+    "title": "Holomorphic Quantum Error Correction Codes",
+    "authors": [
+      "M. W. AlMasri"
+    ],
+    "abstract": "arXiv:2609.19162v1 Announce Type: new \nAbstract: We develop a holomorphic representation of quantum error correction codes (QECCs) within the Segal--Bargmann space. By encoding qubits into Schwinger boson modes $(z_{a_j}, z_{b_j})$ subject to a degree-one homogeneity constraint, we derive closed-form differential operator representations for stabilizers, syndrome extraction, and recovery for fundamental codes (three-, five-, seven-, and nine-qubit codes). Quantum errors are characterized as holomorphic perturbations violating this constraint, while syndrome measurement projects onto eigenspaces of commuting differential operators. Restricting to unit-magnitude variables ($|z|=1$) reveals a toroidal space $\\T^{2n}$ where error syndromes manifest as discrete translations in winding number space $\\Z^{2n}$, and recovery acts as Hamiltonian flows restoring the winding configuration. In the full Segal--Bargmann space, the code space is a holomorphic submanifold of $\\CP^{2^n-1}$, with correctable errors as transverse normal directions. Consequently, the Knill--Laflamme condition becomes a Fubini--Study orthogonality condition between the code submanifold and its error-translated images. Topological protection emerges from the $U(1)^n$ fiber bundle structure: global phase noise along fibers is unobservable, while base-space errors require active correction. Finally, we establish a path-integral formulation for semiclassical error correction dynamics and show that geometric entanglement via the Segre embedding naturally quantifies code distance. This framework unifies algebraic, geometric, and topological perspectives on fault-tolerant quantum protocols.",
+    "link": "https://arxiv.org/abs/2609.19162",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042824",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19162v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19163v1",
+    "title": "Energy-Constrained Commutator Variance for Weyl Pairs",
+    "authors": [
+      "Hassan Nasreddine"
+    ],
+    "abstract": "arXiv:2609.19163v1 Announce Type: new \nAbstract: Let $W$ be a representation of the Weyl relations on a separable Hilbert space and write $\\mathcal R_W(K)=\\{W(f):f\\in K\\}''$. If the symplectic pairing of $K_1$ and $K_2$ is nonzero, there is a self-adjoint unitary $B\\in\\mathcal R_W(K_2)$ such that, for every normal state $\\rho$, one can choose a self-adjoint unitary $A_\\rho\\in\\mathcal R_W(K_1)$ with $\\operatorname{Var}_\\rho(-i[A_\\rho,B])=4$. Hence the optimized mean-input-energy-constrained coefficient equals $4$ at every admissible energy threshold. For the fixed trigonometric Weyl witness $h$, an exact identity for $4-h^2$ reduces the deficit to a phase-fixed problem for commuting squared Weyl translations. For the one-mode quadratic energy $G_M=\\frac12 R^TMR-\\frac12\\sqrt{\\det M}$, with $M>0$ and $u^T\\Omega v=\\pi$, we prove $4-\\gamma_{G_M,E}(h)=\\frac{u^TMu+v^TMv+2\\pi\\sqrt{\\det M}}{4E}+O(E^{-2})$. The lower bound holds over all normal states satisfying the mean-energy constraint, and a localized Zak construction attains the same coefficient. For $G=d\\Gamma(H_1)$ and witness directions $u,v\\in\\operatorname{dom}H_1^{1/2}$, the fixed-witness deficit is $\\Theta(E^{-1})$ whenever at least one direction lies outside $\\ker H_1$; if both directions are zero modes, the constrained supremum equals the endpoint at every positive threshold.",
+    "link": "https://arxiv.org/abs/2609.19163",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042848",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19163v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19184v1",
+    "title": "Suzuki-Trotter Decompositions and other Methods for Quantum Time Evolution",
+    "authors": [
+      "Johann Ostmeyer"
+    ],
+    "abstract": "arXiv:2609.19184v1 Announce Type: new \nAbstract: (Suzuki-)Trotter decompositions, splitting methods, (Lie) product formulae... The most common numerical methods for the time evolution of quantum systems come with many names. And they are used practically everywhere with applications ranging from the solution of classical equations of motion and various Monte Carlo simulations to the real and imaginary time evolution on classical as well as quantum computers. Here we review the state of the art of said methods, focussing especially on the progress made over the last few years. We highlight recently discovered efficient time evolution algorithms and explain how best to use them in practice. A central part of this work is the estimation of error bounds that has improved greatly within the past decade. The relevance of time evolution methods for quantum computing is discussed with a focus on noisy hardware. Finally, a comprehensive overview of generalisations, related methods and alternatives to Trotterization is provided. This includes time-dependent Hamiltonian dynamics, processed methods, multi-product formulae, symplectic integrators, TDVP for tensor networks, quantum signal processing, Crouch-Grossman methods and more. The overall perspective in this work is that of a theoretical physicist. All mathematical proofs as well as some technical details are omitted for easier readability. Instead, this review serves as a hands-on guide and, of course, as a starting point for references that provide further details.",
+    "link": "https://arxiv.org/abs/2609.19184",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042878",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19184v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.stat-mech",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.str-el",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "hep-lat",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.comp-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19220v1",
+    "title": "Enhanced Emission and Two-Photon Interference of Lead-Vacancy Centers in Diamond Solid Immersion Lenses",
+    "authors": [
+      "Koyo Hirai, Eiki Ota, Yiyang Chen, Ren Kato, Peng Wang, Toshiharu Makino, Takashi Taniguchi, Masashi Miyakawa, Shinobu Onoda, Mutsuko Hatano, Takayuki Iwasaki"
+    ],
+    "abstract": "arXiv:2609.19220v1 Announce Type: new \nAbstract: A negatively charged lead-vacancy (PbV-) center in diamond is a novel quantum system which can be operated at a high temperature above 4 K owing to its large ground state splitting. To unlock the quantum properties of the PbV- center, the enhancement of the fluorescence intensity is a key issue. Here, we demonstrate enhanced emission from PbV- centers by a factor of approximately 10 using solid immersion lenses (SILs) fabricated on rough diamond surface caused by high-temperature anneal over 2000{\\deg}C. Resonant excitation reveals the narrow emission close to the transform-limited linewidth. Furthermore, we demonstrate two-photon interference using one single PbV- center in an SIL. This enhanced emission and indistinguishability will lead to further development of the PbV- center towards quantum network node applications.",
+    "link": "https://arxiv.org/abs/2609.19220",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042905",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19220v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19239v1",
+    "title": "Lazy training of quantum physics informed neural networks",
+    "authors": [
+      "Anderson Melchor Hernandez, Giacomo De Palma"
+    ],
+    "abstract": "arXiv:2609.19239v1 Announce Type: new \nAbstract: We study the gradient-flow training dynamics of quantum physics-informed neural networks (QPINNs) for the solution of second-order elliptic partial differential equations with Dirichlet boundary conditions. We consider parameterized quantum circuits as function approximators and analyze their overparameterized regime through the lens of the neural tangent kernel (NTK). Our contribution is a nonasymptotic lazy-training theory for QPINNs and their variational formulation: we prove that, for sufficiently large circuit width, the nonlinear gradient flow is quantitatively approximated by a linearized NTK model, with explicit bounds depending on the number of qubits, circuit depth, circuit light-cone geometry, and the dimension of the domain of the solution to the PDE.",
+    "link": "https://arxiv.org/abs/2609.19239",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042928",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19239v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.PR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19250v1",
+    "title": "Achieving the limits of automorphism gates",
+    "authors": [
+      "Jin Ming Koh, Shayan Majidy, Aranya Chakraborty, Anqi Gong, Shi Jie Samuel Tan, Norman Y. Yao"
+    ],
+    "abstract": "arXiv:2609.19250v1 Announce Type: new \nAbstract: Universal fault-tolerant quantum computing combines versatile but expensive operations with specialized but cheap ones. Its efficiency depends on how much computation can be pushed onto the cheap operations and on the size of the code needed to do so. Automorphism gates provide such cheap operations using only physical single-qubit Clifford gates and qubit permutations. Yet no general theory characterizes their maximum logical power or the minimum code size needed to attain it. We develop such a theory. For stabilizer codes encoding $k\\geq3$ logical qubits, we show that the largest logical group attainable by automorphisms is generated by all addressable $S$ and $\\mathrm{CX}$ gates, and we construct codes attaining it. While this group contains exponentially fewer gates than the full Clifford group, adding one suitable non-Clifford gate yields universality. We further classify the largest logical groups attainable using qubit permutations, physical single-qubit Cliffords, or both across general stabilizer and CSS codes, and derive refined bounds for self-dual CSS subclasses. Achieving the maximum-size logical group through automorphisms requires $n=\\Theta(2^k)$ physical qubits. By contrast, all addressable diagonal Clifford gates, generated by $S$ and $\\mathrm{CZ}$, require only $n=\\Theta(k^2)$ physical qubits when implemented using physical single-qubit Cliffords alone. Both bounds are tight. This polynomial qubit cost extends beyond Cliffords to all addressable diagonal gates at any fixed level of the Clifford hierarchy, using physical single-qubit diagonal gates. Thus, for full addressability, the sharpest physical-qubit cost divide lies between diagonal and $\\mathrm{CX}$-type gates, not between Clifford and non-Clifford gates.",
+    "link": "https://arxiv.org/abs/2609.19250",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042950",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19250v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19251v1",
+    "title": "Theory of post-selected entanglement transitions in monitored bosons",
+    "authors": [
+      "Ilia Komissarov, Emanuele G. Dalla Torre, Ahana Chakraborty"
+    ],
+    "abstract": "arXiv:2609.19251v1 Announce Type: new \nAbstract: Entanglement phase transitions driven by quantum measurements have emerged as a central paradigm in open quantum many-body physics. Such phase transitions are well established for systems with finite local Hilbert-space dimensions, such as qubits and fermions, while their realization in bosonic systems with unbounded local occupation numbers remains poorly understood. Even in the absence of interactions, number states of bosons are intrinsically non-Gaussian, preventing the use of standard correlation-matrix approaches. To address this problem, we develop a replica-free Keldysh field-theoretic framework that expresses the Renyi entropy of bosonic systems initialized in on-site Fock states in terms of permanents of matrices constructed from single-particle Green's functions. Applying this framework to a continuously monitored one-dimensional cross-stitch lattice conditioned on the no-click trajectory, we uncover a transition from volume-law to logarithmic entanglement scaling. We show that the transition is controlled by a restructuring of the non-Hermitian spectrum that changes the number of long-lived modes from extensive to finite. In the strongly monitored regime, bosons dynamically condense into a microscopic number of slowest-decaying modes, producing logarithmic entanglement scaling, whereas an extensive manifold of long-lived modes at weak monitoring gives rise to volume-law entanglement. Our results establish a distinct mechanism for measurement-induced entanglement transitions in free bosonic systems and provide a computationally efficient diagnostic of the measurement-induced bosonic condensation.",
+    "link": "https://arxiv.org/abs/2609.19251",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042975",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19251v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.stat-mech",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19254v1",
+    "title": "Emergent classicality and wavefunction branching in an isolated quantum many-body system",
+    "authors": [
+      "Sa\\'ul Pilatowsky-Cameo, Jordan Cotler, Daniel Ranard, C. Jess Riedel"
+    ],
+    "abstract": "arXiv:2609.19254v1 Announce Type: new \nAbstract: Decoherence in quantum systems is conventionally modeled as the effect of interactions with an external environment. However, such a prescription excludes isolated many-body systems, which are also expected to display classical behavior at macroscopic scales. In isolated systems, decoherence must emerge internally from microscopic degrees of freedom that are invisible to the macroscopic description. Here we explicitly show that classicality can emerge in such a fashion. We consider a weakly disordered, $3$-local chaotic kicked top of $N$ qubits, where the collective spin sector serves as the macroscopic description, while the microscopic permutation sector acts as an internal bath, decohering the collective spin sector. Starting from closed unitary dynamics, we derive and numerically confirm an effective Lindblad equation for the collective spin variables. In the thermodynamic limit these reduced dynamics converge to a classical chaotic Fokker--Planck equation with vanishingly small diffusion on the spherical phase space, producing a quantum-classical correspondence beyond the Ehrenfest time. The chaotic dynamics evolve the pure many-body wavefunction into continuously branching components associated with distinct classical trajectories. These branches acquire nearly orthogonal microscopic records in the permutation sector, preventing quantum interferences and ensuring the corresponding histories remain consistent.",
+    "link": "https://arxiv.org/abs/2609.19254",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.042996",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19254v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.str-el",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19280v1",
+    "title": "A Square-Root Barrier to Quantum Gate Speed under Linear Coupling",
+    "authors": [
+      "Pablo Restrepo Gaviria, Mischa P. Woods"
+    ],
+    "abstract": "arXiv:2609.19280v1 Announce Type: new \nAbstract: Faster quantum gates can suppress the decoherence accumulated during a computation, but in superconducting processors stronger microwave pulses can also increase leakage, off-resonant excitation, stray-field errors, and crosstalk. This creates a central energy--speed--error tradeoff: can quantum state engineering make a gate parametrically faster without paying proportionally more drive energy? We address this question by treating the driving pulse as a quantum bosonic field rather than a classical waveform. For a finite-dimensional system coupled linearly to that field, we prove that fixed-fidelity gate transition rates grow at most as the square root of the pulse energy, under stated uniformity conditions on the coupling and accepted dynamics. The bound permits arbitrary pulse states, including squeezed and non-Gaussian states, as well as drive--system entanglement and back action; coherent Gaussian pulses attain its energy exponent. Thus squeezing or other state engineering alone cannot replace the square-root energy law of a conventional linear drive by the linear scaling allowed by general quantum speed limits. Achieving that improvement requires changing the interaction class, in addition to using a suitable nonclassical pulse, thereby identifying interaction nonlinearity as an essential resource for relaxing the practical gate-speed error tradeoff.",
+    "link": "https://arxiv.org/abs/2609.19280",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043015",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19280v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.comp-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19292v1",
+    "title": "Universal Suppression of Dissipation across Conformal Interface in Open Quantum Critical Systems",
+    "authors": [
+      "Ruhanshi Barad, Tian Wu, Qicheng Tang, Xueda Wen"
+    ],
+    "abstract": "arXiv:2609.19292v1 Announce Type: new \nAbstract: Conformal interfaces provide an important setting for studying universal transmission phenomena in one-dimensional quantum critical systems. While energy and information transmission across such interfaces are characterized by universal quantities in closed systems, the corresponding role of conformal interfaces in dissipative dynamics is less understood. In this work, we study relaxation in locally dissipative quantum critical chains with a conformal interface and show that a universal characterization emerges at the level of individual relaxation modes. We first show that the relaxation coefficient defined in the recent work [1] from the Liouvillian gap can become non-universal for certain boundary conditions because the mode determining the smallest decay rate can change as the interface transmission is varied. To resolve this ambiguity, we introduce a mode-resolved relaxation coefficient $c_{\\rm relax}$ by continuously tracking the same Liouvillian rapidity mode as a function of the interface transmission. Using analytical and numerical calculations for a critical harmonic chain and a critical free-fermion chain, we find that, in the weak-dissipation regime, $c_{\\rm relax}$ follows the same universal dependence on the interface transmission in all cases considered, independent of microscopic details such as the boundary conditions, dissipation strength, and location of the local dissipation. For boundary dissipation, this universal behavior persists even at finite dissipation strength. Our results establish a universal mode-resolved characterization of relaxation across conformal interfaces in open quantum critical systems.",
+    "link": "https://arxiv.org/abs/2609.19292",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043034",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19292v1",
+      "categories": [
+        {
+          "term": "cond-mat.stat-mech",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "hep-th",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19308v1",
+    "title": "Temporal information processing on a 4,500-qubit quantum annealer",
+    "authors": [
+      "Antonio Sannia, Roberto Menta, Pratik Sathe, Dario De Santis, Vittorio Giovannetti, Luis Pedro Garc\\'ia-Pintos, Davide Venturelli, Gian Luca Giorgi, Roberta Zambrini, Francesco Caravelli"
+    ],
+    "abstract": "arXiv:2609.19308v1 Announce Type: new \nAbstract: Quantum machine learning could uncover statistical structure beyond the reach of classical models, but this requires quantum models large and expressive enough to be useful and cheap enough to read out. Most approaches optimize many quantum parameters and are thus limited by expensive training loops. Here we report a quantum machine-learning model implemented on a programmable superconducting quantum annealer that processes temporal data at large scale using up to 4,500 qubits-the largest quantum machine-learning experiment performed to date. Following the quantum reservoir computing paradigm, the untrained native many-body dynamics generated by reverse annealing is directly used to process temporal data. We prove that the interactions produced during annealing are indispensable-a non-interacting reservoir retains no memory of its input. We evaluate our model experimentally on standard memory benchmarks and demonstrate that it can successfully forecast chaotic time series. These results establish quantum annealers as a scalable platform for large-scale quantum machine learning.",
+    "link": "https://arxiv.org/abs/2609.19308",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043054",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19308v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19310v1",
+    "title": "Quantum tree networks: complete semidefinite hierarchies and the source-transfer model",
+    "authors": [
+      "Xiangling Xu, Igor Klep, Marc-Olivier Renou"
+    ],
+    "abstract": "arXiv:2609.19310v1 Announce Type: new \nAbstract: Understanding the capabilities and limits of quantum systems is central to quantum information processing. This includes determining which correlations can arise in networks of quantum systems distributed by independent sources. Yet for general quantum networks, no systematic, dimension-free method is known to bound these correlations arbitrarily well. We resolve this problem for all quantum tree networks through a new source-transfer model, which we prove equivalent to a mixed quantum model. The mixed model places no restriction on dimension and reduces to the standard tensor-product model in finite dimensions; the source-transfer model instead describes these correlations through states on $C^*$-algebras and completely positive maps composed recursively along the tree. We prove the equivalence by reconstructing local measurements as Radon-Nikodym derivatives in the spatial tensor products prescribed by the network. Building on this characterization, we establish two convergent outer hierarchies of semidefinite programs (SDPs): a novel source-transfer hierarchy and the inflation-NPA hierarchy. For the source-transfer hierarchy, we extend noncommutative real algebraic geometry to multi-state polynomials with completely positive maps, prove a reconstruction theorem establishing its convergence, and give a sufficient stopping criterion for extracting finite-dimensional realizations. For the inflation-NPA hierarchy, we reconstruct source-transfer realizations from weak-operator limits of averages over source copies. Consequently, the game-value promise problem for quantum tree networks in the mixed model is $\\mathsf{coRE}$-complete.",
+    "link": "https://arxiv.org/abs/2609.19310",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043073",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19310v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.OA",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19317v1",
+    "title": "Observing and evading quantum back-action on a kilogram-scale oscillator",
+    "authors": [
+      "Beg\\\"um Kabag\\\"oz (LIGO Scientific Collaboration Detector Authors), Eric Oelker (LIGO Scientific Collaboration Detector Authors), Dhruva Ganapathy (LIGO Scientific Collaboration Detector Authors), Nergis Mavalvala (LIGO Scientific Collaboration Detector Authors), Vivishek Sudhir (LIGO Scientific Collaboration Detector Authors), Vladimir Bossilkov (LIGO Scientific Collaboration Detector Authors), Joseph Betzweiser (LIGO Scientific Collaboration Detector Authors), Valery V. Frolov (LIGO Scientific Collaboration Detector Authors), Anamaria Effler (LIGO Scientific Collaboration Detector Authors), Adam Mullavey (LIGO Scientific Collaboration Detector Authors), Lisa Barsotti (LIGO Scientific Collaboration Detector Authors), Evan D. Hall (LIGO Scientific Collaboration Detector Authors), Peter Fritschel (LIGO Scientific Collaboration Detector Authors), R. Abbott (LIGO Scientific Collaboration Detector Authors), I. Abouelfettouh (LIGO Scientific Collaboration Detector Authors), R. X. Adhikari (LIGO Scientific Collaboration Detector Authors), A. Ananyeva (LIGO Scientific Collaboration Detector Authors), S. Appert (LIGO Scientific Collaboration Detector Authors), S. K. Apple (LIGO Scientific Collaboration Detector Authors), K. Arai (LIGO Scientific Collaboration Detector Authors), N. Aritomi (LIGO Scientific Collaboration Detector Authors), S. M. Aston (LIGO Scientific Collaboration Detector Authors), M. Ball (LIGO Scientific Collaboration Detector Authors), S. W. Ballmer (LIGO Scientific Collaboration Detector Authors), D. Barker (LIGO Scientific Collaboration Detector Authors), B. K. Berger (LIGO Scientific Collaboration Detector Authors), D. Bhattacharjee (LIGO Scientific Collaboration Detector Authors), G. Billingsley (LIGO Scientific Collaboration Detector Authors), S. Biscans (LIGO Scientific Collaboration Detector Authors), C. D. Blair (LIGO Scientific Collaboration Detector Authors), N. Bode (LIGO Scientific Collaboration Detector Authors), E. Bonilla (LIGO Scientific Collaboration Detector Authors), A. Branch (LIGO Scientific Collaboration Detector Authors), A. F. Brooks (LIGO Scientific Collaboration Detector Authors), D. D. Brown (LIGO Scientific Collaboration Detector Authors), J. Bryant (LIGO Scientific Collaboration Detector Authors), C. Cahillane (LIGO Scientific Collaboration Detector Authors), A. Calafat (LIGO Scientific Collaboration Detector Authors), S. R. Callos (LIGO Scientific Collaboration Detector Authors), H. Cao (LIGO Scientific Collaboration Detector Authors), E. Capote (LIGO Scientific Collaboration Detector Authors), F. Clara (LIGO Scientific Collaboration Detector Authors), J. Collins (LIGO Scientific Collaboration Detector Authors), C. M. Compton (LIGO Scientific Collaboration Detector Authors), G. Connolly (LIGO Scientific Collaboration Detector Authors), R. Cottingham (LIGO Scientific Collaboration Detector Authors), D. C. Coyne (LIGO Scientific Collaboration Detector Authors), R. Crouch (LIGO Scientific Collaboration Detector Authors), J. Csizmazia (LIGO Scientific Collaboration Detector Authors), A. Cumming (LIGO Scientific Collaboration Detector Authors), L. P. Dartez (LIGO Scientific Collaboration Detector Authors), D. Davis (LIGO Scientific Collaboration Detector Authors), N. Demos (LIGO Scientific Collaboration Detector Authors), E. Dohmen (LIGO Scientific Collaboration Detector Authors), K. L. Dooley (LIGO Scientific Collaboration Detector Authors), J. C. Driggers (LIGO Scientific Collaboration Detector Authors), S. E. Dwyer (LIGO Scientific Collaboration Detector Authors), A. Ejlli (LIGO Scientific Collaboration Detector Authors), T. Etzel (LIGO Scientific Collaboration Detector Authors), M. Evans (LIGO Scientific Collaboration Detector Authors), J. Feicht (LIGO Scientific Collaboration Detector Authors), R. Frey (LIGO Scientific Collaboration Detector Authors), W. Frischhertz (LIGO Scientific Collaboration Detector Authors), M. Fuentes-Garcia (LIGO Scientific Collaboration Detector Authors), P. Fulda (LIGO Scientific Collaboration Detector Authors), M. Fyffe (LIGO Scientific Collaboration Detector Authors), B. Gateley (LIGO Scientific Collaboration Detector Authors), T. Gayer (LIGO Scientific Collaboration Detector Authors), J. A. Giaime (LIGO Scientific Collaboration Detector Authors), K. D. Giardina (LIGO Scientific Collaboration Detector Authors), J. Glanzer (LIGO Scientific Collaboration Detector Authors), E. Goetz (LIGO Scientific Collaboration Detector Authors), R. Goetz (LIGO Scientific Collaboration Detector Authors), A. W. Goodwin-Jones (LIGO Scientific Collaboration Detector Authors), S. Gras (LIGO Scientific Collaboration Detector Authors), C. Gray (LIGO Scientific Collaboration Detector Authors), D. Griffith (LIGO Scientific Collaboration Detector Authors), H. Grote (LIGO Scientific Collaboration Detector Authors), T. Guidry (LIGO Scientific Collaboration Detector Authors), J. Gurs (LIGO Scientific Collaboration Detector Authors), J. Hanks (LIGO Scientific Collaboration Detector Authors), J. Hanson (LIGO Scientific Collaboration Detector Authors), M. C. Heintze (LIGO Scientific Collaboration Detector Authors), A. F. Helmling-Cornell (LIGO Scientific Collaboration Detector Authors), N. A. Holland (LIGO Scientific Collaboration Detector Authors), D. Hoyland (LIGO Scientific Collaboration Detector Authors), H. Y. Huang (LIGO Scientific Collaboration Detector Authors), Y. Inoue (LIGO Scientific Collaboration Detector Authors), A. L. James (LIGO Scientific Collaboration Detector Authors), A. Jamies (LIGO Scientific Collaboration Detector Authors), R. Jaume (LIGO Scientific Collaboration Detector Authors), A. Jennings (LIGO Scientific Collaboration Detector Authors), W. Jia (LIGO Scientific Collaboration Detector Authors), D. H. Jones (LIGO Scientific Collaboration Detector Authors), S. Karat (LIGO Scientific Collaboration Detector Authors), S. Karki (LIGO Scientific Collaboration Detector Authors), M. Kasprzack (LIGO Scientific Collaboration Detector Authors), K. Kawabe (LIGO Scientific Collaboration Detector Authors), N. Kijbunchoo (LIGO Scientific Collaboration Detector Authors), P. J. King (LIGO Scientific Collaboration Detector Authors), J. S. Kissel (LIGO Scientific Collaboration Detector Authors), K. Komori (LIGO Scientific Collaboration Detector Authors), A. Kontos (LIGO Scientific Collaboration Detector Authors), R. Kumar (LIGO Scientific Collaboration Detector Authors), K. Kuns (LIGO Scientific Collaboration Detector Authors), M. Landry (LIGO Scientific Collaboration Detector Authors), B. Lantz (LIGO Scientific Collaboration Detector Authors), M. Laxen (LIGO Scientific Collaboration Detector Authors), K. Lee (LIGO Scientific Collaboration Detector Authors), M. Lesovsky (LIGO Scientific Collaboration Detector Authors), F. Llamas Villarreal (LIGO Scientific Collaboration Detector Authors), M. Lormand (LIGO Scientific Collaboration Detector Authors), H. A. Loughlin (LIGO Scientific Collaboration Detector Authors), R. Macas (LIGO Scientific Collaboration Detector Authors), M. MacInnis (LIGO Scientific Collaboration Detector Authors), C. N. Makarem (LIGO Scientific Collaboration Detector Authors), B. Mannix (LIGO Scientific Collaboration Detector Authors), G. L. Mansell (LIGO Scientific Collaboration Detector Authors), R. M. Martin (LIGO Scientific Collaboration Detector Authors), K. Mason (LIGO Scientific Collaboration Detector Authors), F. Matichard (LIGO Scientific Collaboration Detector Authors), N. Maxwell (LIGO Scientific Collaboration Detector Authors), G. McCarrol (LIGO Scientific Collaboration Detector Authors), R. McCarthy (LIGO Scientific Collaboration Detector Authors), D. E. McClelland (LIGO Scientific Collaboration Detector Authors), S. McCormick (LIGO Scientific Collaboration Detector Authors), T. McRae (LIGO Scientific Collaboration Detector Authors), F. Mera (LIGO Scientific Collaboration Detector Authors), E. L. Merilh (LIGO Scientific Collaboration Detector Authors), J. R. M\\'erou (LIGO Scientific Collaboration Detector Authors), F. Meylahn (LIGO Scientific Collaboration Detector Authors), R. Mittleman (LIGO Scientific Collaboration Detector Authors), D. Moraru (LIGO Scientific Collaboration Detector Authors), G. Moreno (LIGO Scientific Collaboration Detector Authors), M. Nakano (LIGO Scientific Collaboration Detector Authors), T. J. N. Nelson (LIGO Scientific Collaboration Detector Authors), A. Neunzert (LIGO Scientific Collaboration Detector Authors), J. Notte (LIGO Scientific Collaboration Detector Authors), J. Oberling (LIGO Scientific Collaboration Detector Authors), T. O'Hanlon (LIGO Scientific Collaboration Detector Authors), R. Oram (LIGO Scientific Collaboration Detector Authors), C. Osthelder (LIGO Scientific Collaboration Detector Authors), D. J. Ottaway (LIGO Scientific Collaboration Detector Authors), H. Overmier (LIGO Scientific Collaboration Detector Authors), W. Parker (LIGO Scientific Collaboration Detector Authors), O. Patane (LIGO Scientific Collaboration Detector Authors), A. Pele (LIGO Scientific Collaboration Detector Authors), H. Pham (LIGO Scientific Collaboration Detector Authors), M. Pirello (LIGO Scientific Collaboration Detector Authors), J. Pullin (LIGO Scientific Collaboration Detector Authors), V. Quetschke (LIGO Scientific Collaboration Detector Authors), K. E. Ramirez (LIGO Scientific Collaboration Detector Authors), K. Ransom (LIGO Scientific Collaboration Detector Authors), J. Reyes (LIGO Scientific Collaboration Detector Authors), J. W. Richardson (LIGO Scientific Collaboration Detector Authors), M. Robinson (LIGO Scientific Collaboration Detector Authors), J. G. Rollins (LIGO Scientific Collaboration Detector Authors), C. L. Romel (LIGO Scientific Collaboration Detector Authors), J. H. Romie (LIGO Scientific Collaboration Detector Authors), M. P. Ross (LIGO Scientific Collaboration Detector Authors), B. I. Rotimi (LIGO Scientific Collaboration Detector Authors), K. Ryan (LIGO Scientific Collaboration Detector Authors), T. Sadecki (LIGO Scientific Collaboration Detector Authors), A. Sanchez (LIGO Scientific Collaboration Detector Authors), E. J. Sanchez (LIGO Scientific Collaboration Detector Authors), L. E. Sanchez (LIGO Scientific Collaboration Detector Authors), R. L. Savage (LIGO Scientific Collaboration Detector Authors), D. Schaetzl (LIGO Scientific Collaboration Detector Authors), M. G. Schiworski (LIGO Scientific Collaboration Detector Authors), R. Schnabel (LIGO Scientific Collaboration Detector Authors), R. M. S. Schofield (LIGO Scientific Collaboration Detector Authors), E. Schwartz (LIGO Scientific Collaboration Detector Authors), D. Sellers (LIGO Scientific Collaboration Detector Authors), T. Shaffer (LIGO Scientific Collaboration Detector Authors), R. W. Short (LIGO Scientific Collaboration Detector Authors), D. Sigg (LIGO Scientific Collaboration Detector Authors), B. J. J. Slagmolen (LIGO Scientific Collaboration Detector Authors), C. Soike (LIGO Scientific Collaboration Detector Authors), S. Soni (LIGO Scientific Collaboration Detector Authors), V. Srivastava (LIGO Scientific Collaboration Detector Authors), L. Sun (LIGO Scientific Collaboration Detector Authors), D. B. Tanner (LIGO Scientific Collaboration Detector Authors), M. Thomas (LIGO Scientific Collaboration Detector Authors), P. Thomas (LIGO Scientific Collaboration Detector Authors), K. A. Thorne (LIGO Scientific Collaboration Detector Authors), M. R. Todd (LIGO Scientific Collaboration Detector Authors), C. I. Torrie (LIGO Scientific Collaboration Detector Authors), G. Traylor (LIGO Scientific Collaboration Detector Authors), A. S. Ubhi (LIGO Scientific Collaboration Detector Authors), G. Vajente (LIGO Scientific Collaboration Detector Authors), J. Vanosky (LIGO Scientific Collaboration Detector Authors), A. Vecchio (LIGO Scientific Collaboration Detector Authors), P. J. Veitch (LIGO Scientific Collaboration Detector Authors), A. M. Vibhute (LIGO Scientific Collaboration Detector Authors), E. R. G. von Reis (LIGO Scientific Collaboration Detector Authors), J. Warner (LIGO Scientific Collaboration Detector Authors), B. Weaver (LIGO Scientific Collaboration Detector Authors), R. Weiss (LIGO Scientific Collaboration Detector Authors), C. Whittle (LIGO Scientific Collaboration Detector Authors), B. Willke (LIGO Scientific Collaboration Detector Authors), C. C. Wipf (LIGO Scientific Collaboration Detector Authors), J. L. Wright (LIGO Scientific Collaboration Detector Authors), V. A. Xu (LIGO Scientific Collaboration Detector Authors), H. Yamamoto (LIGO Scientific Collaboration Detector Authors), L. Zhang (LIGO Scientific Collaboration Detector Authors), M. E. Zucker (LIGO Scientific Collaboration Detector Authors)"
+    ],
+    "abstract": "arXiv:2609.19317v1 Announce Type: new \nAbstract: Continuous quantum displacement measurements are fundamentally limited by a trade-off between readout imprecision and measurement back-action, constrained by the Heisenberg uncertainty principle. In the Laser Interferometric Gravitational-Wave Observatory (LIGO), these two quantum noise components dominate much of the observation band, making it an excellent testbed. We induce a sub-Hz-linewidth optomechanical mode by trapping the differential motion of the 40-kg mirrors in a band where radiation-pressure back-action dominates the motion. Engineering the quantum state entering the dark port creates correlations between imprecision and back-action that partially cancel their contributions, reducing observed motion near resonance by ~47%. A framework resolving the imprecision, back-action, and correlation terms identifies the origin of this suppression. These results demonstrate quantum back-action evasion and quantum reservoir engineering in a macroscopic optomechanical system.",
+    "link": "https://arxiv.org/abs/2609.19317",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043097",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19317v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "gr-qc",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.ins-det",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.optics",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19322v1",
+    "title": "The spectral $\\zeta$-function of Sturm--Liouville operators with $N$ generalized point potentials",
+    "authors": [
+      "Guglielmo Fucci, Jonathan Stanfill"
+    ],
+    "abstract": "arXiv:2609.19322v1 Announce Type: new \nAbstract: This work analyzes the spectral zeta function associated with regular and singular Sturm--Liouville operators endowed with $N$ generalized point potentials. The point interactions are characterized as a particular class of self-adjoint extensions of Sturm--Liouville operators defined on a chain of $N+1$ adjacent intervals. Each interaction is described by $SL(2,\\R)$ matching conditions relating generalized boundary values across neighboring intervals. We construct the spectral zeta function associated with Sturm--Liouville operators endowed with $N$ generalized point potentials in terms of a contour integral involving an appropriate characteristic function. The process of analytic continuation of the spectral zeta function to a neighborhood of the origin is illustrated by means of specific examples where the $\\zeta$-regularized functional determinant is also explicitly computed.",
+    "link": "https://arxiv.org/abs/2609.19322",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043117",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19322v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.SP",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19348v1",
+    "title": "Time-resolved topology of aperiodically driven systems",
+    "authors": [
+      "Justin T. Cole, Christina J\\\"org, Terry A. Loring, Alexander Cerjan"
+    ],
+    "abstract": "arXiv:2609.19348v1 Announce Type: new \nAbstract: Topological phases of periodically driven systems are commonly classified through Floquet Hamiltonians, whose definition relies on a repeated driving cycle. However, this framework breaks down for systems whose realized evolution is aperiodic or nonlinear, even when robust topological phenomena appear to persist. Here, we introduce an evolution-history spectral localizer framework that classifies Chern topology directly from a system's finite-time unitary evolution operator. The method produces a time-resolved local Chern marker and an associated local gap, allowing topology and its protection to be tracked during the actual dynamics of a driven system. We demonstrate this approach in quasiperiodically driven and nonlinear photonic models, where it identifies transient topological protection, its subsequent loss, and the recovery of topology after nonlinear excitations disperse. The developed framework provides a route for analyzing driven photonic systems whose topological behavior depends on finite-time dynamics rather than an idealized Floquet cycle.",
+    "link": "https://arxiv.org/abs/2609.19348",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043140",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19348v1",
+      "categories": [
+        {
+          "term": "physics.optics",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19392v1",
+    "title": "Transformers as Intrinsic Optimizers for Quantum Approximate Optimization Algorithm",
+    "authors": [
+      "Kuan-Cheng Chen, Xiaotian Xu, Hiromichi Matsuyama, Wei-Hao Huang, Haomu Yuan, Yu Yamashiro"
+    ],
+    "abstract": "arXiv:2609.19392v1 Announce Type: new \nAbstract: The Quantum Approximate Optimization Algorithm (QAOA) is a leading variational framework for combinatorial optimization on noisy intermediate-scale quantum hardware, but its practical performance depends strongly on the classical optimizer used to train its variational parameters. This outer-loop optimization is often nonconvex, initialization-sensitive, and costly when repeated across large families of related problem instances. In this work, we propose a Transformer-based intrinsic optimization framework for QAOA, in which the optimizer itself is learned and embedded directly into the hybrid quantum-classical loop. The proposed graph-conditioned Transformer processes problem structure, current QAOA parameters, measurement feedback, and recent optimization history to predict the next variational-parameter update, thereby reformulating instance-wise classical optimization as an amortized learned policy. We develop a mathematical formulation of this intrinsic-optimization perspective and evaluate the method on QAOA-based MaxCut benchmarks across multiple problem settings, with comparisons against representative classical and learned optimization baselines. The results demonstrate that Transformer-based intrinsic optimization can provide a structured and transferable mechanism for improving the classical component of hybrid quantum optimization algorithms.",
+    "link": "https://arxiv.org/abs/2609.19392",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043159",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19392v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19404v1",
+    "title": "Fifty Years of the GKLS Master Equation: Foundations and Early Developments",
+    "authors": [
+      "Fabio Benatti, Dariusz Chru\\'sci\\'nski, Saverio Pascazio"
+    ],
+    "abstract": "arXiv:2609.19404v1 Announce Type: new \nAbstract: The year 2026 marks the fiftieth anniversary of the two seminal papers in which Gorini, Kossakowski, and Sudarshan, and independently Lindblad, characterized the generators of completely positive quantum dynamical semigroups. We revisit the conceptual and historical route leading to the Gorini-Kossakowski-Lindblad-Sudarshan (GKLS) master equation and examine several of its early developments and consequences. Our aim is to show how several initially separate mathematical and physical ideas converged in the GKLS structure theorem, imme- diately opening the way to manifold consequences for the description of dissipative quantum phenomena and how that theorem, fifty years later, remains both a foundational result and an active framework for open quantum dynamics.",
+    "link": "https://arxiv.org/abs/2609.19404",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043178",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19404v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19442v1",
+    "title": "Site-scale, Multi-resolution WRF Wind Modeling with Observational Nudging for Methane Emission Monitoring in the Permian Basin",
+    "authors": [
+      "Ehsan Kharazmi, Erin Menezes, George Karniadakis, Anantha Sundaram, Arash Fathi"
+    ],
+    "abstract": "arXiv:2609.19442v1 Announce Type: new \nAbstract: Accurate methane source localization and emission-rate estimation at oil and gas facilities require wind fields that resolve site-scale spatial and temporal variability, which cannot be characterized by a single anemometer or coarse operational weather products. We develop a multiscale Weather Research and Forecasting (WRF) framework for a Permian Basin facility that dynamically downscales hourly, 3 km High-Resolution Rapid Refresh (HRRR) fields through four nested domains with grid spacings of 3 km, 1 km, 200 m, and 40 m. The two outer domains use planetary-boundary-layer parameterization, whereas the two inner domains operate in large-eddy-simulation mode. One-minute wind observations from two on-site anemometers are assimilated through wind-only observational nudging in the innermost domain, and the effects of nesting feedback and turbulence-closure choices are examined. Simulations for winter and summer 2025 periods are evaluated using near-surface wind-speed time series, power spectra, spatial fields, and statistical metrics. The baseline simulation reproduces the broad evolution of observed wind events but drifts during weak-wind periods. Observational nudging with one- and two-way nesting reduces the absolute bias of wind-speed by %65 at one sensor and %87 at the other, while reducing the corresponding root-mean-square errors by %33 and %44. Nudging also increases high-frequency energy and resolved spatial gradients, although improvements in turbulence statistics are not uniform. These results demonstrate a practical physics-based pathway for generating high-resolution wind fields for methane-plume modeling while emphasizing the need for independent spatial observations to validate accuracy away from assimilated sensors.",
+    "link": "https://arxiv.org/abs/2609.19442",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043201",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19442v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.NA",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.NA",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19484v1",
+    "title": "Scalable Simulation of Quantum Dynamics on Topological Quantum Hardware",
+    "authors": [
+      "Kritanjan Polley, Mark E. Tuckerman"
+    ],
+    "abstract": "arXiv:2609.19484v1 Announce Type: new \nAbstract: Quantum computers offer a significant advantage in simulating quantum systems compared to classical computers for certain problems, although most current applications are limited to calculating static molecular properties using hybrid quantum-classical hardware. In this work, we establish a framework for the representation of quantum dynamics in molecular and condensed matter systems, designed for execution on topological quantum hardware. By leveraging the non-Abelian braiding statistics of Fibonacci and Ising anyons, we utilize the Solovay-Kitaev algorithm to approximate unitary propagators for a range of systems. We demonstrate the efficacy of these algorithms across a hierarchy of complexity, from two-level systems and one dimensional double-well potentials to condensed phase spin-boson models, simple molecules, and molecular reaction kinetics. These algorithms provide a scalable and robust pathway for simulating many-body condensed phase chemical physics on fault-tolerant quantum devices.",
+    "link": "https://arxiv.org/abs/2609.19484",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043221",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19484v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19485v1",
+    "title": "Efficiently estimating failure rates of fault-tolerant logical non-Clifford blocks",
+    "authors": [
+      "Julio C. Magdalena de la Fuente, Thomas R. Scruby"
+    ],
+    "abstract": "arXiv:2609.19485v1 Announce Type: new \nAbstract: Useful quantum computation requires the fault-tolerant implementations of a universal gate set which are generically not efficiently simulable. We devise an algebraic framework that allows for efficient sampling from the measurement distribution of fault-tolerant circuits that implement diagonal logic gates in the third level of the Clifford hierarchy. Upon successful sampling we also provide sufficient conditions for decoding success. The resulting estimate for the logical failure rate is an overestimate, which becomes more accurate for blocks that are fault tolerant against arbitrary local errors. The non-Clifford simulation overhead is independent of the number of logical qubits, making the method particularly attractive for large-scale simulations. The framework is based on viewing the non-Clifford gates in the circuit as a cohomology invariant of an underlying spacetime fault complex. The method can also be interfaced with Clifford simulators to simulate larger fault-tolerant circuits and algorithmic subroutines.",
+    "link": "https://arxiv.org/abs/2609.19485",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043240",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19485v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19496v1",
+    "title": "Engineering and Probing a One-Dimensional Dipolar Spin Ensemble in Diamond",
+    "authors": [
+      "Lingjie Chen, Shreyas Parthasarathy, Simon A. Meynell, Lillian B. Hughes Wyatt, Eveline Postelnicu, Haopu Yang, Zilin Wang, Weijie Wu, Winston V. Peloso, Casey K. Kim, Chris R. Laumann, Kunal Mukherjee, Norman Y. Yao, Ania C. Bleszynski Jayich"
+    ],
+    "abstract": "arXiv:2609.19496v1 Announce Type: new \nAbstract: Dimensionality plays a central role in determining the collective behavior of interacting quantum systems. Engineering strongly interacting ensembles of solid-state spin defects in reduced dimensions remains a significant challenge at the interface between the applied and fundamental sciences. Here, we create and characterize a positionally disordered, quasi-one-dimensional spin chain in diamond, consisting of optically dark substitutional nitrogen defects (P1 centers) and optically addressable probe nitrogen-vacancy (NV) centers. Our approach exploits the preferential incorporation of nitrogen along step bunches formed during chemical vapor deposition to achieve both lateral and vertical confinement. Combining spatially resolved materials characterization with nanoscale quantum sensing, we establish the one-dimensional character of the optically dark, unpolarized P1 spin ensemble. We then use correlation spectroscopy to probe local spin autocorrelations and investigate infinite-temperature dipolar spin transport. Our results establish a materials-based route for engineering low-dimensional quantum spin systems.",
+    "link": "https://arxiv.org/abs/2609.19496",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043261",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19496v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.mes-hall",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.mtrl-sci",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19498v1",
+    "title": "Boundary parity in the mirror model on the Manhattan lattice",
+    "authors": [
+      "Jian Gu, Qin Hao"
+    ],
+    "abstract": "arXiv:2609.19498v1 Announce Type: new \nAbstract: We study a finite-domain event for the mirror model on the Manhattan lattice: every boundary-to-boundary trajectory crosses a marked connector an even number of times, while internal cycles are unrestricted. Our main theorem gives a finite-scale confinement criterion: if this event's probability reaches a universal threshold in one even two-square rectangle, then almost surely every trajectory in the plane is periodic. We construct an exactly normalized three-color tensor representation and prove deterministic bounds for approximate contractions using the signed partial-permutation structure of directed continuations. These tools turn numerical evaluations into rigorous finite-volume statements. At mirror density \\(p=2/5\\), we prove that the boundary-parity probability is nonmonotone in the rectangle width, with a decrease followed by a certified increase. These values remain below the sufficient confinement threshold and do not resolve planar localization at this density. Further experiments track how the measured finite-size minimum varies with density, compare matching-based and entrywise error bounds, and exhibit endpoint-sensitive and cooperative responses to local mirror changes.",
+    "link": "https://arxiv.org/abs/2609.19498",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043281",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19498v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.NA",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.NA",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19501v1",
+    "title": "Eberlein convolution as an inner product and quantitative Bombieri--Taylor results",
+    "authors": [
+      "Daniel Lenz, Nicolae Strungaru"
+    ],
+    "abstract": "arXiv:2609.19501v1 Announce Type: new \nAbstract: We present a simple argument providing a very general Bombieri--Taylor-type result to compute Bragg peaks in diffraction theory as limits. At its abstract core the argument relies on considering the Eberlein convolution as an inner product. This inner product gives an abstract version of a Cauchy--Schwarz type inequality which implies the Bombieri--Taylor-type result as well as generalizations.",
+    "link": "https://arxiv.org/abs/2609.19501",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043306",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19501v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.FA",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19532v1",
+    "title": "Mollified-sharp decomposition: a probabilistic regularization of parametric POD for shock-bearing flows",
+    "authors": [
+      "Oliver T. Schmidt"
+    ],
+    "abstract": "arXiv:2609.19532v1 Announce Type: new \nAbstract: This paper introduces the mollified-sharp decomposition, a probabilistic regularization of moving shocks in parametric reduced-order models. Each detected shock location is treated as a random variable with a prescribed probability density. Averaging over this artificial distribution replaces the localized pressure change by a smooth transition whose spatial extent is set by the density width, rather than by direct filtering of the pressure field. Each snapshot is decomposed exactly into a regularized mollified field and a local sharp correction that restores the shock. This probabilistic construction and exact additive split define the general method; the detector, kernel, treatment of multiple shocks, alignment coordinates, and regression are implementation choices. In the present realization, a calibrated indicator detects shocks, a compactly supported Wendland kernel mollifies them, and a peak-normalized and, where necessary, partitioned weight derived from each shock-location probability density defines the centroid, principal axes, and scales of its local alignment domain. Separate POD-GPR models represent the mollified field and aligned corrections, with additional regressions for shock presence and alignment. The method is demonstrated on the transonic airfoil pressure data of Catalani et al. (2023) and compared with a standard POD-GPR model constructed from the same data and POD-energy criterion. The mollified-sharp model reduces the mean test-set relative $L^2$ pressure error by 31.2% and the mean test-set surface-pressure-coefficient error by 33.2%, while also improving the predicted shock locations and pressure changes; the trade-off is a median online evaluation time 2.24 times as long. The construction is applicable in principle to other parameter-dependent fields with moving sharp features, such as moving material interfaces in multiphase flows.",
+    "link": "https://arxiv.org/abs/2609.19532",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043325",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19532v1",
+      "categories": [
+        {
+          "term": "physics.comp-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.data-an",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.flu-dyn",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19534v1",
+    "title": "Normalizing Flow-Based Bayesian Parameter Estimation for Noisy Quantum States",
+    "authors": [
+      "Hsien-Yi Hsieh, Yuan-Ting Liu, Juan Camilo Rodr{\\i}guez, Yang-Yi Lee, Po-Hang Wang, Ole Steuernagel, Chien-Ming Wu, Ray-Kuang Lee"
+    ],
+    "abstract": "arXiv:2609.19534v1 Announce Type: new \nAbstract: To extract complete information about experimental noisy quantum states, as well as correlations among different physical parameters, we develop an efficient machine learning-assisted framework with the normalizing flow based Bayesian parameter estimation (BPE). By embedding a physically interpretable parameter vector, ${s}$, into the quantum state ansatzes, $\\rho({s})$, the corresponding parameter distribution $p({s}|D)$ is induced from BPE, based on the available experimental data $D$. The BPE allows us to perform parameter correlation analyses, providing powerful insights about how experimental parameters and related noise sources affect quantum features of the system. As an example, the flexibility of our framework is demonstrated using two different physical ansatzes on the optical cat state experiments, where a noisy single-photon state is added to impure squeezed state. With correlations among the Wigner function negativity, photon-addition fraction, noisy fraction, and pump powers, our framework gives interpretations for complicated experimental mechanisms in generating noisy non-Gaussian states. By leveraging normalizing flow-based neural networks and Bayesian uncertainty estimation, along with physical and experimental constraints incorporated naturally, the valuable information inferred in the posterior learning provides guidelines for experimentalists, as well as theorists, in identifying promising parameters to enhance desirable features.",
+    "link": "https://arxiv.org/abs/2609.19534",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043345",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19534v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19535v1",
+    "title": "Symmetry-driven correlation patterns in one-dimensional periodic fermionic systems: closed-form expressions and exact selection rules for correlation functions, entanglement entropies and mutual information",
+    "authors": [
+      "Celestino Angeli"
+    ],
+    "abstract": "arXiv:2609.19535v1 Announce Type: new \nAbstract: We present an analytical study of the spatial structure of correlations in periodic fermionic systems at the single Slater determinant level, focusing on the cyclic case. Exploiting cyclic symmetry, the transformation from localized orbitals to molecular orbitals is simultaneously a discrete Fourier transform, a Vandermonde matrix on the roots of unity, a complex Hadamard matrix, and the character table of the cyclic group $C_m$. Within this framework, the spatial structure of correlations is fully determined by the occupied irreducible representations (Fourier modes), independently of the specific Hamiltonian generating them. In particular, the fermionic two-point correlator is expressed as a truncated Fourier sum over the occupied orbitals, leading to exact analytical expressions for symmetric occupation patterns of Fourier modes ($\\ell$ and $-\\ell$ pairs), corresponding in quantum chemistry to aromatic fillings, i.e. fillings satisfying H\\\"uckel's $4n + 2$ rule. For the half filling case, we derive exact spatial selection rules. In particular, the two-point correlator vanishes identically for all even distances along the ring. This property propagates to reduced density matrices and implies a complete absence of mutual information between the corresponding orbitals. These results reveal that, despite the global delocalization of molecular orbitals, the correlation structure in cyclic systems is highly non-uniform and governed by symmetry-induced interference. Although formulated in terms of cyclic lattice systems, the present results extend straightforwardly to one-dimensional fermionic chains with periodic conditions, reflecting the underlying translational symmetry of the problem. The framework therefore provides a Hamiltonian-independent and universal reference for understanding correlation patterns in one-dimensional periodic fermionic systems.",
+    "link": "https://arxiv.org/abs/2609.19535",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043364",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19535v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19561v1",
+    "title": "A Bi-Objective Routing Framework for Hybrid Terrestrial-Satellite Quantum Networks",
+    "authors": [
+      "Yashpreet Khambay, Nitish K. Panigrahy"
+    ],
+    "abstract": "arXiv:2609.19561v1 Announce Type: new \nAbstract: Hybrid terrestrial-satellite quantum networks combine terrestrial fiber infrastructure with free-space links to enable long-distance entanglement distribution. Entanglement can be routed over different combinations of terrestrial and satellite links, resulting in paths with different entanglement generation rates (EGRs) and fidelities. Existing routing algorithms, however, typically reduce routing to a single-objective problem by optimizing either EGR or fidelity, or by optimizing one while constraining the other, and thus do not explicitly capture the trade-off between the two. In this paper, we present a bi-objective routing framework for hybrid quantum networks that jointly optimizes end-to-end EGR and fidelity. We formulate routing as a Pareto optimization problem and show that it possesses a special mathematical structure: the bottleneck nature of end-to-end EGR and the multiplicative nature of end-to-end fidelity allow the problem to be transformed into a MAXMIN-MINSUM bi-criterion path problem. This transformation enables the exact polynomial-time computation of a minimal complete Pareto set using Martins' bicriterion routing algorithm. Our results demonstrate that hybrid networks expose substantially richer Pareto frontiers than terrestrial-only networks and that the proposed framework outperforms representative single-objective routing policies by allowing applications to select paths based on their EGR and fidelity requirements.",
+    "link": "https://arxiv.org/abs/2609.19561",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043384",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19561v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.NI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.PF",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19565v1",
+    "title": "Automatic Optical Alignment Using Projective Geometry",
+    "authors": [
+      "Bowen Li, Lukas Palm, Xin Wei, Marius J\\\"urgensen, Zeyang Li, Yiming Cady Feng, Abhishek V. Karve, Jon Simon"
+    ],
+    "abstract": "arXiv:2609.19565v1 Announce Type: new \nAbstract: Aligning and maintaining complex optical beam paths is a central challenge across experimental science, because it is a high-dimensional task with strong cross-coupling between controls, often in systems with limited physical access. We present an automated hardware-software framework that resolves this alignment challenge using low-cost, retro-fittable motorized mounts driven by projective-geometry models and a photodiode-fed optimizer. A compact forward model describes the beam path to paraxial order with only the physical mirror angles left free, so it can be rapidly ($\\sim$ms) numerically inverted to return the required mirror angles for a desired beam trajectory. A photodiode-fed optimizer then fine-tunes this geometric starting point, and converged mirror settings are tabulated for retrieval in milliseconds and actuation in seconds. We experimentally demonstrate the performance of this approach on a retro-reflected lattice atom-transport system, yielding improvements in both speed and precision over manual alignment. This framework reduces the manual effort required to align complex beam paths, enables programmable optical control in experiments with limited physical access, and enhances the scalability of complex optical architectures.",
+    "link": "https://arxiv.org/abs/2609.19565",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043403",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19565v1",
+      "categories": [
+        {
+          "term": "physics.optics",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19575v1",
+    "title": "Vehicle-Routing Clustering by Sparse Quantum Relaxation",
+    "authors": [
+      "Farzan Moosavi, Bilal Farooq"
+    ],
+    "abstract": "arXiv:2609.19575v1 Announce Type: new \nAbstract: This paper studies the cluster-assignment layer of a cluster-first-route-second decomposition for the capacitated pickup-and-delivery problem with time windows (CPDPTW), instead of a direct route-ordering quadratic unconstrained binary optimization (QUBO). Sample-based subspace diagonalization (SQD) degenerates to best-of-shots for any diagonal optimization Hamiltonian, so a useful transfer to routing requires non-diagonal relaxation. Quantum random access optimization (QRAO) provides this non-diagonality by encoding binary variables through non-commuting quantum random access code (QRAC) observables. CPDPTW-derived conflict graphs expose a routing-specific obstruction because dense objectives and penalty-encoded constraints destroy QRAO compression. We keep the Hamiltonian sparse by encoding only the sparsified objective and enforcing one-hot, capacity, and cluster time-budget feasibility by repair after rounding. We make no quantum-advantage claim. Under strong repair the classical pass alone reaches near-optimal cost at the tested sizes. The result is a regime map linking sparsification, achieved compression, linear-combination-of-unitaries (LCU) 1-norm, heavy-hex two-qubit depth, sampling drift, and final routing quality on Qiskit Aer, calibrated FakeTorino, and IBM Heron ibm_quebec. Across a 108-row ideal-calibrated-hardware evaluation grid spanning four to twelve pickup-delivery request pairs, the hardware slice has mean gap 0.0016 and mean device-vs-ideal total variation distance (TVD) 0.279; a decoder ablation at sizes six through twelve isolates the non-diagonal signal.",
+    "link": "https://arxiv.org/abs/2609.19575",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043421",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19575v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19576v1",
+    "title": "Limits on the free-space group velocity of optical wave packets incorporating angular dispersion. Part~I, conventional angular dispersion: tutorial",
+    "authors": [
+      "Layton A. Hall, Ayman F. Abouraddy"
+    ],
+    "abstract": "arXiv:2609.19576v1 Announce Type: new \nAbstract: A plane-wave optical pulse travels in free space at a group velocity $c$ (the speed of light in vacuum) measured along its propagation axis. It is sometimes thought that spatially structuring the field in free space reduces the group velocity below $c$ because -- intuitively -- the oblique wave vectors undergirding the wave packet increase the average group delay. Here we show that spatiotemporally structuring a pulsed optical beam (or wave packet) can yield -- in principle -- arbitrary group velocities in free space in contradistinction to this commonly held intuition. We devote our attention here to pulses endowed with angular dispersion (AD) where the propagation angle is wavelength dependent. This class of wave packets is particularly pertinent because their group velocity is constant over the transverse field profile and along the propagation axis, thereby yielding an unambiguous group delay. However, significant deviation of the AD-induced group velocity in free space from~$c$ inevitably requires a large numerical aperture that lies deep in the non-paraxial regime, and such wave packets experience AD-induced group-velocity dispersion. The formulation presented here captures a broad range of results, connecting them in a single framework. In Part~II of this tutorial, we describe recently identified `non-differentiable AD' (associated with propagation-invariant space-time wave packets) that helps circumvent the limits associated with conventional (differentiable) AD as outlined here.",
+    "link": "https://arxiv.org/abs/2609.19576",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043443",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19576v1",
+      "categories": [
+        {
+          "term": "physics.optics",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19580v1",
+    "title": "Limits on the free-space group velocity of optical wave packets incorporating angular dispersion. Part~II, non-differentiable angular dispersion: tutorial",
+    "authors": [
+      "Layton A. Hall, Ayman F. Abouraddy"
+    ],
+    "abstract": "arXiv:2609.19580v1 Announce Type: new \nAbstract: In Part~I of this tutorial, we showed that introducing angular dispersion (AD) into a collimated optical pulse allows for tuning the wave packet group velocity in free space. In principle, the group velocity can take on arbitrary values, whether superluminal, subluminal, or even negative. However, any significant deviation of the group velocity from $c$ (the speed of light in vacuum) necessitates propagation at large angles with respect to the optical axis in the non-paraxial regime. In Part~II of this tutorial, we describe the recent discovery of a new form of AD we refer to as `non-differentiable AD', which circumvents the limits imposed by conventional (differentiable) AD. Non-differentiable AD does \\textit{not} refer to an AD profile that is discontinuous, contains a kink, or features a singularity. Rather, a non-differentiable AD profile is continuous, smooth, and is differentiable everywhere except for one wavelength at which the derivative is not defined. We show that salutary features follow from this non-differentiability with respect to tuning the group velocity of a pulsed beam in free space; namely, significant deviations in the group velocity away from $c$ are achievable in the paraxial regime while remaining free of group-velocity dispersion and all higher-order dispersive effects. This tutorial presents an outline of these recent results for tuning the group velocity of a wave packet via non-differentiable AD, connecting them with the corresponding results associated with conventional AD -- as outlined in Part~I. Moreover, we show that non-differentiable AD undergirds the unique characteristics of propagation-invariant space-time wave packets, thus unifying a large swathe of results in a single conceptual framework.",
+    "link": "https://arxiv.org/abs/2609.19580",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043465",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19580v1",
+      "categories": [
+        {
+          "term": "physics.optics",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19591v1",
+    "title": "Dephasing-Enhanced Response and Phase Transitions in Quantum Boltzmann Samplers",
+    "authors": [
+      "Yu-Xuan Zhang, Jing-Ling Chen, Leong-Chuan Kwek, Peng Wang"
+    ],
+    "abstract": "arXiv:2609.19591v1 Announce Type: new \nAbstract: Dephasing can drive a quantum Boltzmann sampler into an ordered phase while its programmed probability distribution remains disordered. We trace this transition to an enhanced conditional response: coherence loss changes how each spin responds to its neighbors, and interactions amplify the change. For all-to-all coupling, we establish the stationary transition at finite dephasing. Near criticality, the magnetization distribution depends on the ratio of dephasing strength to the square root of system size, retaining a finite imprint of coherence even as the local coherent correction vanishes. In the strong-dephasing limit on a square lattice, the dynamics generates effective multispin interactions and probability currents, with Ising-like critical statistics. Adjusting the local dissipative update restores the target probability process on arbitrary graphs.",
+    "link": "https://arxiv.org/abs/2609.19591",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043484",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19591v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19619v1",
+    "title": "A Restricted Boltzmann Machine with Quantum-State Visible Units",
+    "authors": [
+      "Zhe-Hao Zhang, Yi-Cong Yu, Xiaoming Cai, Hai-Qing Lin"
+    ],
+    "abstract": "arXiv:2609.19619v1 Announce Type: new \nAbstract: We construct a restricted Boltzmann machine (RBM) whose visible input is a quantum state rather than a classical configuration. Each hidden unit carries a trainable quantum template prepared by a parametrized circuit and converts its overlap with the input into a feature. Treating quantum states as high-dimensional continuous visible objects creates nontrivial normalization and scaling problems. We regularize the continuous likelihood and derive two controlled high-dimensional limits, yielding a Hopfield-type network with continuous Hilbert-space patterns and a data-augmented Gram likelihood. The resulting algorithms are compact and use trainable circuit-prepared templates as measurement intermediaries between quantum data and classical optimization. Numerical simulations across several many-body systems demonstrate effective quantum-phase recognition and multicomponent feature extraction.",
+    "link": "https://arxiv.org/abs/2609.19619",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043521",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19619v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19621v1",
+    "title": "Geography as the Organizing Grammar of Geospatial Models",
+    "authors": [
+      "Rajiv Ranjan, Shashank Tamaskar"
+    ],
+    "abstract": "arXiv:2609.19621v1 Announce Type: new \nAbstract: GeoAI increasingly produces reusable Earth representation s, physical forecasts, multimodal systems, and reasoning a gents. Their progress exposes two distinct limitations. Geo graphic completeness asks whether the represented world ex tends beyond readily observed land surfaces and atmospher ic fields to oceans, biogeography, economies, institutions, and human agency. Geographic intelligence asks whether model outputs preserve place, scale, relations, process, un certainty, and the limits of valid inference. The first con cerns what exists in a model; the second concerns what may responsibly be claimed about it. This critical integrative review argues that geography provides the organizing gram mar that connects these dimensions. Seven structural gaps, propositions, and corresponding review questions translate the argument into testable requirements. The resulting re search agenda advances Living Geospatial Models as federat ed, continually updated systems that couple specialist Earth and human-domain models through shared geographic iden tity, support, relations, provenance, and uncertainty. The objective is not a single universal network, but geospatial intelligence that can explain connections and change, antic ipate plausible futures, and support accountable decisions across places and scales.",
+    "link": "https://arxiv.org/abs/2609.19621",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043541",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19621v1",
+      "categories": [
+        {
+          "term": "physics.soc-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19625v1",
+    "title": "Experimental certification of the nonlocal advantages of quantum imaginarity",
+    "authors": [
+      "Jian-Hao Wu, Kai-Yu Yuan, Yun-Xiang Tian, Hao-Ran Tan, Yan-Xin Rong, Zhen Shang, Yong-Jian Gu, Ya Xiao"
+    ],
+    "abstract": "arXiv:2609.19625v1 Announce Type: new \nAbstract: Quantum imaginarity is a distinct resource in quantum information theory, yet its nonlocal properties have not been fully explored. Here, we report an experimental study of the nonlocal advantage of quantum imaginarity (NAQI), in which local measurements on one subsystem can steer the average imaginarity of the conditional states of the other subsystem beyond the corresponding classical bound. The $l_1$-norm of imaginarity inequality is adopted as an experimentally accessible witness. A hybrid optimization algorithm that combines a genetic algorithm with sequential quadratic programming is developed to avoid local optima and accelerate the search for optimal measurement settings. Using polarization-encoded photonic qubits, we prepare two classes of two-qubit Bell-diagonal states and experimentally characterize the imaginarity of the conditional states following local measurements. Clear violations of the $l_1$-norm of imaginarity inequality are observed, providing an experimental certification of NAQI. We further investigate the relationship among NAQI, the nonlocal advantage of quantum coherence (NAQC), and Bell nonlocality based on their respective inequality criteria. For the two-qubit Werner states considered in this work, the regions of states that violate the respective criteria satisfy $\\mathcal{D}_{\\rm NAQC}\\subset\\mathcal{D}_{\\rm NAQI}\\subset\\mathcal{D}_{\\rm BN}$. Our work provides an experimental realization of NAQI and a comparison of different forms of quantum nonclassicality in a photonic platform.",
+    "link": "https://arxiv.org/abs/2609.19625",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043563",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19625v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19629v1",
+    "title": "Collective Symmetry and Criticality from Single-Component Fluctuations",
+    "authors": [
+      "Chunhao Guo, Zhe Wang, Zheng Yan"
+    ],
+    "abstract": "arXiv:2609.19629v1 Announce Type: new \nAbstract: Symmetry plays a fundamental role in modern physics by guiding the classification of phases and the construction of effective theories of critical systems. Identifying collective symmetry remains challenging because tests based on preselected order parameters can overlook hidden components. A central goal is therefore to extract symmetry and critical information from a single accessible component. We pursue this goal using Lee--Yang zero ratios generated by a single ordering field. Unmeasured components shape the projected fluctuation distribution and hence the relative zero positions. Deep in a phase with spontaneous symmetry breaking, we show analytically that the zero ratios for an isotropic order parameter approach a parameter-free Bessel sequence fixed by the number of collective components. Near quantum criticality, fluctuations deform this distribution. The resulting ratio deviations and their finite-size coupling dependence carry additional critical information. We demonstrate these results with large-scale quantum Monte Carlo simulations of many-body systems with conventional and enlarged continuous symmetries. This approach provides quantitative access to collective symmetry and criticality without measuring every competing order.",
+    "link": "https://arxiv.org/abs/2609.19629",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043585",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19629v1",
+      "categories": [
+        {
+          "term": "cond-mat.stat-mech",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.str-el",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19639v1",
+    "title": "Quantum computers will not be that different: A blueprint for quantum computer architecture at scale",
+    "authors": [
+      "Torsten Hoefler, Matthias Troyer"
+    ],
+    "abstract": "arXiv:2609.19639v1 Announce Type: new \nAbstract: Quantum computers are technologically novel and unusual, but at system scale they should be engineered using many of the same principles that govern classical heterogeneous accelerators. This paper argues that utility-scale quantum architecture is primarily a cost-performance problem across a coupled quantum-classical system, leading to a blueprint for scalable quantum processing unit (QPU) design. Our architecture blueprint is organized around clean logical abstractions, hiding details and complexity of physical qubit modalities below the instruction set architecture (ISA) boundary, and specializes recurring functions aggressively to minimize the cost for utility scale quantum computations. Its low-level implementation through specialized local hardware for control, readout, and quantum error correction (QEC) closely resembles the architecture of high-performance network stacks. One of our main insights is that the design principles and the resulting architecture closely follow established practice from classical computing and networking.",
+    "link": "https://arxiv.org/abs/2609.19639",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043604",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19639v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19642v1",
+    "title": "Improving Sample Efficiency in Peptide-HLA Binding Prediction with Hybrid Quantum-Classical Neural Networks",
+    "authors": [
+      "Chenyan Jia, Cong Guo, Siyue Chen, Pengpeng Ye, Xiaochun Chen"
+    ],
+    "abstract": "arXiv:2609.19642v1 Announce Type: new \nAbstract: Peptide-HLA binding prediction is a critical step in neoantigen identification for personalized cancer immunotherapy and holds significant clinical value. However, the training data available for many HLA alleles are extremely limited, which severely constrains the performance of conventional methods on this task. Parameterized quantum circuits are hypothesized to induce inductive biases beneficial for learning from small datasets, yet their application to biological sequence prediction remains underexplored. To address this, we propose a hybrid quantum-classical neural network (HQNN) specifically designed for peptide-HLA binding prediction. HQNN integrates multi-source biological feature encoding with parallel quantum feature extractors and a quantum-enhanced classifier. On two HLA alleles (A*02:01 and B*07:02), HQNN outperforms a parameter-matched classical CNN baseline across all training sizes, with the performance gap widening as training data decreases. Ablation studies confirm the respective contributions of the quantum feature extraction module and the quantum classifier. In noise-aware simulations, performance degrades only mildly, and such degradation is reasonable and acceptable under realistic quantum hardware noise levels. These results suggest that hybrid quantum-classical architectures can provide practical sample-efficiency gains for immunoinformatics tasks in low-data regimes.",
+    "link": "https://arxiv.org/abs/2609.19642",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043626",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19642v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "stat.ML",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19663v1",
+    "title": "A c-transform optimal transport method for high-contrast freeform reflector design",
+    "authors": [
+      "Gang Bao, Yixuan Zhang, Jiaqi Yu"
+    ],
+    "abstract": "arXiv:2609.19663v1 Announce Type: new \nAbstract: Design of high-contrast freeform reflectors is challenging, as the presence of zero-intensity regions leads to degeneracy in the associated Monge-Ampere-type equation. A common remedy is to add a positive artificial background to the target intensity, which improves the regularity of the equation. However, this regularization inevitably reduces the achievable illumination contrast and introduces nonzero intensity into regions that are intended to remain dark. We propose a fast c-transform method based on optimal transport duality for high-contrast freeform reflector design in the far field without artificial background regularization. The method integrates repeated discrete c-transforms into a measure-based dual optimization scheme to maintain the c-concavity of the reflector potential throughout the iteration. This preserves the admissibility of the iterates and enables stable convergence for targets with zero-intensity regions. To efficiently compute the discrete c-transforms, we develop a localized search algorithm that exploits their contact structure and prove its exactness and linear complexity. Numerical experiments demonstrate that the proposed method accurately realizes high-contrast illumination targets with zero background.",
+    "link": "https://arxiv.org/abs/2609.19663",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043645",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19663v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19676v1",
+    "title": "Linear combination of Schr\\\"odingerization for quantum linear systems with optimal matrix-query complexity",
+    "authors": [
+      "Yin Yang, Yue Yu, Long Zhang"
+    ],
+    "abstract": "arXiv:2609.19676v1 Announce Type: new \nAbstract: Quantum linear systems algorithms (QLSAs) aim to solve linear systems $A\\bb{x}=\\bb{b}$ exponentially faster than classical methods under certain conditions. In this work, we develop quantum algorithms for solving linear algebraic equations from an ODE-based perspective. Inspired by the linear combination of Hamiltonian simulation (LCHS) representation in the Fourier approach \\cite{Childs2017QLSA}, we express the solution $\\bb{x}$ as a linear combination of solutions to a system of linear convection equations, which become Schr\\\"odinger-type equations with unitary evolutions in the Fourier domain. We refer to this representation as LC-Schr\\\"odingerization. Based on this result, we construct an LCHS-based quantum algorithm with two LCHS instances: one for time-marching and one for numerical integration. The key construction uses the derivative of a Gaussian-smoothed hat function and recovers the solution over a fixed auxiliary interval. This permits a truncation time independent of the target accuracy and avoids the loss in success probability from selecting a single grid point. Periodization and explicit Fourier coefficients provide the corresponding projection error bounds. Under the stated oracle assumptions and given a constant-factor estimate of the solution norm, direct simulation of the select operators and block preconditioning achieve the optimal matrix-query complexity $\\mathcal{O}(\\kappa_A\\log\\frac1\\varepsilon)$ without using variable-time amplitude amplification (VTAA). The same upper bound holds for queries to the right-hand-side preparation oracle.",
+    "link": "https://arxiv.org/abs/2609.19676",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043664",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19676v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19679v1",
+    "title": "Contact Large Deviations of Stochastic Vector Bundles",
+    "authors": [
+      "D. Y. Zhong"
+    ],
+    "abstract": "arXiv:2609.19679v1 Announce Type: new \nAbstract: Large deviation theory lacks a geometric foundation for its rate functions and fluctuation symmetries. This paper develops a contact large deviation theory on stochastic vector bundles, in which the rate function, the scaled cumulant generating function, and a Gallavotti--Cohen-type fluctuation duality all follow from the contact 1-form. The constraint function acts as a generalized Lagrangian; the least constraint principle yields the dynamics, and the contact potential is built order by order from the master equation, producing a coupled Hamilton--Jacobi--transport system governed by the invariant density, drift, and fluctuation tensor. The contact path measure satisfies a large deviation principle with rate function given by the constraint action; the scaled cumulant generating function obeys a stationary eigenvalue equation with a Donsker--Varadhan variational characterization. The entropy production rate, the fluctuation--dissipation combination $e=\\tfrac12 g^T Ag-\\sigma$, is the physical observable; the time-reversal involution $J:(t,y,\\phi)\\mapsto(t,y,-\\phi-\\nabla\\ln\\rho)$ with reversed drift $v^{\\mathrm{rev}}=-v+Ag$ yields a Gallavotti--Cohen-type duality $\\lambda_{\\mathrm{fwd}}(q)=\\lambda_{\\mathrm{rev}}(q+1)+\\lambda_{\\mathrm{fwd}}(-1)$. The classical one-dimensional GC symmetry is recovered in the reversible case $Ag=0$.",
+    "link": "https://arxiv.org/abs/2609.19679",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043683",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19679v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19697v1",
+    "title": "Reconstructability of Inverse Problems under Symmetry: Separating Structural, Effective, and Physical Upper Bounds",
+    "authors": [
+      "Isshin Arai"
+    ],
+    "abstract": "arXiv:2609.19697v1 Announce Type: new \nAbstract: In our previous work we introduced the Reconstruction Dimension, an upper bound on the reconstructable degrees of freedom determined solely by the symmetry. In actual physical systems, however, the state quantities are generated through physical processes $P_o$ induced by the cause $O$. The state space is therefore often degenerate, and the upper bound determined by the representation-theoretic structure is not reached. This calls for a distinction between the upper bound determined solely by symmetry and the one realized after the physical process. We therefore introduce a three-level structure of upper bounds: the Structural, Effective, and Physical Reconstruction Dimensions (SRD, ERD, PRD), determined respectively by the representation-theoretic structure of the intermediate space, by the concrete design of the reconstruction map, and by the degeneracy of the state space under the physical process $P_o$. For each irreducible component they form the hierarchy $\\mathrm{SRD}\\ge\\mathrm{ERD}\\ge\\mathrm{PRD}$, so that the two gaps identify at which level reconstructability is lost. The framework is illustrated through two contrasting systems: the orientation dynamics of flake-like particles, where the cause is a velocity gradinet, and the two-body problem, where the cause itself is defined through the symmetry. This paper provides a concrete framework for reconstruction in physical inverse problems.",
+    "link": "https://arxiv.org/abs/2609.19697",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043702",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19697v1",
+      "categories": [
+        {
+          "term": "math-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.MP",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19707v1",
+    "title": "Exact Local Optimality Does Not Compose: The Complexity of Chronological Realization",
+    "authors": [
+      "Yixin Zhao"
+    ],
+    "abstract": "arXiv:2609.19707v1 Announce Type: new \nAbstract: The chronological shared realization complexity (CRC) is the smallest normalized stochastic state dimension $C_{\\rm seq}$ needed to reproduce a collection of future-response menus using one shared family of controlled transition dynamics. We focus on the rank-tight regime in which both the local realization dimension and the independent-query static carrier width equal $K$, thereby isolating the additional dimensional and computational constraints imposed by chronological consistency. This framework also serves as the classical baseline for state-dimension bounds in sequential quantum processes, where stochastic dynamics generalize to completely positive maps.\n  We establish three results in this regime. First, an explicit payload--delay family exhibits an unbounded multiplicative state blow-up: $C_{\\rm loc}=C_{\\rm stat}=k$ while $C_{\\rm seq}=k(L+1)$, isolating the intrinsic state cost of shared temporal pullbacks. Second, for explicitly listed rational finite menus over a fixed five-letter alphabet with a single Boolean terminal effect, exact shared realizability is $\\exists\\mathbb{R}$-complete, and the zero-versus-inverse-polynomial defect promise problem is $\\mathsf{PromiseNP}$-complete, with local and static optima fixed at $K$. Third, a total five-letter chronology compiler translates bounded-rational Intermediate Simplex instances into a polynomially specified regular geometric family over the same fixed alphabet, preserving exact local and static width $K$. The compiled family yields strong $\\mathsf{PromiseNP}$-hardness for shared realization on strongly bounded-rational inputs, together with an $\\exists\\mathbb{R}$ upper bound certified by an exact polynomial-size finite core. Together, these results show that exact local and static optimality need not compose under chronological sharing, even in the rank-tight regime.",
+    "link": "https://arxiv.org/abs/2609.19707",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043728",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19707v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19723v1",
+    "title": "Voltage-Current-Emission Framework of Time-Resolved Electroluminescence",
+    "authors": [
+      "Hui Bao, Longjia Wu, Yanan Guo, Jianchang Yan, Ying Wang, Haizheng Zhong"
+    ],
+    "abstract": "arXiv:2609.19723v1 Announce Type: new \nAbstract: Time-resolved electroluminescence has been a central methodology in the development of LED devices. However, it still lacks quantitative theoretical descriptions of time-resolved electroluminescence. By combining the equivalent circuit models of semiconductor devices and the carrier dynamics of electroluminescence processes, we here developed a Voltage-Current-Emission framework to illustrate time-resolved electroluminescence from the pulse voltage as input, to injection current and finally generate electroluminescence as output. The features of different LED devices can be quantitatively interpreted, confirming the universal applicability across LEDs with different materials and device structures. Importantly, the curves of time-resolved electroluminescence can be simulated to quantitatively describe the dynamics of current and carriers of LED operation. In all, the Voltage-Current-Emission framework offers theoretical guidance for achieving advanced LED devices for AI technology.",
+    "link": "https://arxiv.org/abs/2609.19723",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043747",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19723v1",
+      "categories": [
+        {
+          "term": "physics.optics",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cond-mat.mtrl-sci",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.app-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19756v1",
+    "title": "Rapidity-Coupled Spin Dynamics in Pulsed Laser Fields from Physics-Informed Neural Networks",
+    "authors": [
+      "N. S. Akintsov, A. P. Nevecheria, S. N. Andreev, Qing-Hua Qin"
+    ],
+    "abstract": "arXiv:2609.19756v1 Announce Type: new \nAbstract: Carrier-envelope-phase (CEP) stabilized few-cycle pulses make the sub-cycle field structure a control parameter for laser-driven polarized electron sources, yet spin solvers for such pulses are rarely tested against exact results. We show that for an electron initially at rest in a linearly polarized plane-wave pulse the rest-frame polarization angle follows the instantaneous vector potential, $\\Sigma = 2\\arctan(a_x/2) + a_e a_x$ with $a_e$ the electron anomaly: the net rotation vanishes for every CEP, while the peak intra-pulse angle varies over the CEP by 3.02 degrees for a two-cycle and by 0.22 degrees for an eight-cycle pulse. The result follows from the Volkov orbit in longitudinal and transverse rapidities. We use it to validate a light-front reference integrator and a physics-informed neural network trained only on the light-front equations, which reaches $4\\times10^{-5}$ in the spin sector and carries over to elliptical polarization, for which no closed-form solution is known. This gives validated tools for CEP-resolved spin dynamics in intense fields.",
+    "link": "https://arxiv.org/abs/2609.19756",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043766",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19756v1",
+      "categories": [
+        {
+          "term": "physics.optics",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "physics.plasm-ph",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2609.19783v1",
+    "title": "Scalable entanglement distribution using encoded hybrid repeater chains",
+    "authors": [
+      "Stav Haldar, Saikat Guha, Don Towsley, Filip Rozp\\k{e}dek"
+    ],
+    "abstract": "arXiv:2609.19783v1 Announce Type: new \nAbstract: Long-distance entanglement distribution requires error correction protocols to compensate for qubit decoherence in quantum memories and noise introduced during entanglement swapping. We argue that repeater chains with error-correction capabilities should exploit more than one physical platform, combining the complementary strengths of different quantum memory technologies into a single hybrid repeater architecture. An important constituent of such an architecture is a hybrid repeater which combines type-1 memories, characterized by fast entanglement generation rates and suitability for multiplexing, and type-2 memories that offer long coherence times and low two-qubit gate error rates. Taking the resource-intensive nature of hybrid nodes into account, we propose and analyze repeater chains in which only a subset of nodes need to be hybrid, while the remaining nodes are simpler first-generation repeaters with no error-correction capability. Through detailed Monte Carlo simulations of fault-tolerant encoded repeater chain protocols based on the three-qubit phase-flip repetition code, the $[[7,1,3]]$ Steane code, and the $[[9,1,3]]$ Shor code, we demonstrate that these hybrid architectures outperform pure architectures based on a single memory platform in terms of end-to-end entanglement distribution rate. In our study we develop a full circuit-level noise model of our architectures and examine the impact of an imperfect interface between the two platforms on our hybrid architecture. We also develop a modified version of the swap-as-soon-as-possible policy with multiplexing, more suited to our architecture where some nodes perform error-correction while others do not. This modified policy significantly reduces the information storage time in memory qubits relative to the previously considered swap policies in encoded repeater chains.",
+    "link": "https://arxiv.org/abs/2609.19783",
+    "published": "2026-09-18 04:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Physics",
+    "rss_fetch_date": "2026-09-18 10:41:18.043788",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2609.19783v1",
+      "categories": [
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  }
+]
