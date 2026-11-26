@@ -1,0 +1,1557 @@
+[
+  {
+    "id": "arx:2611.33193v1",
+    "title": "Formalization, Transparency, and Collusion in Open-Source Game Theory",
+    "authors": [
+      "Colomban Duclaux, Riccardo Formenti, Pepijn Cobben, Terry Jingchen Zhang, Bernhard Sch\\\"olkopf, Zhijing Jin"
+    ],
+    "abstract": "arXiv:2611.33193v1 Announce Type: new \nAbstract: Cooperation among AI agents will undermine alignment protocols when it takes the form of collusion. Under these protocols, agents often have some information about one another, and how much they have may determine whether they collude. Open-source game theory studies the extreme case, in which each program reads its opponent's source code and acts based on what it can prove about it. We develop formal foundations for this theory: we specify a concrete proof system, resolve an open problem concerning DupocBot and CupodBot through a transposition argument, and mechanize the framework in Lean 4; to our knowledge, this is the first mechanization of resource-bounded open-source game theory. We then extend the framework to the more realistic setting of partial transparency, where each program receives only partial information about its opponent. In Prisoner's Dilemma experiments, where mutual cooperation models collusion, greater transparency increases both the cooperation sustainable in equilibrium and the cooperation selected by replicator dynamics. This suggests that controlling how much agents can know about one another matters for alignment protocols.",
+    "link": "https://arxiv.org/abs/2611.33193",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703379",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33193v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.MA",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "econ.TH",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33218v1",
+    "title": "Demystifying Real-world LLM Service Freeloading",
+    "authors": [
+      "Xinyi Hou, Shenao Wang, Wenhui Pan, Yanjie Zhao, Haoyu Wang"
+    ],
+    "abstract": "arXiv:2611.33218v1 Announce Type: new \nAbstract: Third-party projects repackage free inference from LLM web applications and dedicated clients into independent APIs. We refer to such use beyond providers' permitted access, allocation, or redistribution conditions as LLM service freeloading (LSF). However, its scale and underlying mechanisms remain poorly understood. We present a systematic measurement study of 513 open-source projects, tracing 1,588 inference paths across 64 upstream LLM services and characterizing their development, dependencies, and operating mechanisms. We find that 93.0% of repositories were created in 2026. Direct HTTP or WebSocket requests account for 83.2% of paths, making reproduction of product protocols the dominant invocation method. Projects adapt messages, reconstruct conversation state, and convert responses to support compatible APIs. Account selection or rotation appears on 304 paths (19.1%), allowing projects with multiple eligible accounts to distribute requests across their separate allowances. Our policy analysis finds that 58 of the 62 services with available terms explicitly prohibit at least one examined practice, including automated access, account sharing, or service redistribution. These restrictions cover both downstream API provision and the means of obtaining upstream inference. Our findings inform defenses against unauthorized consumption and redistribution of free LLM resources. We have responsibly disclosed our findings to the relevant providers.",
+    "link": "https://arxiv.org/abs/2611.33218",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703421",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33218v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SE",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33227v1",
+    "title": "Real Package, Wrong Controller: Static Auditing of Vendor--Protocol Mismatches in LLM-Generated PLC Code",
+    "authors": [
+      "S M Zia Ur Rashid, Sazidul Islam Hira, Suman Rath"
+    ],
+    "abstract": "arXiv:2611.33227v1 Announce Type: new \nAbstract: Language models can generate Python that drives industrial protocols on programmable logic controllers, yet existing code-grounding checks ask whether an imported package or symbol exists rather than whether it suits the declared industrial target. We define \\emph{metadata-conditioned, import-level vendor--protocol incompatibility} and build \\textsc{Proteus-OT}, a label-free static verifier over a version-pinned graph of documented bindings. Across 883 generated scripts, 180 carry an import-level mismatch against the declared target (20.4\\%); restricting to single-vendor targets gives 16.3\\%, and additionally requiring the offending library to reach a protocol communication call gives 14.2\\%, which we read as conditional on the corpus metadata rather than on verified intent. None of the 28 adjudicable human control files carries one, a sample too small to estimate a prevalence. Within the balanced subset, 96.6\\% of mismatching scripts import packages and call methods that exist, so an existence baseline does not represent them, and every positive ships with an inspectable witness. We also audit machine-versus-human classification on the same corpus, where character $n$-grams reach macro-F1 1.000 under task, model and vendor-disjoint partitions and survive comment removal, an AST round trip and identifier anonymisation. The trailing newline present in 95.2\\% of human files and in none of the generated ones separates the classes on its own. Vendor--protocol consistency is a useful static audit target, whereas provenance classification on repository-labelled corpora is not authorship detection.",
+    "link": "https://arxiv.org/abs/2611.33227",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703435",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33227v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SE",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SY",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33243v1",
+    "title": "Beyond the Efficiency-Efficacy Dilemma: A Critical Analysis of Transferability in Adversarial Malware Detection",
+    "authors": [
+      "Veysel Alevcan, Mohammad Furqan Ali, Teresa Sousa, Lu\\'is Miguel Campos, Christoforos Ntantogian"
+    ],
+    "abstract": "arXiv:2611.33243v1 Announce Type: new \nAbstract: Machine Learning (ML) models are already being deployed at scale for malware detection. Therefore there is a pressing need to rigorously study adversarial robustness. To that end, we introduce the Adversarial AI Engine (AAIE): a platform for automated security stress-testing. We performed transfer attacks, via EMBER2018, against a Random Forest target. Counterintuitively, we found single-step FGSM to have the highest attack success rate (ASR) of 52.9% compared to iterative PGD with 45.2% (p < 0.002). Compared to iterative attacks which tend to overfit surrogate networks creating brittle perturbations, FGSM created more transferable examples. We benchmarked our attacks using ASR, transferability score, evasion rate, and resilience index. Through these metrics, proposed in concordance with emerging standards in AI governance, we expose shortcomings as our transferability scores peak at ~0.8 with constrained perturbations. We highlight the practical security implications of these findings and demonstrate AAIE for automated adversarial auditing.",
+    "link": "https://arxiv.org/abs/2611.33243",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703449",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33243v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33262v1",
+    "title": "Onnx2TEE: Automated Graph-Aware Model Partitioning for TEE-based Edge AI Protection",
+    "authors": [
+      "Daniela M. Vela Hernandez, Samuel Hildebrand, Sean Oesch, Brian Weber, Shayan Monadjemi"
+    ],
+    "abstract": "arXiv:2611.33262v1 Announce Type: new \nAbstract: AI models are increasingly being deployed at the edge. Since these models often require significant research and development to produce, are often deployed in potentially hostile environments, and downstream systems often rely on accurate data; protecting them from theft or manipulation is worthy of serious consideration. Trusted Execution Environments (TEEs), which provide hardware-enforced separation of software execution, can protect model weights but impose strict resource constraints, making full-model execution impractical for large neural networks. We present Onnx2TEE, an automated, model-independent pipeline that partitions ONNX models across rich, trusted execution environments for non-sequential feed-forward networks using graph-aware segmentation to preserve computational dependencies while minimizing boundary communication and reducing TEE-induced inference latency. Evaluation on an NVIDIA Jetson AGX Orin using an Arm TrustZone TEE demonstrates that model parameters can be highly concentrated in individual segments, supporting selective protection of parameter-dense model components. The evaluation further shows that the generated trusted app's memory requirements depend on both computation and intermediate tensor sizes.",
+    "link": "https://arxiv.org/abs/2611.33262",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703461",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33262v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.ET",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33356v1",
+    "title": "Approximate Counting and the Provability of Combinatorial Principles",
+    "authors": [
+      "Oliver Korten, Jiatu Li, Igor C. Oliveira, Hanlin Ren"
+    ],
+    "abstract": "arXiv:2611.33356v1 Announce Type: new \nAbstract: Understanding which axioms suffice for the provability of known results in algorithms and complexity and whether they can settle longstanding conjectures in these areas is a fundamental direction at the intersection of logic and computer science. Motivated by this research program and its applications, we investigate bounded arithmetic theories designed to serve as a logical foundation for *probabilistic reasoning*, the relation between these theories, and whether they can prove more theorems than their underlying base theory for *deterministic reasoning*.\n  In more detail, for nearly twenty years, Je\\v{r}\\'abek's theory $\\mathsf{APC}_1$ [Je\\v{r}07a] has provided a standard framework for the formalization of results from theoretical computer science relying on probabilistic techniques. In a recent work, [CLOW26] introduced a (possibly weaker) theory called $\\mathsf{APX}_1$. This theory is able to capture a large set of probabilistic arguments using four simple axioms for *approximate counting*. Both theories extend Cook's theory $\\mathsf{PV}_1$ [Coo75] for deterministic polynomial-time reasoning.\n  Our main result establishes that, in the relativized setting, $\\mathsf{APX}_1$ does not prove the retraction weak pigeonhole principle ($\\mathsf{rwPHP}$). Consequently, $\\mathsf{APC}_1$ is not conservative over $\\mathsf{APX}_1$ with respect to relativized $\\forall\\Sigma^b_1$ sentences. Moreover, we establish that the unprovability of $\\mathsf{rwPHP}$ is part of a more general phenomenon: for a large class of finite combinatorial principles, the existence of an *infinite model* of the negation of the principle *characterizes* its unprovability in $\\mathsf{APX}_1$. This result, which is analogous to a theorem of Riis [Rii94], implies that $\\mathsf{PV}_1$ and $\\mathsf{APX}_1$ prove exactly the same finite combinatorial principles of this form.",
+    "link": "https://arxiv.org/abs/2611.33356",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703472",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33356v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33370v1",
+    "title": "RegionAlign: Manipulating Parameter Layouts for Localized Fault Injection on LLMs and VLMs",
+    "authors": [
+      "Xiaomeng Wang, Peter Horvath, Zhengyu Zhao, Martha Larson, Zhuoran Liu, Lejla Batina"
+    ],
+    "abstract": "arXiv:2611.33370v1 Announce Type: new \nAbstract: Physical fault injection can flip stored weight bits, degrading LLMs and VLMs. Existing work largely overlooks how supply-chain manipulation affects fault vulnerability. We introduce RegionAlign, which allows a malicious provider to manipulate only the parameter layout before deployment, using bit-sensitivity search and channel permutations to concentrate vulnerable bits in one memory region while preserving weight values and clean performance. Under matched budgets, software experiments show greater degradation from search-selected in-region flips with RegionAlign than with original or random layouts. EMFI feasibility study confirms weight corruption. RegionAlign reveals a stealthy supply-chain threat that layout manipulation weakens physical fault resilience.",
+    "link": "https://arxiv.org/abs/2611.33370",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703485",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33370v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33373v1",
+    "title": "From Conversations to Commitments: A Design Study of Shared Records for Agent-to-Business Coordination",
+    "authors": [
+      "Carlos Eberhardt (IBM Software, Rochester, United States of America), Mansura Habiba (IBM Software, Dublin, Ireland)"
+    ],
+    "abstract": "arXiv:2611.33373v1 Announce Type: new \nAbstract: Business commitments require accepted terms to be linked to delegated authority, reserved resources and durable evidence. We examine how a shared, attributable interaction record can support these links across independently operated organisations. Talea combines signed AT Protocol records with A2A task execution. We use its coordination sandbox and a proposed commercial extension in a design study of an airline booking disrupted passengers into three competing hotels. Four observations follow. First, AT Protocol provides mechanisms supporting five of six coordination requirements, while record-level access and release controls require additional enforcement. Second, the case's confidentiality constraints restrict each hotel's authorised view to its bilateral exchange; only the airline can correlate all three deals. Third, this leaves a possible benefit for late-joining participants inside the airline's trust boundary, but does not establish an advantage over an equally instrumented point-to-point design. Fourth, a deterministic release interface constrains fixed, approved payloads but cannot bound disclosure when negotiated values depend on private state. Finite-model explorations and deterministic interface checks reproduce the specified behaviours and counterexamples when selected controls are removed. They do not measure comparative benefit or validate a deployed commercial system. The remaining hypothesis is that, within one trust boundary, shared records improve decision reconstruction and recovery under changing participation relative to point-to-point exchange with equivalent authority, reservation, retention and correlation evidence. We specify an experiment to test it.",
+    "link": "https://arxiv.org/abs/2611.33373",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703498",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33373v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.MA",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33385v1",
+    "title": "Poisoning Self-Evolving Security Policies in LLM Agents",
+    "authors": [
+      "Aymen Noor, Honglu Jiang"
+    ],
+    "abstract": "arXiv:2611.33385v1 Announce Type: new \nAbstract: Self-evolving defenses improve LLM-agent security by learning reusable policies from observed attacks. However, we demonstrate that this learning process itself can become an attack surface. Using SED (Self-Evolving Defense) in the AgentDojo benchmark, we construct a single prompt-injection episode that causes the defense to learn an over-broad policy and subsequently refuse legitimate requests. Across 10 Nemotron runs, every poisoned run over-refuses at least one legitimate task, while unrelated-task performance remains unchanged and the original prompt-injection defense remains effective. The attack also transfers to gpt-oss-120b; however, its poisoning mechanism depends on a successful initial prompt injection and therefore fails to activate when the target agent resists the underlying injection. In contrast, integrity-oriented attacks targeting SED's judge, policy synthesis, retrieval, and organization mechanisms fail in our evaluated settings, identifying over-refusal as the primary exploitable failure mode observed in our experiments. We further identify self-poisoning from false-positive harm judgments without an attacker. Finally, contrastive policy synthesis and an automatic broadness-check gate substantially reduce, but do not eliminate over-refusal, without compromising security in our evaluated settings.",
+    "link": "https://arxiv.org/abs/2611.33385",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703509",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33385v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33453v1",
+    "title": "SecID: An LLM-Guided Framework for Threat-Aware Secondary Asset Identification with Quantitative RTL Analysis",
+    "authors": [
+      "Md Ajoad Hasan, Dipayan Saha, Upoma Das, Sujan Kumar Saha, Mark Tehranipoor, Farimah Farahmandi"
+    ],
+    "abstract": "arXiv:2611.33453v1 Announce Type: new \nAbstract: The growing complexity of modern hardware designs is making security assurance increasingly difficult. One of the foundational steps in pre-silicon security verification is identifying security assets. While primary assets are often evident from design functionality, the internal signals that can facilitate their compromise are much less apparent. Complex data- and control-flow dependencies create many such internal security-critical locations, whose exploitation depends on the threat-specific attack mechanism---these are the secondary assets. To precisely identify these, we propose SecID, a multi-agent framework that combines deterministic RTL analysis with bounded dynamic evaluation and LLM reasoning to identify threat-specific secondary assets. Each asset decision is supported by functional influence, threat features, and explicit attack mechanisms. We demonstrate SecID on seven open-source SoC and IP designs, including openMSP430, NEORV32, and CV32E40P. The experimental results are corroborated through comparison with prior work, fault simulation, and formal analysis, and further evaluated through pipeline- and final-stage ablation, threshold-sensitivity studies, and final-stage repeatability analysis. Together, these evaluations show that SecID can identify highly threat-relevant secondary assets with respect to a given primary asset, providing a scalable path toward hardware-security verification.",
+    "link": "https://arxiv.org/abs/2611.33453",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703521",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33453v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33456v1",
+    "title": "Vector Quantized Information Bottleneck Mitigation of Adversarial Attacks on Modulation Classifiers",
+    "authors": [
+      "Attanasia Garuso, Silvija Kokalj-Filipovic"
+    ],
+    "abstract": "arXiv:2611.33456v1 Announce Type: new \nAbstract: Radio-frequency (RF) signal processing based on machine learning, including Automatic Modulation Classification (AMC), plays a critical role in Next Generation (NextG) intelligent communications but remains highly vulnerable to adversarial attacks. Prior work explored Variational Information Bottleneck (VIB) as a means to improve robustness, but only in continuous spaces and never for RF classifiers. We investigate the impact of discrete-space information bottlenecks on the adversarial robustness of AMC models. Classification accuracy of attacked modulated RF waveforms is evaluated in two frameworks designed to leverage VIB for adversarial robustness: (i) a two-stage framework where VIB is applied in the preprocessing step using a Vector Quantized Variational Autoencoder (VQVAE) to suppress adversarial perturbations in the process of input signal reconstruction and (ii) a Vector Quantized Classifier (VQC) that leverages VIB inside the classifier proper. The architectures of VQVAE and VQC are identical up to the bottleneck where the VQVAE adds a decoder while VQC utilizes a classification head. We train both VQVAE and VQC with loss functions that we derive from the VIB information-theoretic model. Both frameworks incorporate vector quantization and KL regularization to enforce discrete bottlenecks that filter out adversarial noise. Evaluations under white-box attacks demonstrate that discrete bottlenecks significantly enhance robustness: VQVAE outperforms its continuous VAE (Variational Autoencoder) counterpart, while VQC achieves strong robustness without requiring signal reconstruction.",
+    "link": "https://arxiv.org/abs/2611.33456",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703533",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33456v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33486v1",
+    "title": "Benchmarking Open-Ended Vulnerability Discovery in Windows Kernel Binaries",
+    "authors": [
+      "Jongseong Kim, Hwiwon Lee, Dongjun Kim, Lingming Zhang"
+    ],
+    "abstract": "arXiv:2611.33486v1 Announce Type: new \nAbstract: Frontier models are increasingly used to discover real-world security vulnerabilities, making it critical to systematically evaluate their cybersecurity capabilities. However, existing security benchmarks primarily focus on known vulnerabilities in open-source projects, largely overlooking closed-source binaries, which underpin much of the software industry. In this paper, we ask: how effective are frontier models at uncovering deep vulnerabilities in production binaries? To answer this question, we present DeepBinary, the first comprehensive benchmark for open-ended vulnerability discovery in Windows kernel binaries. Given a target binary, an agent analyzes it using a disassembler and kernel debugger in network-isolated VMs and reports each vulnerability with a crashing proof of concept (PoC). Unlike existing benchmarks, DeepBinary replays every report on fresh VMs and employs an LLM-based judge to assess its validity, uniqueness, and impact (estimated by bug bounty values). Beyond known vulnerabilities, DeepBinary also enables the discovery and validation of previously unknown (0-day) vulnerabilities. We conduct a comprehensive evaluation of representative open- and closed-weight models (including GPT-6 Sol, Claude Opus 5, and DeepSeek V4.1 Flash) across diverse coding agents (including Codex and Claude Code) on 12 target binaries. In total, they discover over 200 vulnerabilities with an estimated aggregate bounty of $661,000, including 146 distinct previously unknown vulnerabilities across all experiments. Our results further reveal substantial differences in models' ability to analyze binaries, conduct experiments, and sustain vulnerability discovery over long horizons. Overall, DeepBinary makes long-horizon, open-ended vulnerability discovery in complex binaries measurable, revealing fundamental differences in how frontier models analyze and explore such systems.",
+    "link": "https://arxiv.org/abs/2611.33486",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703545",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33486v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33508v1",
+    "title": "Merkle Trees Minimize Verifier Complexity in the ROM",
+    "authors": [
+      "Miranda Christ, Oliver Korten, Tal Malkin, Noam Mazor, Shyamal Patel"
+    ],
+    "abstract": "arXiv:2611.33508v1 Announce Type: new \nAbstract: Nearly five decades after their introduction, Merkle trees remain the most efficient hash-based vector commitments. They compress a vector $x \\in \\{0,1\\}^n$ into a commitment whose size is independent of $n$, such that a verifier can open any bit $x_i$ using $\\log n$ hash evaluations. The security of the scheme (intractability of finding two distinct openings for a given bit using the same commitment) follows from the collision resistance of the hash function. The verifier's runtime complexity is a bottleneck in many key applications of vector commitments, including SNARKs, credentials, and authenticated dictionaries. As such, a longstanding open question has been whether it is possible to construct hash-based vector commitments where the verifier makes a sublogarithmic number of hash evaluations.\n  We prove that sublogarithmic verifier complexity is impossible to achieve through black-box use of a hash function; we not only rule out constructions from collision resistant hash functions, but in fact show that commitment schemes with sublogarithmic verifier complexity are unachievable in the random oracle model. In particular, any vector commitment with deterministic verifiers has verifier query complexity $\\Omega_{\\theta}(\\log n)$, where $\\theta$ is the input length of the random oracle. This bound is matched up to constant factors by high-arity Merkle trees. The key technical lemma in our proof is a disjoint product lemma, which can be viewed as a computational analog of the van den Berg-Kesten-Reimer (BKR) inequality. We believe this lemma is of independent interest, and in particular may be useful for showing other lower bounds and separations in the random oracle model.",
+    "link": "https://arxiv.org/abs/2611.33508",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703557",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33508v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33519v1",
+    "title": "PRECEPT: Security Self-Improvement of Coding Agents via Evolving Principles",
+    "authors": [
+      "Keyan Guo, Rupam Patir, Haipeng Cai, Hongxin Hu"
+    ],
+    "abstract": "arXiv:2611.33519v1 Announce Type: new \nAbstract: AI coding agents increasingly write and submit code with limited human review, and much of it passes functional tests while remaining insecure. We show that these failures persist. Across 14 task sequences, Codex, Claude Code, and Qwen Code fixed a vulnerability 85.7% of the time when shown the failing security test, then reintroduced the same vulnerability class in a new session 26.7% of the time, about as often as agents that had never seen it (27.5%). The capability is present; the retention is not. Neither recording the repair in the agent's persistent context nor supplying published secure coding principles closed the gap: the recorded fix stayed tied to the family of the task it came from, and the principles, written for human developers, remained too general to apply to the code at hand. The knowledge exists; it is not activated. We call the missing ability security self-improvement: an agent learns from its own security failures so that each lesson persists across sessions, applies to new code, and does not break what works. We present PRECEPT, which equips coding agents with this ability through an evolving library that starts from authoritative secure coding principles and revises them against the agent's own failures, so that each principle comes to fire on the code where that agent actually goes wrong. A revision is kept only if fresh executions show it makes code more secure while keeping functional success within a small tolerance of the agent without the library. Improvement continues across evolution steps rather than saturating after the first. On task families never seen during evolution, PRECEPT's weakest agent reaches 97.1% secure working code, above the strongest unaided agent at 81.9% and the strongest baseline at 87.7%.",
+    "link": "https://arxiv.org/abs/2611.33519",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703568",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33519v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33521v1",
+    "title": "Beyond the Limits of Welfarism: An Affordable Proportional Approval Voting Rule",
+    "authors": [
+      "Anton Baychkov"
+    ],
+    "abstract": "arXiv:2611.33521v1 Announce Type: new \nAbstract: Two of the most widely studied voting rules in approval-based multiwinner elections are Proportional Approval Voting (PAV), which maximizes a welfare score over committees of a fixed size, and the Method of Equal Shares (MES), which gives voters equal budgets and selects candidates whose supporters can pay for them. MES guarantees priceability and laminar proportionality, both of which can fail for PAV. Can PAV offer similar guarantees without giving voters budgets? To answer this question, we go beyond the limits of welfarism by allowing PAV to select committees of varying size, while penalizing larger committees. Both our exact rule and its polynomial-time local-search variant produce outcomes that admit a priceable completion and, on laminar instances, a laminar-proportional one. Our analysis carefully separates the roles of two marginal stability conditions. At suitable thresholds, addition stability gives a strong proportionality guarantee in the form of EJR+, while deletion stability limits overrepresentation and ensures affordability. We use these conditions to derive welfare and coverage guarantees for different completions of our rules. The same welfare comparison also improves the best known lower bound on the utilitarian ratio of standard PAV.",
+    "link": "https://arxiv.org/abs/2611.33521",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703580",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33521v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33562v1",
+    "title": "Non-manipulability and Approachability Beyond Two-Player Games",
+    "authors": [
+      "Natalie Collina, Elijah Journey Fullerton, Jingyi Liu, S. Matthew Weinberg"
+    ],
+    "abstract": "arXiv:2611.33562v1 Announce Type: new \nAbstract: We study the problem of guaranteeing non-manipulability and low regret for $n-1$ independent learners in an $n$-player repeated general game with one optimizer. Non-manipulability is a property which guarantees that learning agents can prevent a strategic opponent from exploiting their learning dynamics for its own benefit, while no-regret provides guarantees to a learner with respect to a fixed static benchmark. This problem is well understood in games with a single learner and a single optimizer, where the intersection of non-manipulable and no-regret algorithms is exactly the class of all no-swap regret algorithms. But having multiple independent learners introduces a fundamental constraint: without shared randomness, the learners' joint mixed actions must remain product distributions and individual no-swap regret guarantees need not provide a guarantee of non-manipulability. Our core contributions are as follows.\n  We introduce a set of $n-1$ algorithms that $n-1$ learners can play which individually guarantee sublinear swap regret and, when played in conjunction with each other, jointly guarantee non-manipulability against an optimizer. These algorithms require the computation of a Nash equilibrium at every timestep, and we show that this computational cost is inherent in general games. We construct a reduction from computing Nash in $(n-1)$-player games to finding $n-1$ jointly non-manipulable no-external regret algorithms. Therefore, polynomial time algorithms which guarantee multi-learner non-manipulability in conjunction with no-external regret do not exist unless PPAD $\\subseteq$ FBPP. In order to construct these algorithms, we develop new techniques for Blackwell approachability beyond $2$-player games. We provide a general characterization for sets which are approachable by $n-1$ players without correlated randomness.",
+    "link": "https://arxiv.org/abs/2611.33562",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703590",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33562v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33595v1",
+    "title": "Small Leaks Sink Great Ships: Automated Analysis of Protocols That Tolerate Low-Entropy Keys",
+    "authors": [
+      "Yongkang Xiao, Jing Chen, Min Shi, Kun He, Mei Wang, Ruiying Du"
+    ],
+    "abstract": "arXiv:2611.33595v1 Announce Type: new \nAbstract: Modern cryptographic protocols such as WPA2-PSK, Bluetooth Low Energy (BLE), and Bluetooth Classic (BC) tolerate low-entropy keys for user-friendliness, backward compatibility, or resource-constrained deployment, yet existing symbolic protocol verifiers rely on the perfect-encryption assumption and therefore cannot reason about brute-force attackers. Prior work addresses this gap only through protocol-specific, manually encoded reveal rules, which neither generalize across protocols nor systematically explore compound-key decomposition. We introduce the first protocol-agnostic, automated symbolic methodology for low-entropy keys, built on three abstractions: the message-derivation fact MDerive, which captures brute-force prerequisites independently of concrete function symbols; a three-tier breaking-oracle design (value-breaking, relationship-breaking, message-derivation) that composes with the standard Dolev-Yao attacker; and a graded bit-level attacker model that bounds the key length an attacker is allowed to exhaust. We realize the methodology as EntropyVerif, a syntax-sugar extension of Tamarin that requires no kernel modification. Using EntropyVerif we automatically rediscover the PMKID, KNOB, and Method Confusion attacks, and uncover a new attack on BC which we call the Unilateral Multi-Downgrade (UMD) attack: by repeatedly downgrading one side of a BC session and recombining the recovered key fragments, an attacker reduces session-key recovery against devices using the maximum 128-bit key from $2^{128}$ to $n \\cdot 2^{128/n}$, bottoming out at $2^{12}$ for $n=16$---a factor of $2^{116}$ reduction that has been responsibly disclosed to the Bluetooth SIG. Across three real-world protocols and six BC device configurations, our results show that entropy-aware symbolic analysis is both feasible and necessary.",
+    "link": "https://arxiv.org/abs/2611.33595",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703602",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33595v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33605v1",
+    "title": "The Detour Is the Danger: Preserving Security During LLM Agent Recovery",
+    "authors": [
+      "Boyang Ma, Jinku Li, Hao Wu, Sheng Gao, Man Zhou, Minghui Xu, Yue Zhang"
+    ],
+    "abstract": "arXiv:2611.33605v1 Announce Type: new \nAbstract: LLM agents increasingly rely on external tools and reusable Skills to execute complex workflows, autonomously replanning when operations fail. However, such recovery may preserve task functionality while silently discarding the security protections required by the original workflow. In this paper, we investigate workflow security downgrade, a failure-induced security threat in which agents execute sensitive operations without satisfying their original protection requirements. Unlike prompt injection, this threat exploits autonomous recovery decisions triggered by execution failures, without modifying instructions or tool definitions. We systematically evaluate this behavior through fault injection in an executable MCP/Skill environment spanning seven LLMs, twelve task templates, and three security-sensitive domains. To address this threat, we propose ARGUS, an obligation-preserving recovery framework that combines resource-bound security evidence, isolated recovery-plan validation, and execution-time enforcement. In a separate 864-run evaluation, ARGUS prevents all observed protection-loss events under enforcement, while recovery assistance yields model-dependent improvements in protected task completion over blocking alone. Our findings demonstrate that secure agent recovery requires preserving security obligations across workflow changes, rather than merely restoring task functionality.",
+    "link": "https://arxiv.org/abs/2611.33605",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703614",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33605v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33613v1",
+    "title": "Exact Minimum Distances of Primitive Narrow-Sense BCH Codes: At and Beyond the Bose Distance",
+    "authors": [
+      "Run Zheng"
+    ],
+    "abstract": "arXiv:2611.33613v1 Announce Type: new \nAbstract: We determine the exact minimum distances of two families of primitive narrow-sense BCH codes of length $q^m-1$, where $q$ is a prime power and $m\\geq 4$. For $1\\leq i\\leq\\lfloor m/2\\rfloor$, codes with designed distance $q^m-q^{m-1}-q^{m-1-i}-1$ have minimum distance and Bose distance both equal to their designed distance. Furthermore, for integers $\\ell, i, s$ satisfying $3\\leq\\ell<\\lfloor(m-1)/\\ell\\rfloor$, codes with designed distance $q^m-q^{m-1}-q^{m-1-i}-q^s-1$ have Bose distance equal to their designed distance and minimum distance $q^m-q^{m-1}-q^{m-1-i}-1$. Consequently, the gap between the minimum distance and the Bose distance in this family is exactly $q^s$ and grows without bound as $m$ increases, with fixed $\\ell$.The proofs proceed by constructing good zero-sets from quadratic forms for the first family, and by combining upper bounds provided by the first family with lower bounds derived from the divisibility of codeword weights in punctured generalized Reed--Muller codes for the second. We also derive explicit dimension formulas by counting cyclotomic cosets.",
+    "link": "https://arxiv.org/abs/2611.33613",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703625",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33613v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33644v1",
+    "title": "Physics-Informed Learning for Multiplayer Differential Games",
+    "authors": [
+      "Takuma Adams, Andrew C. Cullen, Tansu Alpcan"
+    ],
+    "abstract": "arXiv:2611.33644v1 Announce Type: new \nAbstract: Computing per-player feedback strategies in $N$-player adversarial differential games is challenging as the associated coupled Hamilton-Jacobi-Bellman system is high-dimensional and generally lacks classical solutions. We address this by approximating viscosity solutions using physics-informed neural networks within a policy iteration scheme with a vanishing-viscosity annealing schedule. Theoretically, we establish an explicit $\\varepsilon$-Nash guarantee by bounding per-player regret via computable residuals and prove our method reaches this stopping criterion in finite time. For two-player zero-sum games, we further establish a computable bound on the approximation error of the value function. Numerical experiments on pursuit-evasion scenarios illustrate the tightness of these computed bounds and the framework's scalability to high-dimensional environments.",
+    "link": "https://arxiv.org/abs/2611.33644",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703653",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33644v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SY",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.OC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33666v1",
+    "title": "Bounding the security of the FALCON signature scheme in the quantum random oracle model",
+    "authors": [
+      "Kelsey A. Jackson, Carl A. Miller"
+    ],
+    "abstract": "arXiv:2611.33666v1 Announce Type: new \nAbstract: In 2016, the National Institute of Standards and Technology (NIST) announced their invitation for proposals of public key encryption and signature schemes that are resistant to attacks by quantum computers. Since then, several rounds of proposals and revisions have occurred resulting in the 2022 announcement that three signature schemes - CRYSTALS-Dilithium, FALCON, and SPHINCS+ - would be standardized. However, in 2024, work by Fouque et al. noted an oversight in the published security for FALCON, which they were only able to remedy in a classical computing setting, namely the random oracle model (ROM). In this paper, we provide the first complete security proof for FALCON in the quantum random oracle model (QROM). Specifically, we will prove a reduction to the security of FALCON from the ring inhomogeneous short integer solution (RISIS) problem and the NTRU learning problem utilizing known quantum reprogramming results. We then provide parameter sets which meet the security levels required by NIST under our reduction.",
+    "link": "https://arxiv.org/abs/2611.33666",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703664",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33666v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33672v1",
+    "title": "Node Differential Privacy via Node-Stable Graph Projections",
+    "authors": [
+      "Ishaq Aden-Ali, Adam Sealfon, Adam Smith, Thomas Steinke, Jonathan Ullman"
+    ],
+    "abstract": "arXiv:2611.33672v1 Announce Type: new \nAbstract: Node-differentially private algorithms enable learning on network-structured datasets in which records reflect interactions among individuals. They protect the privacy of each individual's information, including all their associated records. A key challenge in the design of such algorithms is to exploit the structure of realistic graphs---where most nodes have low degree---to achieve high accuracy, without compromising on the worst-case privacy guarantee.\n  In this work we give two new tools for designing accurate, computationally efficient node-differentially private algorithms. First, we give a nearly linear time, randomized, node-stable graph projection: the projection leaves graphs of maximum degree $D$ unchanged, maps arbitrary graphs to subgraphs of maximum degree $\\hat D \\approx D$, and ensures that changing one node of the input graph has only a small effect on the distribution of the edges selected among the remaining vertices. Unlike prior approaches, which abstain when the input violates the degree bound, our projection acts as degree clipping: even when $D$ is set well below the true maximum degree (trading truncation bias at high-degree outliers for lower privacy noise), it retains at least as many edges as a maximal $D$-bounded subgraph.\n  Second, for graphs with bounded edge weights, we give a deterministic nearly linear time Lipschitz extension for the total edge weight that agrees with the original sum on graphs of maximum degree $D$ yet is $D$-Lipschitz on all graphs.\n  Finally, we show how to apply these methods to design node-private algorithms for high-dimensional vector summation and gradient descent on datasets where records are associated with graph edges, such as email threads.",
+    "link": "https://arxiv.org/abs/2611.33672",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703676",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33672v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.DS",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33741v1",
+    "title": "FlashProve-Next: Verifiable Inference for Production LLM APIs",
+    "authors": [
+      "Liang Song"
+    ],
+    "abstract": "arXiv:2611.33741v1 Announce Type: new \nAbstract: Clients of closed-weight LLM APIs cannot verify whether a provider ran the advertised model, precision, hidden prompt, and reasoning budget. Existing approaches either trust hardware or third parties, or re-prove every layer of an integer surrogate at high cost while diverging from native floating-point serving.\n  FlashProve-Next produces verifiable, zero-knowledge-masked proofs for individual LLM API responses without modifying native serving (bf16/fp8/mxfp4, random sampling, FlashAttention, CUDA graphs, batching, prefix caching) and without disclosing weights, hidden prompts, hidden reasoning, or activations (dense profiles fix coarse geometry; cross-architecture hiding is deferred). A non-depleting Reed-Solomon weight commitment model_id opens inside proofs via hidden column openings, while local per-operator rounding contracts remove integer surrogates and the refusal-bit leak. Cost-weighted spot-checking supports non-interactive public verification (NI-315, $\\varepsilon \\le 2^{-40}$, $Q \\le 2^{64}$) and external-seed C_pre mode (ExtSeed-153, $\\varepsilon \\le 2^{-20}$, $Q_{\\rm samp} \\le 2^{30}$).\n  Twenty-eight Lean 4 modules (696 declarations, zero sorry, standard axioms only) mechanize round-by-round soundness, bucketed sampling, $\\mathbb{F}_{p^3}$ constrained-mask binding, causal masking, six IR gadgets, and executable FPN2 verifiers. Five-model Blackwell calibration gives zero false rejections across 1.85M GEMM/MoE blocks and 1.96M non-GEMM rows. Our zero-Phase-2 folded backend (folded ZK simulator open) proves Qwen3-0.6B ExtSeed-153 (1.47B cells, 8 MiB) in 450.2 s GPU (10.76 s CPU) at unique-decoding $Q=128$, passes a 14/14 cheating matrix, and scales to 36-layer Qwen3-4B (dev $4+2$) and live vLLM Qwen3-30B-A3B-FP8 Relation 6 (1.49 s prove, 23.4 ms Rust verify, public weight tiles). Rust fpn-verify checks 8 MiB FPN2 Relation 2 proofs in 10.1 ms on CPU.",
+    "link": "https://arxiv.org/abs/2611.33741",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703687",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33741v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.LG",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33811v1",
+    "title": "Quantization and Codebook Stability of Euclidean and KL Lattice Quantizers",
+    "authors": [
+      "Haoxuan Luo, Ryan Gabrys, Farzad Farnoud"
+    ],
+    "abstract": "arXiv:2611.33811v1 Announce Type: new \nAbstract: Small edits to raw data can cause large changes in the compressed version, which can be costly in applications such as data synchronization and incremental backup. We study quantization stability, the probability that two perturbed distributions map to the same representative, and codebook stability, the probability that the resulting Huffman codebooks are the same. We first quantize the empirical distribution and then construct a Huffman code from the quantized distribution, which can improve codebook stability at the cost of some compression efficiency.\n  We study two quantizers based on a shifted and scaled lattice in the probability simplex: the Euclidean Lattice Quantizer (ELQ) and the KL Quantizer (KLQ). For ELQ, we derive bounds on quantization stability and KL distortion. For KLQ, we show that its quantization cells can be determined by comparisons with adjacent lattice codewords and use the distances to the cell boundaries to derive a quantization stability bound. For a symmetric codebook of positive types, we obtain the exact worst-case KL distortion over the full probability simplex. We also give a heuristic choice $\\alpha^\\star$ of the minimum codeword probability and compare it with the minimum coordinate of a Lloyd-optimized codebook. Simulations using canonical Huffman coding compare ELQ and KLQ with an existing compander-based quantizer and show the trade-off between KL distortion, codebook stability, and encoded length under random deletions.",
+    "link": "https://arxiv.org/abs/2611.33811",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703700",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33811v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33838v1",
+    "title": "Higher-Dimensional Automata in Geometric Logic",
+    "authors": [
+      "Kenan Oggad"
+    ],
+    "abstract": "arXiv:2611.33838v1 Announce Type: new \nAbstract: What does the topos of a higher-dimensional automaton know about its infinite behaviour that its language does not? We write partial HDAs with an infinite run as models of a geometric theory over an intuitionistic metatheory with no choice. The topos of a machine is that of sheaves on its prefixes. The label word of a prefix records the shape and acceptance bit of each cell with the ipomset of each step. Under unique choice these words give a geometric morphism to the label topos of sheaves on label words, which thus records the shapes and acceptance bits that the B\\\"uchi language forgets. Machines sharing their B\\\"uchi language and their frames can differ over the label topos. The bouquet of two squares shares its frame and its B\\\"uchi language with the interleaved square; each accepted run of either reads the two events in parallel forever. Only the interleaved square has runs through cells of shape a, and the geometric sequent excluding such runs separates the two over the label topos. Over alphabets with decidable equality, finite rigid machines are unambiguous exactly when their label maps are inclusions of locales, and their equivalence over the label topos is decided whenever either is unambiguous. Equivalences of frames over the label topos transport points with their labels, and the invariants of fibres and of the language of points follow from this transport. On finite partial HDAs over alphabets with decidable equality, Muller and B\\\"uchi acceptance coincide exactly under a weak form of excluded middle.",
+    "link": "https://arxiv.org/abs/2611.33838",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703711",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33838v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.FL",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.CT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.LO",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.33986v1",
+    "title": "Certified Outage Bounds for RIS-Assisted NOMA with Source-Side Thermal Energy Harvesting",
+    "authors": [
+      "Victor Rabiet (MIC, ENS-PSL)"
+    ],
+    "abstract": "arXiv:2611.33986v1 Announce Type: new \nAbstract: Gaussian useful-gain and mean-interference approximations can cause opposite power-sizing errors in reconfigurable intelligent surface (RIS)-assisted non-orthogonal multiple access (NOMA). We extend a source-side thermal energy harvesting model with Poisson interference and certify two-sided outage bounds. In a tested environment, the combined required signal-to-noise ratio error has opposite signs at 20 and 24 elements per user. Under another power convention, mean or moment-matched Gamma-distributed interference can predict false feasibility with exact useful gain. In the Gamma case, the Gaussian gain approximation can mask this false feasibility. Propagated Chernoff bounds give sufficient designs. Results concern the specified model and tested regimes.",
+    "link": "https://arxiv.org/abs/2611.33986",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703723",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.33986v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "eess.SP",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34107v1",
+    "title": "Tropical and maximum colorful matchings in vertex-colored graphs",
+    "authors": [
+      "Johanne Cohen, Yannis Manoussakis, Hong Phong Pham, Zsolt Tuza"
+    ],
+    "abstract": "arXiv:2611.34107v1 Announce Type: new \nAbstract: A subgraph of a vertex-colored graph istropical if it contains every color. We study matchings by the number of colors they cover. A matching is maximum colorful if no matching covers more colors. When a tropical matching exists, the maximum colorful matchings are exactly the tropical matchings. We give polynomial-time algorithms for two problems: a maximum matching that covers the most colors, and a tropical matching with the fewest edges. Both algorithms rest on a counterpart of Berge's theorem: a matching is optimal if and only if it admits no tropical augmentation, or no tropical reduction. These are chains of alternating paths linked by relays, and each one is found by a single augmenting-path search in an auxiliary graph. The same tools give a maximum colorful matching with the fewest edges, and show that all maximum matchings that are maximum colorful are connected by flips. Finally, the sets of colors that a matching can cover form a matroid. The greedy algorithm then computes a matching of maximum color weight. This paper extends the conference version and the PhD thesis of one of the authors.",
+    "link": "https://arxiv.org/abs/2611.34107",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703734",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34107v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.DS",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34138v1",
+    "title": "On the Hardness of Optimal CNOT Circuits",
+    "authors": [
+      "Andreas Pavlogiannis"
+    ],
+    "abstract": "arXiv:2611.34138v1 Announce Type: new \nAbstract: This note revisits the computational problem of optimal CNOT synthesis: given an invertible binary matrix $A\\in \\mathsf{GL}(d,2)$ over the field of two elements and a budget $K$, decide if $A$ can be implemented with $\\leq K$ CNOT gates. The $\\mathsf{NP}$-completeness of this problem was recently published independently by Acuaviva, Acuaviva, and Acuaviva (arXiv:2608.03825) and by Li and Guan (arXiv:2609.04160). This note gives a new proof, with three features. First, $\\mathsf{NP}$-completeness holds even over linear oracles, i.e., matrices of the form $(\\mathbf{x},\\mathbf{y})\\mapsto(\\mathbf{x},\\mathbf{y}+F\\mathbf{x})$, which are the standard reversible embedding of a linear function $F$. These are involutions, and seemingly simpler than the families of the two previous works, which both have order four. Second, hardness persists when SWAP gates are free and qubits may be permuted (and this holds under any connected topology). Third, the exposition is arguably simpler to follow. Along the way, it gives a proof of the XOR-circuit lower bound of Boyar, Matthews, and Peralta [J. Cryptology 26 (2013)] that is, perhaps, simpler than existing ones.",
+    "link": "https://arxiv.org/abs/2611.34138",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703745",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34138v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34175v1",
+    "title": "Semantic Tanner-Graph Decoding for LDPC Codes",
+    "authors": [
+      "Wenjing Wei, Chentao Yue, Branka Vucetic, Yonghui Li"
+    ],
+    "abstract": "arXiv:2611.34175v1 Announce Type: new \nAbstract: Conventional low-density parity-check (LDPC) belief propagation (BP) decoding operates on a Tanner graph, with no factor describing the source structure. This paper proposes a semantic Tanner graph for LDPC-coded text transmission and develops semantic-factor-aided BP (SF-BP) decoding. The source text is tokenized into discrete tokens, which are then mapped to binary messages for channel coding. For each token, the proposed graph introduces a semantic factor connected to the corresponding information-bit variable nodes forming the token. A fine-tuned language model assigns this factor a posterior distribution over all possible token symbols in the alphabet at each token position. During SF-BP decoding, semantic-factor and LDPC parity-check messages are combined at their shared variable nodes for message passing. Simulation results show that SF-BP significantly improves the block error rate (BLER) and Sentence-BERT similarity (BERT: Bidirectional Encoder Representations from Transformers) compared with conventional BP. For example, SF-BP reduces BLER from approximately 1 to 6.51 x 10^-6 and increases Sentence-BERT similarity from 0.21 to 1 - 1.26 x 10^-6 for the (1248, 1040) LDPC code at 4 dB.",
+    "link": "https://arxiv.org/abs/2611.34175",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703756",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34175v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34181v1",
+    "title": "Agentic-Level Adversarial Purification: Revisiting Diffusion Purifiers on Native-Resolution Agentic Inputs",
+    "authors": [
+      "Yan Lin, Zhongliang Guo, Jingyu Lin, Daizong Liu"
+    ],
+    "abstract": "arXiv:2611.34181v1 Announce Type: new \nAbstract: Vision-language agents act on native-resolution renders of multi-element pages, where one perturbed photo or a few altered text strokes can redirect the decision. Any content provider can craft such a perturbation on the open model behind the agent, so a plug-in purifier is the natural first line of defense. Yet diffusion purifiers were designed and evaluated at the fixed resolution of the diffusion model on classifier or natural-image benchmarks, and defense evaluations for agents test JPEG, blur and noise but no diffusion purifier. We present the first study of adversarial purification at the agentic level, for an agent built on Qwen3-VL-8B: purifiers run at native resolution on multi-element inputs, face grey-box attackers who know the agent's model but not the defense, and are compared at matched clean cost. We show that treating agentic inputs as classifier inputs misleads both evaluation and design. Resizing the input to the resolution of the diffusion model, as existing purifiers do, raises the TextVQA clean cost of the Divide-and-Conquer purifier (DC) from 4.0 to 35.7 points. On web-shop pages, DC keeps 85.0% grey-box robust accuracy against web-hardened perturbations, where cheap input transformations at matched clean cost keep at most 40.0%, and this robustness comes from the global noise level: input-estimated masks and noise levels add none. These findings hold on a disjoint held-out set and on a second VLM and yield three requirements for defenses, we release the protocol.",
+    "link": "https://arxiv.org/abs/2611.34181",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703767",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34181v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.CV",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34210v1",
+    "title": "Direct cognition problem: a semantic skeleton of mathematics and its growth",
+    "authors": [
+      "Vasilii A. Gromov, Nikolai N. Evdokimov"
+    ],
+    "abstract": "arXiv:2611.34210v1 Announce Type: new \nAbstract: We construct a finite semantic skeleton from three axioms of classical propositional logic without specifying a target theorem. During growth, the constructor records which proofs share an intermediate lemma. When choosing the final anchors, it also counts inferences that use a premise the lemma can supply by substitution. The primary skeleton contains ten anchors whose certificates expand to the axioms through 27 shared inference steps. It shortens all 30 previously unseen proof structures in an external catalogue of typed combinators, saving 90 of 412 steps. One anchor recurs in all five runs of the constructor. In a post hoc test, this anchor alone shortens 26 of the 30 proofs. It also shortens 331 of 475 previously unseen proofs of familiar theorems in a second corpus.",
+    "link": "https://arxiv.org/abs/2611.34210",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703779",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34210v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34229v1",
+    "title": "Evaluating Post-Quantum and Hybrid Signatures for Blockchains: Performance, Storage and Ledger Growth",
+    "authors": [
+      "Anthony Mikhaiel, Essam Ghadafi"
+    ],
+    "abstract": "arXiv:2611.34229v1 Announce Type: new \nAbstract: Advances in quantum computing pose a long-term threat to blockchain systems that rely on classical digital signature schemes such as ECDSA. Migrating these systems to post-quantum cryptography introduces practical costs beyond cryptographic security, including larger transactions, higher computational costs and faster ledger growth. We present an empirical evaluation of 13 signature configurations in a common simulated blockchain framework: ECDSA, ML-DSA-44/65/87, Falcon-512/1024, SLH-DSA-SHA2-128s, and six hybrids combining ECDSA with each post-quantum scheme. We measure signing and verification costs, transaction-processing throughput, and signature and public-key sizes, and project the measured overheads onto five public blockchains: Bitcoin, Ethereum, Solana, BNB Smart Chain and TRON. Verification remains inexpensive for the evaluated lattice-based schemes, with Falcon-512 achieving a verification time comparable to ECDSA (30.1 versus 32.8 $\\mu$s). Storage overheads, however, are substantial. Under our modelling assumptions, had the recorded transaction histories used Falcon-512, the most compact post-quantum scheme evaluated, ledger sizes would have been 79--229% larger, depending on the blockchain. Hybrid configurations introduce relatively modest additional storage overhead compared with their standalone post-quantum counterparts, while ECDSA+Falcon-512 approximately doubles the verification cost of standalone Falcon-512. Existing transaction- and script-size limits also present obstacles to straightforward migration in Bitcoin and Solana. Overall, our findings suggest that storage overhead may pose a greater challenge than signature verification costs when migrating blockchain systems to post-quantum cryptography.",
+    "link": "https://arxiv.org/abs/2611.34229",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703790",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34229v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34267v1",
+    "title": "Several classes of few-weight linear codes based on Weil sums",
+    "authors": [
+      "Lan Deng (Hubei Key Laboratory of Applied Mathematics, Faculty of Mathematics and Statistics, Hubei University, Wuhan, China, School of Mathematics and Statistics, Hanjiang Normal University, Shiyan, China), Zhao Hu (Key Laboratory of Intelligent Sensing System and Security), Nian Li (Key Laboratory of Intelligent Sensing System and Security)"
+    ],
+    "abstract": "arXiv:2611.34267v1 Announce Type: new \nAbstract: Linear codes over finite fields with few weights are of significant interest due to their applications in areas such as secret sharing schemes, strongly regular graphs, and association schemes. In this paper, we construct several classes of p-ary linear codes based on Weil sums via the defining-set construction of bivariate form, where p is an odd prime. Utilizing the theory of quadratic forms and Weil sums over finite fields, the parameters and weight distributions of the codes are completely determined. As a result, several families of three-weight or four-weight linear codes are obtained from our construction. In addition, it is shown that most of our codes are minimal.",
+    "link": "https://arxiv.org/abs/2611.34267",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703801",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34267v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34278v1",
+    "title": "Latent-in-the-Middle: On the Security of Cross-Model Latent Communication in Multi-Agent Systems",
+    "authors": [
+      "Manit Baser, Vyoman Jain, Rachel Yeo Hui Min, Xianglin Yang, Meenatchi Sundaram Muthu Selva Annamalai, Dinil Mon Divakaran"
+    ],
+    "abstract": "arXiv:2611.34278v1 Announce Type: new \nAbstract: As large language models increasingly collaborate in heterogeneous multi-agent systems, latent communication has emerged as an efficient alternative to exchanging natural-language messages. By sharing internal representations, agents can avoid repeatedly processing the same context, reducing communication overhead and prefill computation. One such mechanism is cross-model Key-Value (KV) cache transfer, which uses a learned mapper to translate a source model's KV cache into one a target model can use. However, this handoff means the target model consumes context it did not encode itself, thus calling into question whether its safety alignment still holds.\n  In this work, we investigate the security implications of latent handoffs by introducing Chasm, a framework characterizing cross-model handoff attacks across three new attack surfaces: the source model, mapper, and handoff mechanism itself. Our experiments reveal that latent handoffs substantially undermine safety alignment and prompt-injection defenses. Notably, a target model that follows only 0.4% of benchmark prompt injections natively, follows up to 44.2% when transferred through a mapper from a source model. On the other hand, for jailbreak attacks, transfer alone raises attack success by up to 24.6 pp within a model family and zero-shot attacks by up to 69.2 pp, whereas white-box optimization through the mapper boosts the attack success rate to 92.5%, against 37.5% for ordinary GCG on the same target. To address these vulnerabilities, we propose a lightweight target-side cache guard that corrects transferred caches to restore the target model's refusal, considerably mitigating these attacks.",
+    "link": "https://arxiv.org/abs/2611.34278",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703813",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34278v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34311v1",
+    "title": "A Complete Axiomatisation of Distribution-Based Branching Bisimilarity for Non-Deterministic and Probabilistic Choice",
+    "authors": [
+      "Rob J. van Glabbeek, Jan Friso Groote, Erik P. de Vink"
+    ],
+    "abstract": "arXiv:2611.34311v1 Announce Type: new \nAbstract: This paper proposes a notion of branching bisimilarity for non-deterministic probabilistic processes. In order to characterise the corresponding notion of rooted branching probabilistic bisimilarity, an equational theory is proposed for a basic, recursion-free process language with non-deterministic as well as probabilistic choice. The proof of completeness of the axiomatisation builds on the completeness of strong probabilistic bisimilarity on the one hand and on the notion of a concrete process, i.e. a process that does not display (partially) inert {\\tau}-moves, on the other hand. The approach is first presented for the non-deterministic fragment of the calculus and next generalised to incorporate probabilistic choice, too.",
+    "link": "https://arxiv.org/abs/2611.34311",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703824",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34311v1",
+      "categories": [
+        {
+          "term": "cs.LO",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34340v1",
+    "title": "Poisoning Attacks to Local Differential Privacy Protocols for Dynamic Graphs",
+    "authors": [
+      "Shang Liu, Yuhan Bao, Hongbin Zhao, Yanmei Zhang, Guan Yuan, Yang Cao"
+    ],
+    "abstract": "arXiv:2611.34340v1 Announce Type: new \nAbstract: With the increasing adoption of privacy-preserving techniques in dynamic graph analysis, local differential privacy (LDP) has become a fundamental paradigm for protecting user data in decentralized environments. However, despite its strong privacy guarantees, LDP-based dynamic graph protocols remain vulnerable to data poisoning attacks through malicious data injection. In this paper, we present the first systematic study of data poisoning attacks against privacy-preserving dynamic graphs under the LDP framework. Considering the temporal evolution of dynamic graphs, we identify key challenges in attack design and evaluation, including how to schedule attack resources across time and how to measure cumulative attack impact. To address these challenges, we introduce an absolute gain metric to quantify the overall deviation of graph statistical metrics before and after attacks across time. Based on this metric, we further propose a unified poisoning attack framework for dynamic graphs, which consists of target node selection, dynamic fake node scale scheduling, and fake edge injection. Within this framework, we design a temporal enhanced attack (TEA) strategy that dynamically schedules attack resources to maximize attack effectiveness, along with two baseline strategies, equal-scale attack (ESA) and random-scale attack (RSA), for comparison. Extensive experiments on real-world and synthetic datasets demonstrate that the proposed attacks can significantly degrade the accuracy of graph metric estimation for target nodes.",
+    "link": "https://arxiv.org/abs/2611.34340",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703836",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34340v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34362v1",
+    "title": "Four Classes of Few-Weight Linear Codes over $u\\mathbb{F}_q+u^2\\mathbb{F}_q+u^3\\mathbb{F}_q$ from Simplicial Complexes",
+    "authors": [
+      "Lan Deng (Hubei Key Laboratory of Applied Mathematics, Faculty of Mathematics and Statistics, Hubei University, Wuhan, China, School of Mathematics and Statistics, Hanjiang Normal University, Shiyan, China), Zhao Hu (Hubei Provincial Engineering Research Center of Intelligent Connected Vehicle Network Security, School of Cyber Science and Technology, Hubei University, Wuhan, China), Nian Li (Hubei Provincial Engineering Research Center of Intelligent Connected Vehicle Network Security, School of Cyber Science and Technology, Hubei University, Wuhan, China)"
+    ],
+    "abstract": "arXiv:2611.34362v1 Announce Type: new \nAbstract: In this paper, we construct linear codes over the commutative non-unital ring $u\\mathbb{F}_q+u^2\\mathbb{F}_q+u^3\\mathbb{F}_q$, where $u^4=0$, using simplicial complexes in $\\mathbb{F}_q^m$ and their complements. For codes defined by two arbitrary nonempty simplicial complexes, we determine the lengths and $\\mathbb{F}_q$-dimensions. When each complex has a single maximal element with nonempty proper support, we use an $\\mathbb{F}_q$-linear Gray map and exponential sums to determine the parameters and Lee weight distributions of four classes of codes. These classes have two, at most five, at most four, and at most eight nonzero Lee weights, respectively. Puncturing the Gray images yields projective codes with dual minimum distance three. Using the Griesmer bound, we obtain families of distance-optimal projective codes, including a binary family whose lengths exceed the bound by three. The Gray images are Euclidean self-orthogonal for $q=3$ and for $q=2$ under an additional condition, and Hermitian self-orthogonal for $q=4$. We also give sufficient conditions for minimality of both the Gray images and the projective codes.",
+    "link": "https://arxiv.org/abs/2611.34362",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703846",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34362v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34380v1",
+    "title": "AgentLens: Graph-guided Security Auditing for LLM-based Agents",
+    "authors": [
+      "Peizhuo Lv, Tao Chen, Mengya Shi, Ziyu Lin, Yuxuan Chen, Ruigang Liang, Tianwei Zhang, Wei Dong, XiaoFeng Wang"
+    ],
+    "abstract": "arXiv:2611.34380v1 Announce Type: new \nAbstract: LLM-based agents are emerging as a key paradigm for automating software engineering by coupling LLM-driven decision-making with external tools, files, APIs, and execution environments. However, weaknesses in agent implementations and insecure interactions between the agent and external resources can lead to severe consequences, including remote code execution, arbitrary file access, SQL injection, and data leakage. This makes pre-deployment auditing essential for systematically identifying implementation weaknesses and validating whether they can manifest as concrete security risks in realistic agent workflows. Existing approaches either focus on specific vulnerability classes or lack the capability to validate whether identified static weaknesses correspond to executable exploits. In this paper, we propose AgentLens, a systematic auditing framework for LLM-based agents. AgentLens analyzes the target agent's implementation, component interactions, and built-in defenses, and organizes them into an Audit Knowledge Graph that captures how these factors interact to expose potential security risks. Based on this graph, AgentLens derives candidate attack paths, generates path-specific validation payloads, and constructs realistic multi-turn audit scenarios that place these payloads in task-relevant contexts to validate whether suspected risks manifest as security-violating behaviors during execution. Across five widely-used agent applications, each with over 24,000 GitHub stars, AgentLens identifies 44 vulnerabilities, and every vulnerability is validated by being triggered during execution. Compared with the state-of-the-art approach (AgentFuzz), AgentLens detects 3.67$\\times$ more vulnerabilities. To date, 12 reported issues have been assigned CVE IDs.",
+    "link": "https://arxiv.org/abs/2611.34380",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703857",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34380v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34382v1",
+    "title": "The Functional Batch Conjecture And Its Extension To All Finite Fields",
+    "authors": [
+      "Isaac Barouch Essayag (Yohananov), Aryeh Lev Zabokritskiy (Yohananov)"
+    ],
+    "abstract": "arXiv:2611.34382v1 Announce Type: new \nAbstract: We prove that the code whose servers store all $q^s-1$ nonzero linear combinations of $s$ information symbols over $\\mathbb{F}_q$ is a functional batch code with list size $(q^s+q-2)/2$: every list of $(q^s+q-2)/2$ requested nonzero linear combinations, repetitions allowed, can be recovered from pairwise disjoint sets of at most two servers. This holds for every finite field and every $s\\ge1$, and the list size cannot be increased, even if recovery sets of any size are allowed. For $q=2$ the statement is the functional batch conjecture for the binary simplex code, in its stronger form with recovery sets of size at most two, and it follows from the conjecture of Balister, Gy\\H{o}ri and Schelp on perfect matchings of $\\mathbb{F}_2^n$ with prescribed differences, which was proved by the second author in a separate paper. We also determine the minimum length of a functional batch code with $s$ information symbols over $\\mathbb{F}_q$: it is $m(q^s-1)$ for the list size $m(q^s+q-2)/2$, for every $m\\ge1$, and, for odd $q$, it is $2(q^s-1)/(q-1)$ for the list size $(q^s-1)/(q-1)+1$.",
+    "link": "https://arxiv.org/abs/2611.34382",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703867",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34382v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34417v1",
+    "title": "Northstar: Efficient Verifiable Negacyclic Polynomial Arithmetic with Applications to Encrypted Lattice-based Multi-Asset ERC-20 and Verifiable FHE",
+    "authors": [
+      "Yeoh Wei Zhu, Shaltiel Eloul, Yash Satsangi, Rob Otter"
+    ],
+    "abstract": "arXiv:2611.34417v1 Announce Type: new \nAbstract: Lattice-based cryptography can be used to construct a variety of post-quantum cryptographic schemes, ranging from standard cryptographic primitives such as digital signatures and encryption, to fully homomorphic encryption (FHE). However, the verification of correct lattice computations remains relatively expensive, particularly for computationally intensive FHE operations and for resource-constrained environments such as on-chain verification via smart contracts. We propose Northstar, an efficient technique for proving negacyclic arithmetic natively. When integrated with existing STARK proving frameworks, Northstar achieves the best overall performance across prover time, verifier time, and proof size compared to prior state-of-the-art approaches for verifiable FHE constructions. Furthermore, Northstar is used to construct the first verifiable encrypted multi-asset (~ 1000 assets) variant of ERC-20 that is efficiently verifiable by a smart contract, and is practically deployable in the current blockchain ecosystem.",
+    "link": "https://arxiv.org/abs/2611.34417",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703877",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34417v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34442v1",
+    "title": "The Weak Negotiation Function",
+    "authors": [
+      "L\\'eonard Brice"
+    ],
+    "abstract": "arXiv:2611.34442v1 Announce Type: new \nAbstract: Subgame-perfect equilibria (SPEs) constitute a refinement of Nash equilibria, where the players are not allowed to resort to non-credible threats to discourage deviations. In graph games equipped with a broad class of objectives, SPEs are captured by a tool called the negotiation function.\n  After giving a quick overview of what has already been achieved using this tool, we define a variant of it: the weak negotiation function. We show that weak SPEs, a standard relaxation of SPEs, can be captured by the weak negotiation function exactly like SPEs are captured by the negotiation function. This characterisation yields a new computational result: deciding whether a given game contains a weak SPE where each player's payoff lies in a given interval is an NP-complete problem if the game has mean-payoff objectives. We also provide a new proof that the same problem in B\\\"uchi games is in P. The proofs reuse many arguments from their SPE counterpart, demonstrating the robustness of the tool.\n  We also use the weak negotiation function to present a new proof, significantly shorter than the known one, of the existence of weak SPEs in mean-payoff games. We argue that those new techniques should be reusable in other settings, in particular to prove an open conjecture about the existence of randomised $\\epsilon$-SPEs in mean-payoff games.",
+    "link": "https://arxiv.org/abs/2611.34442",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703887",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34442v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34447v1",
+    "title": "Optimal \\texorpdfstring{$(1,1)$}{(1,1)}-Criss-Cross Deletion-Correcting Codes with Linear-Time Encoder and Decoder",
+    "authors": [
+      "Zhiqiang Li, Yubo Sun, Gennian Ge"
+    ],
+    "abstract": "arXiv:2611.34447v1 Announce Type: new \nAbstract: We consider a $q$-ary $n\\times n$ array subject to a $(1,1)$-criss-cross deletion, which removes one row and one column. We first derive a sphere-packing type lower bound on the redundancy of codes correcting such deletions. For every $q\\geq 2$ and $n\\geq 27$, the redundancy is greater than $2n+2\\log_q n-2$. For fixed $q$, it is at least $2n-1+2\\log_q n-o_q(1)$ as $n\\to\\infty$. We then present two code constructions. The first construction achieves redundancy $2n-1+2\\log_q n+o_q(1)$ by selecting a largest syndrome class. It matches the lower bound up to a vanishing term and admits $O_q(n^2)$-time decoding. The second construction has redundancy $2n+2\\log_q n+O_q(1)$ and admits $O_q(n^2)$-time algorithms for both encoding and decoding. For fixed $q$, these running times are linear in the number of array entries.",
+    "link": "https://arxiv.org/abs/2611.34447",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703898",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34447v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34460v1",
+    "title": "Functional Factor Graphs and the Functional Sum-Product Algorithm",
+    "authors": [
+      "Kuranage Roche Rayan Ranasinghe, Giuseppe Thadeu Freitas de Abreu"
+    ],
+    "abstract": "arXiv:2611.34460v1 Announce Type: new \nAbstract: We propose a generalization of factor graphs and the sum-product algorithm (SPA), widely used in the estimation of data, channel state information and sensing parameters, to unknowns that are functions, such as waveforms, time-varying channels and continuous-aperture array currents, which must otherwise be sampled first. In order to mitigate the challenge that functions have no probability density functions (PDFs), the proposed scheme measures densities relative to the prior of each function, not to the flat reference implicit in every PDF. Messages then become likelihood ratios, and the factor-node rule an average over the priors, still exact on trees. For Gaussian models, the proposed functional SPA (FSPA) is Gaussian belief propagation (GaBP) with kernels in place of matrices and a grid-independent convergence condition, whereas scalar GaBP on grid samples provably slows down under refinement, as information hops from sample to sample. Simulations in a multi-user detection setting confirms the latter, and shows that sampling first can also fail for smooth priors.",
+    "link": "https://arxiv.org/abs/2611.34460",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703908",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34460v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34470v1",
+    "title": "Fuel as Identity: Authenticating Inter-Satellite Laser Links after Total Key Compromise",
+    "authors": [
+      "Leon Birkel, Mohammad Hamad, Sebastian Steinhorst"
+    ],
+    "abstract": "arXiv:2611.34470v1 Announce Type: new \nAbstract: Optical inter-satellite links form the backbone of entire constellations in low Earth orbit, yet their security rests on keys alone. When an attacker obtains every key of a satellite, no secret is left to authenticate it again. Existing fixes fail, since ground rekeying encrypts new keys under the leaked ones, and post-compromise protocols assume an authenticated start. As a remedy, the satellite's orbit can take over as the trust anchor. The attacker then needs an impostor satellite that blocks and retransmits the beam, a chord beneath the curved orbit. Hence, the blocking point lies off free fall and costs the impostor continuous thrust. We formalize this position-gated adversary and prove, for satellites on a shared circular orbit, a tight lower bound on the propellant cost in delta-v of a point-mass craft that keeps blocking, however it moves. We present OrbitLock, a history-chained protocol that combines this position gate with ML-KEM. Each link authenticates on its own, and we sketch how combining links forces an impostor onto every link. Once the chain outlasts an impostor's propellant, every key back to the first is authenticated retroactively. A satellite thus needs no crosslink key before launch, so none can leak in the supply chain. The same mechanism heals the link after total key compromise, even without compromise awareness. A passive attacker is shut out at the next round, whereas an active one splits the chains and is exposed once its propellant runs out. The chain can then heal after an operator reset. As a result, every Starlink satellite has a partner on whose link a CubeSat-class impostor runs out of propellant in about two days. This holds against one rigid craft per link running the best attack we know, if each terminal enforces a 1 km exclusion zone, while the protocol only uses under 0.02% of the link.",
+    "link": "https://arxiv.org/abs/2611.34470",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703919",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34470v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34488v1",
+    "title": "Computing Feasible EF1 Allocations under Generalized Assignment Constraints",
+    "authors": [
+      "Eugene Lim, Nicholas Teh"
+    ],
+    "abstract": "arXiv:2611.34488v1 Announce Type: new \nAbstract: We study the fair allocation of indivisible goods under generalized assignment constraints, where each agent's bundle must fit within her budget, the sizes of goods may differ across agents, and unallocated goods go to a charity. A natural fairness notion here is feasible envy-freeness up to one good (FEF1), which requires an agent's envy towards any feasible subset of another bundle to disappear after some good is removed from this subset. While FEF1 allocations always exist, they could previously be computed efficiently only when sizes are common to all agents. We show that FEF1 allocations can be computed in strongly polynomial time, and more generally whenever each agent's value can be almost exactly maximized over her feasible bundles, a requirement that cannot be relaxed substantially. Our analysis relies on an essentially tight quadratic bound on how often each agent's bundle is repaired. Moreover, the allocation can be made approximately envy-free up to any good while retaining nearly half the Nash welfare of any given allocation. In contrast, requiring a single good to eliminate an agent's envy towards all feasible subsets of another bundle at once, which makes no difference without constraints, renders the problem NP-hard and may halve the attainable Nash welfare.",
+    "link": "https://arxiv.org/abs/2611.34488",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703929",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34488v1",
+      "categories": [
+        {
+          "term": "cs.GT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34501v1",
+    "title": "New Insights into the Parameterized Complexity of Cutwidth",
+    "authors": [
+      "Klara Jacobsen, Klaus Jansen, Lis Pirotton, Bj\\\"orn Schumacher"
+    ],
+    "abstract": "arXiv:2611.34501v1 Announce Type: new \nAbstract: The Cutwidth problem asks for a linear ordering of the vertices that minimizes the maximum number of edges crossing between two consecutive positions. The problem is proven to be NP-hard by Gavril [CISS '77], which motivated research in parameterized complexity. A previously claimed FPT result for Cutwidth and Imbalance parameterized by twin cover by Gorzny and Buss [COCOON '19] was later invalidated. Misra and Mittal [Theor. Comput. Sci. '21] clarified this issue, proved that Imbalance is in XP parameterized by twin cover and in FPT parameterized by $\\omega$-bounded twin cover, i.e., where the size of the cliques outside the twin cover are bounded by $\\omega$. The analogous questions remained open for cutwidth. In this work, we answer one of them by showing that Cutwidth is FPT parameterized by $\\omega$-bounded twin cover. Additionally, we present an XP algorithm for Cutwidth parameterized by vertex integrity and prove W[1]-hardness for the parameter treedepth.",
+    "link": "https://arxiv.org/abs/2611.34501",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703940",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34501v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34550v1",
+    "title": "An Information-Theoretic Analysis of Information Hiding in Semantic Communication",
+    "authors": [
+      "Yanhao Huo, Shijun Xiang"
+    ],
+    "abstract": "arXiv:2611.34550v1 Announce Type: new \nAbstract: Semantic communication shifts the transmission goal from the accurate recovery of syntactic symbols to the reliable conveyance of semantic content, yet a systematic information-theoretic characterization of information hiding at the semantic layer is still missing. Building on the semantic information theory of Niu-Zhang and the classical information hiding theory of Moulin-O'Sullivan, this paper establishes an information-theoretic framework for information hiding under semantic communication. The classical hiding model is extended to a two-layer structure (semantic host, syntactic host, syntactic composite signal, syntactic received, semantic received) bridged by synonymous mappings f_s, f_x and the inverse mapping f_y^{-1}, subject to four distortion constraints: syntactic transparency, semantic fidelity, syntactic perturbation, and semantic destruction. The capacity is cast as a Stackelberg game with the hider moving first and the payoff J(Q,A) = I(U~; Y~ | K) - I(U~; S~ | K), yielding the single-letter maximin C^s = max_Q min_A J(Q,A), whose achievability and converse follow from random coding and joint typicality decoding. Relative to the classical capacity, comparison payoffs built from the up/down semantic mutual information give the endpoint sandwich C^s_end(0,1) <= C^s <= C^s_end(1,0) with the classical value C in the same interval, while closing semantic tolerance yields C^s_no-tol <= C_cl under a fair comparison. These results clarify that semantic hiding is not unconditionally superior to classical hiding. Binary, ternary, and Gaussian examples confirm the degeneration under one-to-one mappings and the capacity loss under coarsening.",
+    "link": "https://arxiv.org/abs/2611.34550",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703951",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34550v1",
+      "categories": [
+        {
+          "term": "cs.IT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.IT",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34623v1",
+    "title": "From Models to Services: Systematizing Security Assurance for Model-as-a-Service",
+    "authors": [
+      "Jianming Zhou, Yang Luo, Guangpu Chen, Zhaoyu Chen, Yifeng Gao, Qingni Shen, Zhonghai Wu"
+    ],
+    "abstract": "arXiv:2611.34623v1 Announce Type: new \nAbstract: Large language models are mainly delivered as cloud services, in which the assets of different principals are coupled within a single service pipeline, while the related security research is scattered across several fields with differing threat models. This paper systematizes this research from a service perspective. We decompose Model-as-a-Service (MaaS) into a five-layer stack and five trust boundaries, define six adversary classes and six security goals, use them to code 120 studies, and evaluate 50 defenses under a unified set of criteria. The results show that 44.2% of the studies concentrate on behavioral integrity, while service integrity, availability and cost, and accountability together account for only 13.3%. Defenses are evaluated on production services at less than half the rate of attacks, and none of the cryptographic or hardware mechanisms that protect against the provider can be adopted unilaterally by customers. Finally, we propose a research agenda by comparison with current standards and regulations.",
+    "link": "https://arxiv.org/abs/2611.34623",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703960",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34623v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "cs.AI",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34664v1",
+    "title": "The asymptotic spectrum of tensors is connected",
+    "authors": [
+      "P\\'eter Vrana, Jeroen Zuiddam"
+    ],
+    "abstract": "arXiv:2611.34664v1 Announce Type: new \nAbstract: We prove path-connectedness of the asymptotic spectrum of complex tensors of every fixed order $k \\geq 3$: every spectral point is connected by a path to every \"one leg versus the rest\" flattening rank. In particular, the asymptotic spectrum evaluated at any fixed tensor is a closed interval, answering a question of Strassen. This was previously known only on specific families of tensors (Strassen, FOCS 1986, Crelle 1987-1991; Wigderson and Zuiddam, Bull. AMS 2026) or for specific families of spectral points (Christandl, Vrana and Zuiddam, STOC 2018; Sakabe, Do\\u{g}an and Walter, FOCS 2026; Alman, Li and Pratt, FOCS 2026).\n  To obtain our path-connectedness theorem we develop a general method for \"interpolating\" between spectral points, which applies to Strassen semirings that are appropriately decomposable (in the sense of an information-theoretic \"method of types\" on the semiring) and whose spectral points satisfy a cover property (inspired by slice rank). This covers tensors and asymptotic rank (with \"types\" given by decomposition into symmetric group irreps), as well as other objects and asymptotic problems, like graphs and Shannon capacity, where it matches the interpolation of Vrana (2019).\n  Using our interpolation methods we furthermore obtain new results and simpler proofs of previous results regarding the asymptotic spectrum of rectangular matrix multiplication, polynomial multiplication and non-crossing (laminar) quantum functionals.",
+    "link": "https://arxiv.org/abs/2611.34664",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703971",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34664v1",
+      "categories": [
+        {
+          "term": "cs.CC",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "math.RT",
+          "scheme": null,
+          "label": null
+        },
+        {
+          "term": "quant-ph",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  },
+  {
+    "id": "arx:2611.34684v1",
+    "title": "BridgeHammer: DNN Backdoor Attack via CPU-iGPU Shared-memory Rowhammer",
+    "authors": [
+      "Yufei Wang, Saion K. Roy, Yunsi Fei"
+    ],
+    "abstract": "arXiv:2611.34684v1 Announce Type: new \nAbstract: Heterogeneous systems-on-chips (SoCs) share physical memory between CPUs and integrated GPUs (iGPUs), creating a path for CPU-side memory corruption to compromise the integrity of deep learning models used for iGPU inference. Implanting a backdoor that causes targeted misclassifications on trigger-bearing inputs while retaining accuracy on normal inputs requires carefully selected weight changes. However, realizing these changes presents two challenges: where to induce faults, since vulnerable DRAM locations may not contain the targeted weights, and when to intervene, since memory placement and fault injection must align with different stages of the model deployment lifecycle that involve two distinct computation domains. We present BridgeHammer, a Rowhammer-based backdoor attack that addresses these challenges by coordinating targeted weight placement before zero-copy binding for the iGPU and fault injection before inference. The iGPU then uses the corrupted model for subsequent inferences. We evaluate BridgeHammer on a heterogeneous Intel CPU-iGPU platform using OpenVINO, targeting ResNet-20, VGG-16, and ResNet-50 at both INT8 and FP32 precision. Across all six configurations, BridgeHammer achieves an 88.9% attack success rate (ASR) and 86.3% clean accuracy on average, with reliable target-page placement and bit-flip reproduction. These results demonstrate a new integrity vulnerability on heterogeneous CPU-iGPU SoCs, motivating cross-domain memory integrity protections.",
+    "link": "https://arxiv.org/abs/2611.34684",
+    "published": "2026-11-26 05:00:00",
+    "source": "arxiv",
+    "feed_name": "arXiv Computer Science",
+    "rss_fetch_date": "2026-11-26 16:30:32.703982",
+    "tags": [],
+    "doi": null,
+    "alternate_link": null,
+    "raw_data": {
+      "arxiv_id": "2611.34684v1",
+      "categories": [
+        {
+          "term": "cs.CR",
+          "scheme": null,
+          "label": null
+        }
+      ]
+    }
+  }
+]
